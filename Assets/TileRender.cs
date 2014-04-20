@@ -4,8 +4,11 @@ using System.Collections.Generic;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
-
+[ExecuteInEditMode]
 public class TileRender : MonoBehaviour {
+
+	public float lastCheckForUpdate;
+	public Vector3 buildPos;
 
 	//Mesh Data
 	public List<Vector3> vertices;
@@ -60,6 +63,7 @@ public class TileRender : MonoBehaviour {
 	void Start()
 	{
 		BuildMesh ();
+		lastCheckForUpdate = Time.realtimeSinceStartup;
 	}
 
 	void Awake() 
@@ -80,7 +84,7 @@ public class TileRender : MonoBehaviour {
 		{
 			for (int z = 0; z < sideLength; z++)
 			{
-				Vector3 position = transform.position + new Vector3(squareSize * x, 0, squareSize*z);
+				Vector3 position = new Vector3(squareSize * x, 0, squareSize*z);
 				CreateFace(position);
 			}
 		}
@@ -92,6 +96,8 @@ public class TileRender : MonoBehaviour {
 		mesh.RecalculateBounds ();	
 
 		GetComponent<MeshFilter>().sharedMesh = mesh;
+
+		buildPos = transform.position;
 	}
 
 	void CreateFace(Vector3 pos)
@@ -103,28 +109,25 @@ public class TileRender : MonoBehaviour {
 
 		float vertHeight = 0.0f;
 
-		vertHeight = mHeights.GetHeight (origin + new Vector3(-ext,  0, ext));
-		Vector3 p0 = origin + new Vector3(-ext,  vertHeight, ext);
+
+		Vector3 p0 = origin + new Vector3(0,  0, squareSize);
+		p0.y= mHeights.GetHeight (p0 + transform.position);
 		vertices.Add(p0);
 
-		vertHeight = mHeights.GetHeight (origin + new Vector3(ext,  0, ext));
-		Vector3 p1 = origin + new Vector3(ext,  vertHeight, ext);
+		Vector3 p1 = origin + new Vector3(squareSize,  0, squareSize);
+		p1.y = mHeights.GetHeight (p1 + transform.position);
 		vertices.Add(p1);
 
-		vertHeight = mHeights.GetHeight (origin + new Vector3(ext,  0, -ext));
-		Vector3 p2 = origin + new Vector3(ext, vertHeight, -ext);
+		Vector3 p2 = origin + new Vector3(squareSize, 0, 0);
+		p2.y = mHeights.GetHeight (p2 + transform.position);
 		vertices.Add(p2);
 	
-		vertHeight = mHeights.GetHeight (origin + new Vector3(-ext,  0, ext));
-		Vector3 p0i = origin + new Vector3(-ext,  vertHeight, ext);
-		vertices.Add(p0i);
+		//Build second
+		vertices.Add(p0);
+		vertices.Add(p2);
 
-		vertHeight = mHeights.GetHeight (origin + new Vector3(ext,  0, -ext));
-		Vector3 p1i = origin + new Vector3(ext, vertHeight, -ext);
-		vertices.Add(p1i);
-		
-		vertHeight = mHeights.GetHeight (origin + new Vector3(-ext,  0, -ext));
-		Vector3 p3 = origin + new Vector3(-ext, vertHeight, -ext);
+		Vector3 p3 = origin + new Vector3(0, 0, 0);
+		p3.y = mHeights.GetHeight (p3 + transform.position);
 		vertices.Add(p3);
 
 		triangles.Add(vertCount);
@@ -141,7 +144,7 @@ public class TileRender : MonoBehaviour {
 			normals.Add(norm);
 		}
 
-		Vector3 norm2 = Vector3.Cross(p1i - p0i, p3 - p0i);
+		Vector3 norm2 = Vector3.Cross(p1 - p0, p3 - p0);
 		for (int i=0; i < 3; i++)
 		{
 			normals.Add(norm2);
@@ -151,6 +154,13 @@ public class TileRender : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
-	
+		if (lastCheckForUpdate + 0.5f < Time.realtimeSinceStartup)
+		{
+			if (buildPos != transform.position)
+			{
+				BuildMesh ();
+				lastCheckForUpdate = Time.realtimeSinceStartup;
+			}
+		}
 	}
 }
