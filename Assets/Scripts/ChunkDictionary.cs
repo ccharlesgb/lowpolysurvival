@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class ChunkDictionary : Dictionary<IntCoord, Chunk>
+public class ChunkDictionary : Dictionary<IntCoord, GameObject>
 {
 	public ChunkDictionary ()
 	{
@@ -11,7 +11,7 @@ public class ChunkDictionary : Dictionary<IntCoord, Chunk>
 	
 	public IntCoord? GetNearestUnBuilt(IntCoord pos, float maxDist)
 	{
-		Chunk tryChunk;
+		GameObject tryChunk;
 		//Is our current position unbuilt?
 		if (!TryGetValue(pos, out tryChunk))
 		{
@@ -26,7 +26,7 @@ public class ChunkDictionary : Dictionary<IntCoord, Chunk>
 					for (int zOffset = -zDist; zOffset < zDist; zOffset++)
 					{
 						IntCoord testPos = pos + new IntCoord(xOffset,0,zOffset);
-						Chunk testChunk;
+						GameObject testChunk;
 						if (!TryGetValue(testPos, out testChunk))
 						{
 							return testPos;

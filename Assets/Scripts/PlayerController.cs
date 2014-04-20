@@ -2,8 +2,7 @@
 using System.Collections;
 
 public class PlayerController : MonoBehaviour {
-	
-	private Map map;
+
 	public float rayDist;
 	
 	public bool blocked;
@@ -65,8 +64,7 @@ public class PlayerController : MonoBehaviour {
 		_collisionRay = new Ray();
 		
 		_transform = transform;
-		
-		map = GameObject.Find ("Map").GetComponent<Map>();	
+
 		blocked = false;
 	}
 	
@@ -124,37 +122,12 @@ public class PlayerController : MonoBehaviour {
 		//DO ALL VELOCITY ADJUSTMENTS BEFORE THIS
 		contactCount = 0;
 		groundNormal = Vector3.zero;
-		CharacterCollision.GetContactPoint(this, map);
 		Vector3 oldPos = _transform.position;
 		Vector3 newPos = oldPos;
 		newPos += velocity * Time.fixedDeltaTime;
 		_transform.position = newPos;
 	}
-	
-	public void OnMapCollide(HitInfo hit)
-	{
-		if (hit.hit)
-		{
-			_transform.position += hit.minTranslation;
-			
-			float frictionFactor = Vector3.Dot (hit.normal, Vector3.up) * frictionCoeff;
-			
-			Vector3 frictionChange = -frictionFactor * velocity;
-			float bounceBack = -Vector3.Dot (velocity, hit.normal) * bounceCoeff;
-			velocity += hit.normal * bounceBack;
-			velocity += frictionChange;
-			
-			debugContacts[contactCount] = hit.point;
-			debugContacts[contactCount + 1] = hit.point + (hit.minTranslation * 10.0f);
-			contactCount += 2;
-			
-			if (groundNormal.y < hit.normal.y)
-			{
-				groundNormal = hit.normal;
-			}	
-		}
-	}
-	
+
 	public bool IsOnGround()
 	{
 		return groundNormal == Vector3.up;
