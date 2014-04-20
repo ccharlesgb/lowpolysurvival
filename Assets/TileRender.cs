@@ -2,7 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
-[RequireComponent(typeof
+[RequireComponent(typeof(MeshFilter))]
+[RequireComponent(typeof(MeshRenderer))]
 
 public class TileRender : MonoBehaviour {
 
@@ -18,7 +19,7 @@ public class TileRender : MonoBehaviour {
 
 	static public Vector3 GetTileBounds()
 	{
-		return Ve
+		return new Vector3(sideLength * squareSize, 0, sideLength * squareSize);
 	}
 
 	void AppendVertices(Vector3[] verts)
@@ -77,15 +78,14 @@ public class TileRender : MonoBehaviour {
 		{
 			for (int z = 0; z < sideLength; z++)
 			{
-				Vector3 position = new Vector3(-
-				CreateFace(
+				Vector3 position = transform.position + new Vector3(squareSize * x, 0, squareSize*z);
+				CreateFace(position);
 			}
 		}
 
 		mesh.vertices = vertices.ToArray();
 		mesh.uv = uvs.ToArray ();
 		mesh.SetTriangles (triangles.ToArray (), 0);
-		mesh.SetTriangles (waterTriangles.ToArray (), 1);
 		mesh.normals = normals.ToArray ();
 		mesh.RecalculateBounds ();	
 
