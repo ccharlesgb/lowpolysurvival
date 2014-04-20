@@ -96,7 +96,7 @@ public class TileRender : MonoBehaviour {
 		mesh.RecalculateBounds ();	
 
 		GetComponent<MeshFilter>().sharedMesh = mesh;
-
+		GetComponent<MeshCollider>().sharedMesh = mesh;
 		buildPos = transform.position;
 	}
 
