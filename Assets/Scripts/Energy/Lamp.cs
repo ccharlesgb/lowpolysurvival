@@ -23,7 +23,7 @@ namespace Energy
 		// Update is called once per frame
 		void Update()
 		{
-			myLight.enabled = myGenerator.Active;
+			myLight.enabled = myGenerator.generatorActive;
 		}
 	}
 }
