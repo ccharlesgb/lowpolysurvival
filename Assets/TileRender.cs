@@ -115,6 +115,14 @@ public class TileRender : MonoBehaviour {
 		Vector3 p2 = origin + new Vector3(ext, vertHeight, -ext);
 		vertices.Add(p2);
 	
+		vertHeight = mHeights.GetHeight (origin + new Vector3(-ext,  0, ext));
+		Vector3 p0i = origin + new Vector3(-ext,  vertHeight, ext);
+		vertices.Add(p0i);
+
+		vertHeight = mHeights.GetHeight (origin + new Vector3(ext,  0, -ext));
+		Vector3 p1i = origin + new Vector3(ext, vertHeight, -ext);
+		vertices.Add(p1i);
+		
 		vertHeight = mHeights.GetHeight (origin + new Vector3(-ext,  0, -ext));
 		Vector3 p3 = origin + new Vector3(-ext, vertHeight, -ext);
 		vertices.Add(p3);
@@ -123,15 +131,20 @@ public class TileRender : MonoBehaviour {
 		triangles.Add(vertCount + 1);
 		triangles.Add(vertCount + 2);
 		
-		triangles.Add(vertCount);
-		triangles.Add(vertCount + 2);
 		triangles.Add(vertCount + 3);
+		triangles.Add(vertCount + 4);
+		triangles.Add(vertCount + 5);
 
 		Vector3 norm = Vector3.Cross(p1 - p0, p2 - p0);
-
-		for (int i=0; i < 4; i++)
+		for (int i=0; i < 3; i++)
 		{
 			normals.Add(norm);
+		}
+
+		Vector3 norm2 = Vector3.Cross(p1i - p0i, p3 - p0i);
+		for (int i=0; i < 3; i++)
+		{
+			normals.Add(norm2);
 		}
 	}
 	
