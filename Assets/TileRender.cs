@@ -17,6 +17,8 @@ public class TileRender : MonoBehaviour {
 	public static int sideLength = 10;
 	public static float squareSize = 1.0f;
 
+	public HeightMap mHeights;
+
 	static public Vector3 GetTileBounds()
 	{
 		return new Vector3(sideLength * squareSize, 0, sideLength * squareSize);
@@ -98,10 +100,24 @@ public class TileRender : MonoBehaviour {
 		Vector3 origin = pos;
 		
 		float ext = squareSize / 2.0f; //The 'extent' of the square
-		vertices.Add(origin + new Vector3(-ext,  0, ext));
-		vertices.Add(origin + new Vector3(ext,  0, ext));
-		vertices.Add(origin + new Vector3(ext, 0, -ext));
-		vertices.Add(origin + new Vector3(-ext, 0, -ext));
+
+		float vertHeight = 0.0f;
+
+		vertHeight = mHeights.GetHeight (origin + new Vector3(-ext,  0, ext));
+		Vector3 p0 = origin + new Vector3(-ext,  vertHeight, ext);
+		vertices.Add(p0);
+
+		vertHeight = mHeights.GetHeight (origin + new Vector3(ext,  0, ext));
+		Vector3 p1 = origin + new Vector3(ext,  vertHeight, ext);
+		vertices.Add(p1);
+
+		vertHeight = mHeights.GetHeight (origin + new Vector3(ext,  0, -ext));
+		Vector3 p2 = origin + new Vector3(ext, vertHeight, -ext);
+		vertices.Add(p2);
+	
+		vertHeight = mHeights.GetHeight (origin + new Vector3(-ext,  0, -ext));
+		Vector3 p3 = origin + new Vector3(-ext, vertHeight, -ext);
+		vertices.Add(p3);
 
 		triangles.Add(vertCount);
 		triangles.Add(vertCount + 1);
@@ -111,9 +127,11 @@ public class TileRender : MonoBehaviour {
 		triangles.Add(vertCount + 2);
 		triangles.Add(vertCount + 3);
 
+		Vector3 norm = Vector3.Cross(p1 - p0, p2 - p0);
+
 		for (int i=0; i < 4; i++)
 		{
-			normals.Add(Vector3.up);
+			normals.Add(norm);
 		}
 	}
 	
