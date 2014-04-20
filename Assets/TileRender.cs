@@ -18,7 +18,7 @@ public class TileRender : MonoBehaviour {
 	public List<Vector2> uvs;
 
 	public static int sideLength = 10;
-	public static float squareSize = 1.0f;
+	public static float squareSize = 2.0f;
 
 	public HeightMap mHeights;
 
@@ -138,13 +138,13 @@ public class TileRender : MonoBehaviour {
 		triangles.Add(vertCount + 4);
 		triangles.Add(vertCount + 5);
 
-		Vector3 norm = Vector3.Cross(p1 - p0, p2 - p0);
+		Vector3 norm = Vector3.Cross(p1 - p0, p2 - p0).normalized;
 		for (int i=0; i < 3; i++)
 		{
 			normals.Add(norm);
 		}
 
-		Vector3 norm2 = Vector3.Cross(p1 - p0, p3 - p0);
+		Vector3 norm2 = Vector3.Cross(p1 - p0, p3 - p0).normalized;
 		for (int i=0; i < 3; i++)
 		{
 			normals.Add(norm2);
