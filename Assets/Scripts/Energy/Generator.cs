@@ -14,10 +14,51 @@ namespace Energy
 
 		private Rect windowSize = new Rect(15, 15, 150, 200);
 
+		private GameObject sphere;
+
 		// Use this for initialization
 		void Start()
 		{
+			// Remove fuel every second.
+			// TODO: Implement a better fuel system depending on the energy usage?
 			InvokeRepeating("RemoveFuel", 0f, 1.0f);
+
+			GameObject sphere = CreateSphere(5);
+			GameObject sphere_inv = CreateSphere(5);
+
+			//get a reference to the mesh
+			Mesh mesh = sphere_inv.GetComponent<MeshFilter>().mesh;
+			
+			// Reverse triangle winding.
+			int[] triangles = mesh.triangles;
+			int numpolies = triangles.Length / 3;
+
+			for (var t = 0; t < numpolies; t++)
+			{
+				int tribuffer = triangles[t * 3];
+				triangles[t * 3] = triangles[(t * 3) + 2];
+				triangles[(t * 3) + 2] = tribuffer;
+			}
+
+			mesh.triangles = triangles;
+			
+		}
+
+		// Create a sphere with radius size.
+		GameObject CreateSphere(float size)
+		{
+			sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+			sphere.collider.enabled = false;
+			sphere.transform.localPosition = this.transform.localPosition;
+			sphere.transform.localScale = new Vector3(size, size, size);
+			sphere.layer = 2;
+
+			Renderer r = sphere.GetComponent<Renderer>();
+			print(Shader.Find("Transparent/Diffuse"));
+			r.material = new Material(Shader.Find("Transparent/Diffuse"));
+			r.material.color = new Color(1, 1, 1, 0.2f);
+
+			return sphere;
 		}
 
 		// Update is called once per frame
@@ -77,19 +118,8 @@ namespace Energy
 		// Player click on the object
 		void OnMouseDown()
 		{
-			// Flip the boolean
-			//this.Active = !this.Active;
+			// Render the GUI.
 			this.renderGUI = true;
-			/*
-			if (this.Active)
-			{
-				this.Activate();
-			}
-			else
-			{
-				this.Deactivate();
-			}
-			 */
 		}
 
 		void Activate()
