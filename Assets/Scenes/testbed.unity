@@ -191,7 +191,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   heightPic: {fileID: 2800000, guid: 1dc198418d2e46c449282406e1e23b6c, type: 3}
   heightScale: 32
-  discreteCount: 10
+  discreteCount: 30
 --- !u!23 &99628200
 Renderer:
   m_ObjectHideFlags: 0
