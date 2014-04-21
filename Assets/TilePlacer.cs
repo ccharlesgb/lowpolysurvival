@@ -10,17 +10,23 @@ public class TilePlacer : MonoBehaviour {
 	public GameObject terrainFab;
 	public List<GameObject> tiles;
 	// Use this for initialization
-	void Awake() 
+	void OnEnable()
 	{
 		tiles = new List<GameObject>();
 		PlaceTerrain ();
+	}
+
+	void OnDisable()
+	{
+		ClearTerrain ();
+		tiles = null;
 	}
 
 	void ClearTerrain()
 	{
 		foreach(GameObject tile in tiles)
 		{
-			Destroy (tile);
+			DestroyImmediate(tile);
 		}
 		tiles.Clear ();
 	}
@@ -34,9 +40,8 @@ public class TilePlacer : MonoBehaviour {
 			{
 				Vector3 tilePos = MathTools.ScalarMultiply(new Vector3(x, 0, z),TileRender.GetTileBounds ());
 
-				GameObject tile = Instantiate (terrainFab) as GameObject;
+				GameObject tile = Instantiate (terrainFab, tilePos, Quaternion.identity) as GameObject;
 				tile.transform.parent = transform;
-				tile.transform.position = tilePos;
 
 				tiles.Add (tile);
 			}
