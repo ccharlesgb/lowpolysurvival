@@ -18,7 +18,10 @@ namespace Player
 		// Update is called once per frame
 		void Update()
 		{
+			if (!this.player)
+				return;
 
+			this.transform.position = player.transform.position;
 		}
 	}
 
