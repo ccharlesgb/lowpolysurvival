@@ -74,10 +74,14 @@ public class TileRender : DynamicMesh  {
 		l_triangles = new List<int>();
 		l_normals = new List<Vector3>();
 		l_uvs = new List<Vector2>();
+	}
+
+	public void CreateMesh()
+	{
 		BuildMesh ();
 		GetComponent<MeshCollider>().sharedMesh = mesh;
-		base.OnEnable();
 		lastCheckForUpdate = Time.realtimeSinceStartup;
+		base.OnEnable();
 	}
 
 	void OnDisable()

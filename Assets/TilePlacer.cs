@@ -9,9 +9,12 @@ public class TilePlacer : MonoBehaviour {
 	public int terrainSize = 8;
 	public GameObject terrainFab;
 	public List<GameObject> tiles;
+	public HeightMap heightMap;
+
 	// Use this for initialization
 	void OnEnable()
 	{
+		heightMap = GetComponent<HeightMap>();
 		Debug.Log ("On Enable" + Application.isPlaying);
 		tiles = new List<GameObject>();
 		PlaceTerrain ();
@@ -46,7 +49,10 @@ public class TilePlacer : MonoBehaviour {
 				Vector3 tilePos = MathTools.ScalarMultiply(new Vector3(x, 0, z),TileRender.GetTileBounds ());
 
 				GameObject tile = Instantiate (terrainFab, tilePos, Quaternion.identity) as GameObject;
+				tile.GetComponent<TileRender>().mHeights = heightMap;
 				tile.transform.parent = transform;
+
+				tile.GetComponent<TileRender>().CreateMesh();
 
 				tiles.Add (tile);
 			}
