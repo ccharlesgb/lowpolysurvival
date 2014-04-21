@@ -31,6 +31,10 @@ public class HeightMap : MonoBehaviour {
 
 		float x_f = (pos.x / mapRect.width) * GetMapWidth ();
 		float y_f = (pos.z / mapRect.height) * GetMapHeight ();
+		if (x_f < 0 || x_f > GetMapWidth () || y_f < 0 || y_f > GetMapHeight ())
+		{
+			Debug.Log("Height coords out of bounds x : " + x_f + " y : " + y_f);
+		}
 		int x = Mathf.RoundToInt (x_f);
 		int y = Mathf.RoundToInt (y_f);
 		float val = heightPic.GetPixel(x,y).r;

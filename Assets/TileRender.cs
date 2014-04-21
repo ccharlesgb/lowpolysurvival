@@ -69,7 +69,7 @@ public class TileRender : DynamicMesh  {
 
 	protected new void OnEnable() 
 	{
-		Debug.Log ("Tile Enable" + Application.isPlaying);
+		//Debug.Log ("Tile Enable" + Application.isPlaying);
 		l_vertices = new List<Vector3>();
 		l_triangles = new List<int>();
 		l_normals = new List<Vector3>();
@@ -82,7 +82,7 @@ public class TileRender : DynamicMesh  {
 
 	void OnDisable()
 	{
-		Debug.Log ("Tile Disable" + Application.isPlaying);
+		//Debug.Log ("Tile Disable" + Application.isPlaying);
 		ClearMesh ();
 		l_vertices = null;
 		l_triangles = null;
@@ -155,8 +155,26 @@ public class TileRender : DynamicMesh  {
 		{
 			l_normals.Add(norm2);
 		}
+
+		for (int i = 0; i < 6; i++)
+		{
+			l_uvs.Add (GetUV (l_vertices[vertCount + i]));
+		}
+
 	}
-	
+
+	Vector2 GetUV(Vector3 vertPos)
+	{
+		float uvScale = 16.0f;
+		Vector2 uv = new Vector2(vertPos.x, vertPos.z);
+		
+		uv /= (uvScale * squareSize);
+
+		if (Random.value < 0.001f)
+			Debug.Log (uv);
+		return uv;
+	}
+
 	// Update is called once per frame
 	void Update ()
 	{
