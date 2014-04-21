@@ -41,6 +41,13 @@ public class TileRender : DynamicMesh  {
 		}
 	}
 
+	protected override Vector3[] normals
+	{ 
+		get
+		{
+			return l_normals.ToArray();
+		}
+	}
 
 
 
@@ -154,7 +161,7 @@ public class TileRender : DynamicMesh  {
 			l_normals.Add(norm);
 		}
 
-		Vector3 norm2 = Vector3.Cross(p1 - p0, p3 - p0).normalized;
+		Vector3 norm2 = Vector3.Cross(p2 - p0, p3 - p0).normalized;
 		for (int i=0; i < 3; i++)
 		{
 			l_normals.Add(norm2);

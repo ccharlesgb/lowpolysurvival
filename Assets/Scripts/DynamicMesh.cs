@@ -10,12 +10,12 @@ public abstract class DynamicMesh : MonoBehaviour
 	#region Protected Abstract Properties
 	
 	protected abstract Vector3[] vertices { get; }
-	
-	
+
 	protected abstract Vector2[] uv { get; }
-	
-	
+		
 	protected abstract int[] triangles { get; }
+
+	protected abstract Vector3[] normals { get; }
 	
 	#endregion
 	
@@ -96,7 +96,7 @@ public abstract class DynamicMesh : MonoBehaviour
 			mesh.uv = uv;
 			mesh.triangles = triangles;
 		}
-		mesh.RecalculateNormals();
+		mesh.normals = normals;
 		mesh.RecalculateBounds();
 	}
 	
