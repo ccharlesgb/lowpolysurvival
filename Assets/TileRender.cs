@@ -44,7 +44,7 @@ public class TileRender : DynamicMesh  {
 
 
 
-	public static int sideLength = 16;
+	public static int sideLength = 32;
 	public static float squareSize = 2.0f;
 
 	public HeightMap mHeights;
@@ -165,7 +165,7 @@ public class TileRender : DynamicMesh  {
 
 	Vector2 GetUV(Vector3 vertPos)
 	{
-		float uvScale = 16.0f;
+		float uvScale = 4.0f;
 		Vector2 uv = new Vector2(vertPos.x, vertPos.z);
 		
 		uv /= (uvScale * squareSize);

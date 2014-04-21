@@ -5,7 +5,7 @@ public class HeightMap : MonoBehaviour {
 
 	public Texture2D heightPic;
 	public float heightScale;
-
+	public float discreteCount;
 
 	public int GetMapHeight()
 	{
@@ -42,6 +42,8 @@ public class HeightMap : MonoBehaviour {
 		{
 			Debug.Log ("Pos " + pos + " X_F " + x_f + " Y_F " + y_f + " HEIGHT " + val * heightScale);
 		}
+		float nearest = 1/discreteCount;
+		val = Mathf.Round(val / nearest) * nearest;
 		return val * heightScale;
 	}
 
