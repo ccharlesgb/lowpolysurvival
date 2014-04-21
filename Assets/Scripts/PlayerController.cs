@@ -114,18 +114,13 @@ public class PlayerController : MonoBehaviour {
 		{
 			velocity.y += jumpSpeed;
 		}
-		
-		//Gravity
-		velocity.y -= gravity;
 	
-		
 		//DO ALL VELOCITY ADJUSTMENTS BEFORE THIS
 		contactCount = 0;
 		groundNormal = Vector3.zero;
 		Vector3 oldPos = _transform.position;
 		Vector3 newPos = oldPos;
-		newPos += velocity * Time.fixedDeltaTime;
-		_transform.position = newPos;
+		rigidbody.velocity = velocity;
 	}
 
 	public bool IsOnGround()
