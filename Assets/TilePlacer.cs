@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-[ExecuteInEditMode]
+//[ExecuteInEditMode]
 
 public class TilePlacer : MonoBehaviour {
 
@@ -12,14 +12,19 @@ public class TilePlacer : MonoBehaviour {
 	// Use this for initialization
 	void OnEnable()
 	{
+		Debug.Log ("On Enable" + Application.isPlaying);
 		tiles = new List<GameObject>();
 		PlaceTerrain ();
 	}
 
 	void OnDisable()
 	{
-		ClearTerrain ();
-		tiles = null;
+		Debug.Log ("On Disable" + Application.isPlaying);
+		if (!Application.isPlaying)
+		{
+			ClearTerrain ();
+			tiles = null;
+		}
 	}
 
 	void ClearTerrain()

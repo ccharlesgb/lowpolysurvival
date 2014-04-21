@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
-[ExecuteInEditMode]
+
 public class TileRender : DynamicMesh  {
 
 	public float lastCheckForUpdate;
@@ -44,7 +44,7 @@ public class TileRender : DynamicMesh  {
 
 
 
-	public static int sideLength = 10;
+	public static int sideLength = 16;
 	public static float squareSize = 2.0f;
 
 	public HeightMap mHeights;
@@ -69,7 +69,7 @@ public class TileRender : DynamicMesh  {
 
 	protected new void OnEnable() 
 	{
-		Debug.Log ("On Enable");
+		Debug.Log ("Tile Enable" + Application.isPlaying);
 		l_vertices = new List<Vector3>();
 		l_triangles = new List<int>();
 		l_normals = new List<Vector3>();
@@ -81,7 +81,12 @@ public class TileRender : DynamicMesh  {
 
 	void OnDisable()
 	{
+		Debug.Log ("Tile Disable" + Application.isPlaying);
 		ClearMesh ();
+		l_vertices = null;
+		l_triangles = null;
+		l_normals = null;
+		l_uvs = null;
 	}
 
 	void BuildMesh()
