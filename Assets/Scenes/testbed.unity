@@ -190,7 +190,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   heightPic: {fileID: 2800000, guid: 1dc198418d2e46c449282406e1e23b6c, type: 3}
-  heightScale: 8
+  heightScale: 16
 --- !u!23 &99628200
 Renderer:
   m_ObjectHideFlags: 0
@@ -695,7 +695,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 051cbc6e1cc2e9e4c893551cda743348, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  terrainSize: 4
+  terrainSize: 8
   terrainFab: {fileID: 100000, guid: e4239b62b43c0d64fae2e8dff116a34d, type: 2}
   tiles:
   - {fileID: 0}
@@ -881,7 +881,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1384433679}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 35.4948349, y: 5.73870087, z: 42.5735703}
+  m_LocalPosition: {x: 35.4948349, y: 12.0777206, z: 42.5735703}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 921902889}
@@ -1109,7 +1109,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1820810632}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 34.7947884, y: 4.65334988, z: 40.4811058}
+  m_LocalPosition: {x: 33, y: 5, z: 129}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1876714835}

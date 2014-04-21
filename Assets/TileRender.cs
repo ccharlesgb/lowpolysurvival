@@ -75,6 +75,7 @@ public class TileRender : DynamicMesh  {
 		l_normals = new List<Vector3>();
 		l_uvs = new List<Vector2>();
 		BuildMesh ();
+		GetComponent<MeshCollider>().sharedMesh = mesh;
 		base.OnEnable();
 		lastCheckForUpdate = Time.realtimeSinceStartup;
 	}
