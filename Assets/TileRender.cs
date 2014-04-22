@@ -91,7 +91,7 @@ public class TileRender : DynamicMesh  {
 	// Use this for initialization
 	void Start()
 	{
-		_meshRenderer.material.SetTexture ("_Control",mSplats.GetTileSplat (this));
+		_meshRenderer.sharedMaterial.SetTexture ("_Control",mSplats.GetTileSplat (this));
 	}
 	
 	public void CreateMesh()

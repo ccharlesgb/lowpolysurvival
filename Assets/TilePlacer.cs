@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-//[ExecuteInEditMode]
+[ExecuteInEditMode]
 
 public class TilePlacer : MonoBehaviour {
 
@@ -14,13 +14,15 @@ public class TilePlacer : MonoBehaviour {
 	
 	void Awake()
 	{
+		if (tiles == null)
+			tiles = new List<GameObject>();
+		heightMap = GetComponent<HeightMap>();
 	}
 	
 	void OnEnable()
 	{
-		heightMap = GetComponent<HeightMap>();
 		Debug.Log ("On Enable" + Application.isPlaying);
-		tiles = new List<GameObject>();
+		//tiles = new List<GameObject>();
 	}
 
 	void Start()
@@ -44,8 +46,18 @@ public class TilePlacer : MonoBehaviour {
 		}
 		heightGrads.Apply ();
 		splatMap.splatPic = heightGrads;
-		
-		PlaceTerrain ();
+
+		bool missingTerrain = false;
+		foreach (GameObject curTile in tiles)
+		{
+			if (curTile == null)
+				missingTerrain = true;
+		}
+
+		if (tiles.Count != terrainSize * terrainSize || missingTerrain)
+		{
+			PlaceTerrain ();
+		}
 	}
 
 	void OnDisable()
@@ -53,8 +65,8 @@ public class TilePlacer : MonoBehaviour {
 		Debug.Log ("On Disable" + Application.isPlaying);
 		if (!Application.isPlaying)
 		{
-			ClearTerrain ();
-			tiles = null;
+			//ClearTerrain ();
+			//tiles = null;
 		}
 	}
 

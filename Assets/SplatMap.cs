@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[ExecuteInEditMode]
+
 public class SplatMap : MonoBehaviour {
 
 	public Texture2D splatPic;
