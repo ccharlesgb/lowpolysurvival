@@ -48,6 +48,7 @@ public class SplatMap : MonoBehaviour {
 
 		Texture2D control = new Texture2D(x_max - x,y_max - y);
 		control.SetPixels (splatPic.GetPixels(x,y, x_max - x, y_max - y));
+		control.filterMode = FilterMode.Point;
 		control.Apply ();
 		return control;
 	}
