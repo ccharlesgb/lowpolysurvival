@@ -277,46 +277,6 @@ Prefab:
   m_RootGameObject: {fileID: 1384433679}
   m_IsPrefabParent: 0
   m_IsExploded: 1
---- !u!1 &429520747
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 429520748}
-  - 114: {fileID: 429520749}
-  m_Layer: 0
-  m_Name: Camera Target (Isometric)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &429520748
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 429520747}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 29.1749649, y: 40.1603165, z: .78801918}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 607430058}
-  m_Father: {fileID: 0}
---- !u!114 &429520749
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 429520747}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 43d09c9320e808e48b25d2ac16c84ffd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  player: {fileID: 1384433679}
 --- !u!1 &467365997
 GameObject:
   m_ObjectHideFlags: 0
@@ -467,6 +427,7 @@ GameObject:
   - 124: {fileID: 607430061}
   - 92: {fileID: 607430060}
   - 81: {fileID: 607430059}
+  - 114: {fileID: 607430063}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -481,10 +442,10 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 607430057}
   m_LocalRotation: {x: .390448391, y: .346829027, z: -.161729038, w: .837319195}
-  m_LocalPosition: {x: -6, y: 9, z: -6}
+  m_LocalPosition: {x: 29.1749649, y: 40.1603165, z: .78801918}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 429520748}
+  m_Father: {fileID: 0}
 --- !u!81 &607430059
 AudioListener:
   m_ObjectHideFlags: 0
@@ -535,6 +496,23 @@ Camera:
   m_TargetTexture: {fileID: 0}
   m_HDR: 0
   m_OcclusionCulling: 1
+--- !u!114 &607430063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 607430057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43d09c9320e808e48b25d2ac16c84ffd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 1384433679}
+  distance: 20
+  min: 10
+  max: 60
+  zoomStep: 30
+  zoomSpeed: 5
 --- !u!43 &755163864
 Mesh:
   m_ObjectHideFlags: 0
