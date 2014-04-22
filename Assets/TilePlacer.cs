@@ -11,6 +11,8 @@ public class TilePlacer : MonoBehaviour {
 	public List<GameObject> tiles;
 	public HeightMap heightMap;
 	public SplatMap splatMap;
+
+	public bool needsUpdate = false;
 	
 	void Awake()
 	{
@@ -104,6 +106,10 @@ public class TilePlacer : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-	
+		if (needsUpdate)
+		{
+			PlaceTerrain ();
+			needsUpdate = false;
+		}
 	}
 }
