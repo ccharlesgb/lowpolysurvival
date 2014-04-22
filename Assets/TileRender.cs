@@ -55,6 +55,9 @@ public class TileRender : DynamicMesh  {
 	public static float squareSize = 2.0f;
 
 	public HeightMap mHeights;
+	public SplatMap mSplats;
+
+	MeshRenderer _meshRenderer;
 
 	static public Vector3 GetTileBounds()
 	{
@@ -76,6 +79,8 @@ public class TileRender : DynamicMesh  {
 
 	protected new void OnEnable() 
 	{
+		_meshRenderer = GetComponent<MeshRenderer>();
+
 		//Debug.Log ("Tile Enable" + Application.isPlaying);
 		l_vertices = new List<Vector3>();
 		l_triangles = new List<int>();
@@ -85,6 +90,7 @@ public class TileRender : DynamicMesh  {
 
 	public void CreateMesh()
 	{
+		_meshRenderer.material.SetTexture ("_Control",mSplats.GetTileSplat (this));
 		BuildMesh ();
 		GetComponent<MeshCollider>().sharedMesh = mesh;
 		lastCheckForUpdate = Time.realtimeSinceStartup;

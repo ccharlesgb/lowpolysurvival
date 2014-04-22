@@ -10,6 +10,7 @@ public class TilePlacer : MonoBehaviour {
 	public GameObject terrainFab;
 	public List<GameObject> tiles;
 	public HeightMap heightMap;
+	public SplatMap splatMap;
 
 	// Use this for initialization
 	void OnEnable()
@@ -50,6 +51,7 @@ public class TilePlacer : MonoBehaviour {
 
 				GameObject tile = Instantiate (terrainFab, tilePos, Quaternion.identity) as GameObject;
 				tile.GetComponent<TileRender>().mHeights = heightMap;
+				tile.GetComponent<TileRender>().mSplats = splatMap;
 				tile.GetComponent<TileRender>().CreateMesh();
 				tile.transform.parent = transform;
 
