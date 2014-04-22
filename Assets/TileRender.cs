@@ -182,13 +182,13 @@ public class TileRender : DynamicMesh  {
 
 	Vector2 GetUV(Vector3 vertPos)
 	{
-		float uvScale = 8.0f;
+		float uvScale = 32.0f;
 		Vector2 uv = new Vector2(vertPos.x, vertPos.z);
 		
 		uv /= (uvScale * squareSize);
 
-		if (Random.value < 0.001f)
-			Debug.Log (uv);
+		//if (Random.value < 0.001f)
+			//Debug.Log (uv);
 		return uv;
 	}
 
