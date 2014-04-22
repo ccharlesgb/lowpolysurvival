@@ -44,5 +44,18 @@ public class PlayerInputController : MonoBehaviour {
 		// Apply the direction to the CharacterMotor
 		cmotor.inputMoveDirection = transform.rotation * directionVector;
 		cmotor.inputJump = Input.GetButton("Jump");
+
+		// Generate a ray from the cursor position
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+		RaycastHit hit;
+
+		if (Physics.Raycast(ray, out hit))
+		{
+			// Create a target position using the X and Y position from our raycast, but keep the current y.
+			Vector3 targetPostition = new Vector3(hit.point.x, this.transform.position.y, hit.point.z);
+
+			this.transform.LookAt(targetPostition);
+		}
 	}
 }
