@@ -176,7 +176,7 @@ public class TileRender : DynamicMesh  {
 
 	Vector2 GetUV(Vector3 vertPos)
 	{
-		float uvScale = 4.0f;
+		float uvScale = 8.0f;
 		Vector2 uv = new Vector2(vertPos.x, vertPos.z);
 		
 		uv /= (uvScale * squareSize);

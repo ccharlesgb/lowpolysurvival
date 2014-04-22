@@ -97,6 +97,7 @@ public abstract class DynamicMesh : MonoBehaviour
 			mesh.triangles = triangles;
 		}
 		mesh.normals = normals;
+		mesh.RecalculateNormals ();
 		mesh.RecalculateBounds();
 	}
 	
