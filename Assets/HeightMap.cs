@@ -4,8 +4,54 @@ using System.Collections;
 public class HeightMap : MonoBehaviour {
 
 	public Texture2D heightPic;
+	public Texture2D heightGrad;
 	public float heightScale;
 	public float discreteCount;
+	public bool discreteOn;
+	
+	void Awake()
+	{
+		heightGrad = new Texture2D(GetMapWidth (),GetMapHeight ());
+		CalculateGradient ();
+	}
+
+	void CalculateGradient()
+	{
+		Vector2 gradient = new Vector2();
+		Color[] cols = heightPic.GetPixels();
+		Color[] gradPixels = cols;
+		Color curCol;
+		float maxGrad = 0;
+		for (int y=0; y < GetMapHeight()-1; y++)
+		{
+			for (int x=0; x < GetMapWidth()-1; x++)
+			{
+				curCol = cols[x + y * GetMapHeight()];
+				/*if (x < 20 && y < 10)
+				{
+					Debug.Log ("FI " + (x + 1) + y * GetMapHeight ());
+					Debug.Log ("First" + cols[(x + 1) + y * GetMapHeight ()].r);
+					Debug.Log ("SI " + (x) + y * GetMapHeight ());
+					Debug.Log ("Second" + cols[(x) + y * GetMapHeight ()].r);
+				}*/
+				gradient.x = cols[(x + 1) + y * GetMapHeight ()].r - cols[x + y * GetMapHeight ()].r;
+				gradient.y = cols[x + (y + 1) * GetMapHeight ()].r - cols[x + y * GetMapHeight ()].r;
+				float gradCol = gradient.magnitude;
+				if (gradCol > maxGrad)
+					maxGrad = gradCol;
+				gradPixels[x + y * GetMapHeight()] = new Color(gradCol,gradCol,gradCol);
+			}
+		}
+		//Normalize the gradient map
+		for (int i=0; i < GetMapHeight() * GetMapWidth(); i++)
+		{
+			gradPixels[i].r /= maxGrad;
+			gradPixels[i].g /= maxGrad;
+			gradPixels[i].b /= maxGrad;
+		}
+		heightGrad.SetPixels (gradPixels);
+		heightGrad.Apply ();
+	}
 
 	public int GetMapHeight()
 	{
@@ -42,8 +88,11 @@ public class HeightMap : MonoBehaviour {
 		{
 			Debug.Log ("Pos " + pos + " X_F " + x_f + " Y_F " + y_f + " HEIGHT " + val * heightScale);
 		}
-		float nearest = 1/discreteCount;
-		val = Mathf.Round(val / nearest) * nearest;
+		if (discreteOn)
+		{
+			float nearest = 1/discreteCount;
+			val = Mathf.Round(val / nearest) * nearest;
+		}
 		return val * heightScale;
 	}
 

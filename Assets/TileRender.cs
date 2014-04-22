@@ -72,15 +72,15 @@ public class TileRender : DynamicMesh  {
 		l_normals.Clear ();
 	}
 
-	// Use this for initialization
-	void Start()
+	void Awake()
 	{
+		
 	}
 
 	protected new void OnEnable() 
 	{
 		_meshRenderer = GetComponent<MeshRenderer>();
-
+		
 		//Debug.Log ("Tile Enable" + Application.isPlaying);
 		l_vertices = new List<Vector3>();
 		l_triangles = new List<int>();
@@ -88,9 +88,14 @@ public class TileRender : DynamicMesh  {
 		l_uvs = new List<Vector2>();
 	}
 
-	public void CreateMesh()
+	// Use this for initialization
+	void Start()
 	{
 		_meshRenderer.material.SetTexture ("_Control",mSplats.GetTileSplat (this));
+	}
+	
+	public void CreateMesh()
+	{
 		BuildMesh ();
 		GetComponent<MeshCollider>().sharedMesh = mesh;
 		lastCheckForUpdate = Time.realtimeSinceStartup;

@@ -11,13 +11,39 @@ public class TilePlacer : MonoBehaviour {
 	public List<GameObject> tiles;
 	public HeightMap heightMap;
 	public SplatMap splatMap;
-
-	// Use this for initialization
+	
+	void Awake()
+	{
+	}
+	
 	void OnEnable()
 	{
 		heightMap = GetComponent<HeightMap>();
 		Debug.Log ("On Enable" + Application.isPlaying);
 		tiles = new List<GameObject>();
+	}
+
+	void Start()
+	{
+		Texture2D heightGrads = heightMap.heightGrad;
+		Color splatCol = new Color();
+		float colSum = 0;
+		for (int x=0; x < heightGrads.width; x++)
+		{
+			for (int z=0; z < heightGrads.height; z++)
+			{
+				splatCol.r = 1-heightGrads.GetPixel (x,z).r;
+				splatCol.g = heightGrads.GetPixel (x,z).g * 10;
+				//Renormalize Splat Color
+				colSum = splatCol.r + splatCol.g;
+				splatCol.r /= colSum;
+				splatCol.g /= colSum;
+				heightGrads.SetPixel(x,z, splatCol);
+			}
+		}
+		heightGrads.Apply ();
+		splatMap.splatPic = heightGrads;
+		
 		PlaceTerrain ();
 	}
 
