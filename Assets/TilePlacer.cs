@@ -33,7 +33,8 @@ public class TilePlacer : MonoBehaviour {
 			for (int z=0; z < heightGrads.height; z++)
 			{
 				splatCol.r = 1-heightGrads.GetPixel (x,z).r;
-				splatCol.g = heightGrads.GetPixel (x,z).g * 10;
+				splatCol.g = heightGrads.GetPixel (x,z).g;
+
 				//Renormalize Splat Color
 				colSum = splatCol.r + splatCol.g;
 				splatCol.r /= colSum;

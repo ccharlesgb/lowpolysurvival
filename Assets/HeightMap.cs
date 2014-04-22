@@ -22,9 +22,9 @@ public class HeightMap : MonoBehaviour {
 		Color[] gradPixels = cols;
 		Color curCol;
 		float maxGrad = 0;
-		for (int y=0; y < GetMapHeight()-1; y++)
+		for (int y=0; y < GetMapHeight()-8; y++)
 		{
-			for (int x=0; x < GetMapWidth()-1; x++)
+			for (int x=0; x < GetMapWidth()-8; x++)
 			{
 				curCol = cols[x + y * GetMapHeight()];
 				/*if (x < 20 && y < 10)
@@ -34,8 +34,8 @@ public class HeightMap : MonoBehaviour {
 					Debug.Log ("SI " + (x) + y * GetMapHeight ());
 					Debug.Log ("Second" + cols[(x) + y * GetMapHeight ()].r);
 				}*/
-				gradient.x = cols[(x + 1) + y * GetMapHeight ()].r - cols[x + y * GetMapHeight ()].r;
-				gradient.y = cols[x + (y + 1) * GetMapHeight ()].r - cols[x + y * GetMapHeight ()].r;
+				gradient.x = cols[(x + 8) + y * GetMapHeight ()].r - cols[x + y * GetMapHeight ()].r;
+				gradient.y = cols[x + (y + 8) * GetMapHeight ()].r - cols[x + y * GetMapHeight ()].r;
 				float gradCol = gradient.magnitude;
 				if (gradCol > maxGrad)
 					maxGrad = gradCol;
