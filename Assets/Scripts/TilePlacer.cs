@@ -73,7 +73,7 @@ public class TilePlacer : MonoBehaviour {
 		}
 	}
 
-	void ClearTerrain()
+	public void ClearTerrain()
 	{
 		foreach(GameObject tile in tiles)
 		{
@@ -82,7 +82,7 @@ public class TilePlacer : MonoBehaviour {
 		tiles.Clear ();
 	}
 
-	void PlaceTerrain()
+	public void PlaceTerrain()
 	{
 		ClearTerrain ();
 		for (int x=0; x < terrainSize; x++)

@@ -78,7 +78,8 @@ public class TileRender : DynamicMesh  {
 	protected new void OnEnable() 
 	{
 		_meshRenderer = GetComponent<MeshRenderer>();
-		
+		//gameObject.hideFlags = HideFlags.HideAndDontSave;
+		gameObject.hideFlags = HideFlags.DontSave;
 		//Debug.Log ("Tile Enable" + Application.isPlaying);
 		l_vertices = new List<Vector3>();
 		l_triangles = new List<int>();
@@ -90,13 +91,13 @@ public class TileRender : DynamicMesh  {
 	void Start()
 	{
 		//Material myCustomMaterial = Instantiate(_meshRenderer.sharedMaterial) as Material;
-
-
 	}
 	
 	public void CreateMesh()
 	{
-		_meshRenderer.material.SetTexture ("_Control",mSplats.GetTileSplat (this));
+		Material mat = new Material(_meshRenderer.sharedMaterial);
+		mat.SetTexture ("_Control",mSplats.GetTileSplat (this));
+		_meshRenderer.material = mat;
 		BuildMesh ();
 		GetComponent<MeshCollider>().sharedMesh = mesh;
 		lastCheckForUpdate = Time.realtimeSinceStartup;
