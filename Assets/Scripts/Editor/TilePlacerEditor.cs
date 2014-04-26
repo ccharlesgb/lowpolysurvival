@@ -16,7 +16,7 @@ public class TilePlacerEditor : Editor
 		}
 		if(GUILayout.Button("Build Terrain"))
 		{
-			terr.PlaceTerrain();
+			terr.MarkDirty ();
 		}
 	}
 }

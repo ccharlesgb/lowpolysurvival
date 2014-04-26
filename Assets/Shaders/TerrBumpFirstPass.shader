@@ -56,7 +56,7 @@ void surf (Input IN, inout SurfaceOutput o) {
 	fixed4 col;
 	col  = splat_control.r * tex2D (_Splat0, IN.uv_Splat0);
 	col += splat_control.g * tex2D (_Splat1, IN.uv_Splat1);
-	//col += splat_control.b * tex2D (_Splat2, IN.uv_Splat2);
+	col += splat_control.b * tex2D (_Splat2, IN.uv_Splat2);
 	//col += splat_control.a * tex2D (_Splat3, IN.uv_Splat3);
 	o.Albedo = col.rgb;
 
