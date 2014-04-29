@@ -43,19 +43,24 @@ public class Axe : MonoBehaviour
 			GameObject obj = hit.collider.gameObject;
 			if (obj != null)
 			{
-				Resource res = obj.GetComponent<Resource>();
-				if (res != null)
+				Inventory inv = obj.GetComponent<Inventory>();
+				if (inv != null) //It has an inventory we can harvest!
 				{
-					Item itemHarvest = res.FindItems("wood");
+					Debug.Log ("HAS INVENTORY");
+					ItemHandle itemHarvest = inv.FindItem ("Wood"); //Does it have any wood?
 					if (itemHarvest != null)
 					{
+						Debug.Log ("HAS WOOD");
 						if (itemHarvest.amount > 1)
 						{
 							itemHarvest.amount--;
 
 							if (player)
 							{
-								player.GetComponent<Inventory>().AddItem(itemHarvest, 1.0f);
+								ItemHandle toAdd = new ItemHandle();
+								toAdd.item = itemHarvest.item;
+								toAdd.amount = 1;
+								player.GetComponent<Inventory>().AddItem(toAdd);
 							}
 							nextPrimaryFire += primaryFireDelay;
 						}

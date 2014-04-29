@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 public class Inventory : MonoBehaviour {
 
-	public List<Item> items;
+	public List<ItemHandle> items = new List<ItemHandle>();
 
 	void Awake()
 	{
-		items = new List<Item>();
+
 	}
 
 	// Use this for initialization
@@ -23,11 +23,11 @@ public class Inventory : MonoBehaviour {
 	
 	}
 
-	public Item FindItems(string id)
+	public ItemHandle FindItem(string name)
 	{
 		for (int i =0; i < items.Count; i++)
 		{
-			if (items[i] != null && items[i].ID == id)
+			if (items[i] != null && name == items[i].item.name)
 			{
 				return items[i];
 			}
@@ -35,21 +35,17 @@ public class Inventory : MonoBehaviour {
 		return null;
 	}
 	
-	public void AddItem(Item it, float amount)
+	public void AddItem(ItemHandle it)
 	{
-		Item testItem = FindItems(it.ID);
+		ItemHandle testItem = FindItem(it.item.name);
 		if (testItem != null)
 		{
-			testItem.amount += amount;
+			testItem.amount += it.amount;
 		}
 		else
 		{
-			Item newItem = new Item();
-			newItem.name = it.name;
-			newItem.ID = it.ID;
-			newItem.amount = amount;
-			items.Add (newItem);
+			items.Add (it);
 		}
-		Debug.Log ("Added " + it.amount + " " + it.name + " to inventory.");
+		Debug.Log ("Added " + it.amount + " " + it.item.name + " to inventory.");
 	}
 }

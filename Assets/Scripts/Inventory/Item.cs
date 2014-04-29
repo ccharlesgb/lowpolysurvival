@@ -1,22 +1,28 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Item : MonoBehaviour 
+[System.Serializable]
+public class Item
 {
-
 	public string name = "ITEM";
-	public string ID = "ITEMID";
-	public float amount = 0.0f;
+	public bool stackable = true;
 
-	// Use this for initialization
-	void Start () 
+	public Item()
 	{
+		name = "BLANK";
+		stackable = true;
+	}
 
-	}
-	
-	// Update is called once per frame
-	void Update () 
+	public Item(string nm, bool stack)
 	{
-		
+		name = nm; 
+		stackable = stack;
 	}
+}
+
+[System.Serializable]
+public class ItemHandle
+{
+	public Item item;
+	public int amount; //If the item is NOT stackable can only be 0/1
 }
