@@ -10,9 +10,6 @@ public class ItemList : Singleton<ItemList>
 
 	void Awake()
 	{
-		Debug.Log("LIST AWAKE");
-		//ClearItems();
-		//LoadItems ();
 	}
 
 	void LoadItems()

@@ -5,18 +5,83 @@ using System.Collections.Generic;
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
 
-public class TileRender : DynamicMesh  {
+[ExecuteInEditMode]
+public class TileRender : MonoBehaviour
+{
+	protected MeshFilter meshFilter
+	{
+		get
+		{
+			if(this._meshFilter == null)
+			{
+				this._meshFilter = gameObject.GetComponent<MeshFilter>();
+			}
+			return this._meshFilter;
+		}
+	}
+
+	protected Mesh mesh
+	{
+		get
+		{
+			if(_mesh != null)
+			{
+				return _mesh;
+			}
+			else
+			{
+				
+				if(meshFilter.sharedMesh == null)
+				{
+					Mesh newMesh = new Mesh();
+					_mesh = meshFilter.sharedMesh = newMesh;
+				}
+				else
+				{
+					_mesh = meshFilter.sharedMesh;
+				}
+				return _mesh;
+			}
+		}
+	}
+
+	private void ReCalculateMesh(bool allAttributes)
+	{
+		if(allAttributes)
+		{
+			if(mesh == null)
+			{
+				Debug.LogError("Could not access or create a mesh", this);
+				return;
+			}
+			mesh.Clear();
+		}
+		mesh.vertices = vertices;
+		
+		if(allAttributes)
+		{
+			mesh.uv = uv;
+			mesh.triangles = triangles;
+		}
+		mesh.normals = normals;
+		mesh.RecalculateBounds();
+	}
+
+	
+	private MeshFilter _meshFilter = null;
+	private Mesh _mesh = null;
+
 
 	public float lastCheckForUpdate;
 	public Vector3 buildPos;
 
 	//Mesh Data
-	public List<Vector3> l_vertices;
-	public List<Vector3> l_normals;
-	public List<int> l_triangles;
-	public List<Vector2> l_uvs;
+	public List<Vector3> l_vertices = new List<Vector3>();
+	public List<Vector3> l_normals = new List<Vector3>();
+	public List<int> l_triangles = new List<int>();
+	public List<Vector2> l_uvs = new List<Vector2>();
 
-	protected override Vector3[] vertices 
+	protected Vector3[] vertices 
 	{
 		get
 		{
@@ -24,7 +89,7 @@ public class TileRender : DynamicMesh  {
 			return l_vertices.ToArray();
 		}
 	}
-	protected override Vector2[] uv 
+	protected Vector2[] uv 
 	{ 
 		get
 		{
@@ -33,7 +98,7 @@ public class TileRender : DynamicMesh  {
 	}
 	
 	
-	protected override int[] triangles 
+	protected int[] triangles 
 	{ 
 		get
 		{
@@ -41,7 +106,7 @@ public class TileRender : DynamicMesh  {
 		}
 	}
 
-	protected override Vector3[] normals
+	protected Vector3[] normals
 	{ 
 		get
 		{
@@ -69,29 +134,15 @@ public class TileRender : DynamicMesh  {
 		l_triangles.Clear ();
 		l_normals.Clear ();
 	}
-
-	void Awake()
-	{
-		
-	}
-
-	protected new void OnEnable() 
+	
+	void OnEnable() 
 	{
 		_meshRenderer = GetComponent<MeshRenderer>();
 		//gameObject.hideFlags = HideFlags.HideAndDontSave;
-		gameObject.hideFlags = HideFlags.DontSave;
+		//gameObject.hideFlags = HideFlags.DontSave;
 		//Debug.Log ("Tile Enable" + Application.isPlaying);
-		l_vertices = new List<Vector3>();
-		l_triangles = new List<int>();
-		l_normals = new List<Vector3>();
-		l_uvs = new List<Vector2>();
 	}
 
-	// Use this for initialization
-	void Start()
-	{
-	}
-	
 	public void CreateMesh()
 	{
 		Material mat = new Material(_meshRenderer.sharedMaterial);
@@ -100,24 +151,13 @@ public class TileRender : DynamicMesh  {
 		BuildMesh ();
 		GetComponent<MeshCollider>().sharedMesh = mesh;
 		lastCheckForUpdate = Time.realtimeSinceStartup;
-		base.OnEnable();
-	}
 
-	void OnDisable()
-	{
-		//Debug.Log ("Tile Disable" + Application.isPlaying);
-		ClearMesh ();
-		l_vertices = null;
-		l_triangles = null;
-		l_normals = null;
-		l_uvs = null;
-		DestroyImmediate(_meshRenderer.sharedMaterial);
+		ReCalculateMesh(true);
 	}
 
 	void BuildMesh()
 	{
 		ClearMesh ();
-		Mesh mesh = new Mesh();
 
 		for (int x = 0; x < sideLength; x++)
 		{
@@ -129,15 +169,11 @@ public class TileRender : DynamicMesh  {
 		}
 		buildPos = transform.position;
 	}
-
+	
 	void CreateFace(Vector3 pos)
 	{
 		Vector3 origin = pos;
 		int vertCount  = l_vertices.Count;
-		float ext = squareSize / 2.0f; //The 'extent' of the square
-
-		float vertHeight = 0.0f;
-
 
 		Vector3 p0 = origin + new Vector3(0,  0, squareSize);
 		p0.y= mHeights.GetHeight (p0 + transform.position);
@@ -197,18 +233,5 @@ public class TileRender : DynamicMesh  {
 		//if (Random.value < 0.001f)
 			//Debug.Log (uv);
 		return uv;
-	}
-
-	// Update is called once per frame
-	void Update ()
-	{
-		/*if (lastCheckForUpdate + 0.5f < Time.realtimeSinceStartup)
-		{
-			if (buildPos != transform.position)
-			{
-				BuildMesh ();
-				lastCheckForUpdate = Time.realtimeSinceStartup;
-			}
-		}*/
 	}
 }

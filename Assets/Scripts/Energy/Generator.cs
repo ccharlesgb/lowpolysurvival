@@ -23,7 +23,7 @@ namespace Energy
 			// TODO: Implement a better fuel system depending on the energy usage?
 			InvokeRepeating("RemoveFuel", 0f, 1.0f);
 
-			GameObject sphere = CreateSphere(5);
+			//GameObject sphere = CreateSphere(5);
 			GameObject sphere_inv = CreateSphere(5);
 
 			//get a reference to the mesh

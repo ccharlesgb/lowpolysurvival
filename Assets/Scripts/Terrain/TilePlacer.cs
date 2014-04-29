@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 [ExecuteInEditMode]
 
+[AddComponentMenu("Terrain/Tile Placer")]
 public class TilePlacer : MonoBehaviour {
 
 	public int terrainSize = 8;
@@ -12,30 +13,34 @@ public class TilePlacer : MonoBehaviour {
 	public HeightMap heightMap;
 	public SplatMap splatMap;
 
+	public bool dirty;
+
 	public bool needsUpdate = false;
 	
 	void Awake()
 	{
+		dirty = false;
+		DontDestroyOnLoad (gameObject);
 		if (tiles == null)
+		{
+			Debug.Log ("RECREATE LIST");
 			tiles = new List<GameObject>();
+		}
 		heightMap = GetComponent<HeightMap>();
 	}
-	
+
 	void OnEnable()
 	{
-		Debug.Log ("On Enable" + Application.isPlaying);
-		//tiles = new List<GameObject>();
-	}
-
-	void Start()
-	{
 		bool missingTerrain = false;
-		foreach (GameObject curTile in tiles)
+		for (int i = 0; i < tiles.Count; i++)
 		{
-			if (curTile == null)
+			if (tiles[i] == null)
+			{
 				missingTerrain = true;
+			}
 		}
-
+		Debug.Log ("MISSING TERRAIN " + missingTerrain);
+		Debug.Log ("TILE COUNT " + tiles.Count + " SHOULD BE: " + terrainSize * terrainSize);
 		if (tiles.Count != terrainSize * terrainSize || missingTerrain)
 		{
 			//StartCoroutine( PlaceTerrain() );
@@ -45,9 +50,14 @@ public class TilePlacer : MonoBehaviour {
 
 	public void MarkDirty()
 	{
-		Debug.Log ("call dirty");
-		splatMap.CreateMap(heightMap.heightGrad);
-		PlaceTerrain ();
+		dirty = true;
+		if (Application.isEditor)
+		{
+			Debug.Log ("call dirty");
+			splatMap.CreateMap(heightMap.heightGrad);
+			PlaceTerrain ();
+			dirty = false;
+		}
 	}
 
 	void OnDisable()
@@ -56,6 +66,7 @@ public class TilePlacer : MonoBehaviour {
 
 	public void ClearTerrain()
 	{
+		Debug.Log ("CLEAR TERRAIN");
 		foreach(GameObject tile in tiles)
 		{
 			DestroyImmediate(tile);
@@ -66,6 +77,7 @@ public class TilePlacer : MonoBehaviour {
 	public void PlaceTerrain()
 	{
 		ClearTerrain ();
+		Debug.Log ("PLACE TERRAIN");
 		for (int x=0; x < terrainSize; x++)
 		{
 			for (int z=0; z < terrainSize; z++)
@@ -87,11 +99,12 @@ public class TilePlacer : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-		if (needsUpdate)
+		if (dirty)
 		{
-			//StartCoroutine( PlaceTerrain() );
+			Debug.Log ("call dirty");
+			splatMap.CreateMap(heightMap.heightGrad);
 			PlaceTerrain ();
-			needsUpdate = false;
+			dirty = false;
 		}
 	}
 }

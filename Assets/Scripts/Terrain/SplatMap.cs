@@ -3,6 +3,7 @@ using System.Collections;
 
 [ExecuteInEditMode]
 
+[AddComponentMenu("Terrain/Splat Map")]
 public class SplatMap : MonoBehaviour {
 
 	public Texture2D splatPic;

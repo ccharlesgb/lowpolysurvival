@@ -3,6 +3,7 @@ using System.Collections;
 
 [ExecuteInEditMode]
 
+[AddComponentMenu("Terrain/Height Map")]
 public class HeightMap : MonoBehaviour {
 
 	public Texture2D heightPic;
