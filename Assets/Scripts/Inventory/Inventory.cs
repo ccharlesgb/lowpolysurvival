@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class Inventory : MonoBehaviour {
 
 	public List<ItemHandle> items = new List<ItemHandle>();
-
+	public InventoryGUI gui;
 	void Awake()
 	{
 
@@ -46,6 +46,8 @@ public class Inventory : MonoBehaviour {
 		{
 			items.Add (it);
 		}
+		if (gui != null)
+			gui.AddNotification (it);
 		//Debug.Log ("Added " + it.amount + " " + it.item.name + " to inventory.");
 	}
 }

@@ -1,9 +1,63 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+
+class InventoryNotification
+{
+	public float timeCreated;
+	public ItemHandle item;
+	static float lifeTime = 3.0f;
+
+	private bool deleteMe;
+	public bool DeleteMe
+	{
+		get
+		{
+			return deleteMe;
+		}
+		private set
+		{
+			deleteMe = value;
+		}
+		
+	}
+
+	public InventoryNotification(ItemHandle hand)
+	{
+		item = hand;
+		timeCreated = Time.time;
+		DeleteMe = false;
+	}
+
+	public void DrawGUI()
+	{
+		float w = Screen.width;
+		float h = Screen.height;
+		float sizeX = w * 0.2f;
+		float sizeY = h * 0.1f;
+		float progress = (Time.time - timeCreated) / lifeTime;
+		float moveAmount = h / 0.5f;
+		Rect position = new Rect(w - sizeX, h - sizeY - (progress * moveAmount), sizeX, sizeY);
+		string message = "Added " + item.item.name + " x" + item.amount.ToString();
+
+		Color boxCol = GUI.color;
+		boxCol.a = 1.0f - progress;
+
+		GUI.color = boxCol;
+		GUI.Box (position, message);
+
+		if (progress >= 1.0f)
+		{
+			DeleteMe = true;
+		}
+	}
+}
 
 public class InventoryGUI : MonoBehaviour 
 {
 	public Inventory inv;
+	//List of notifications when a new item is added
+	List<InventoryNotification> notifications = new List<InventoryNotification>();
 	public bool showInv = false;
 	public bool renderGUI = false;
 	public Rect windowSize;
@@ -41,6 +95,22 @@ public class InventoryGUI : MonoBehaviour
 		{
 			GUI.Window(0, windowSize, MyWindow, "Inventory");
 		}
+		for (int i = 0; i < notifications.Count; i++)
+		{
+			notifications[i].DrawGUI ();
+			if (notifications[i].DeleteMe)
+			{
+				notifications.RemoveAt (i);
+				i--;
+			}
+		}
+	}
+
+	public void AddNotification(ItemHandle hand)
+	{
+		InventoryNotification not = new InventoryNotification(hand);
+		notifications.Add (not);
+
 	}
 	
 	void MyWindow(int id)

@@ -46,11 +46,9 @@ public class Axe : MonoBehaviour
 				Inventory inv = obj.GetComponent<Inventory>();
 				if (inv != null) //It has an inventory we can harvest!
 				{
-					Debug.Log ("HAS INVENTORY");
 					ItemHandle itemHarvest = inv.FindItem ("Wood"); //Does it have any wood?
 					if (itemHarvest != null)
 					{
-						Debug.Log ("HAS WOOD");
 						if (itemHarvest.amount > 1)
 						{
 							itemHarvest.amount--;
@@ -62,12 +60,12 @@ public class Axe : MonoBehaviour
 								toAdd.amount = 1;
 								player.GetComponent<Inventory>().AddItem(toAdd);
 							}
-							nextPrimaryFire += primaryFireDelay;
 						}
 					}
 				}
 			}
 		}
+		nextPrimaryFire = Time.time + primaryFireDelay;
 	}
 				
 }
