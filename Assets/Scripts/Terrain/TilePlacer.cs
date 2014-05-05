@@ -20,7 +20,7 @@ public class TilePlacer : MonoBehaviour {
 	void Awake()
 	{
 		dirty = false;
-		DontDestroyOnLoad (gameObject);
+		//DontDestroyOnLoad (gameObject);
 		if (tiles == null)
 		{
 			Debug.Log ("RECREATE LIST");
@@ -37,6 +37,7 @@ public class TilePlacer : MonoBehaviour {
 			if (tiles[i] == null)
 			{
 				missingTerrain = true;
+				break;
 			}
 		}
 		Debug.Log ("MISSING TERRAIN " + missingTerrain);

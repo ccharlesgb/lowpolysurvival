@@ -230,8 +230,15 @@ public class TileRender : MonoBehaviour
 		
 		uv /= (uvScale * squareSize);
 
-		//if (Random.value < 0.001f)
-			//Debug.Log (uv);
 		return uv;
+	}
+
+	void OnDestroy()
+	{
+		Debug.Log ("CLEANING MEMORY");
+		ClearMesh();
+		DestroyImmediate (mesh);
+		DestroyImmediate (_meshRenderer.sharedMaterial.GetTexture("_Control"), true);
+		DestroyImmediate (_meshRenderer.sharedMaterial);
 	}
 }

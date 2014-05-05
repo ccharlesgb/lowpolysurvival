@@ -46,6 +46,6 @@ public class Inventory : MonoBehaviour {
 		{
 			items.Add (it);
 		}
-		Debug.Log ("Added " + it.amount + " " + it.item.name + " to inventory.");
+		//Debug.Log ("Added " + it.amount + " " + it.item.name + " to inventory.");
 	}
 }

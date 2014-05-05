@@ -37,6 +37,16 @@ public class ItemList : Singleton<ItemList>
 		}
 	}
 
+	public Item GetItem(string name)
+	{
+		for (int i=0; i<items.Count; i++)
+		{
+			if (name == items[i].name)
+				return items[i];
+		}
+		return null;
+	}
+
 	void ClearItems()
 	{
 		for (int i = 0; i < items.Count; i++)

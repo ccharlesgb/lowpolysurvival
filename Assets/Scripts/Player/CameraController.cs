@@ -3,6 +3,7 @@ using System.Collections;
 
 namespace Player
 {
+	[ExecuteInEditMode]
 	public class CameraController : MonoBehaviour
 	{
 
