@@ -467,6 +467,17 @@ public class CharacterMotorC : MonoBehaviour
 			movement.hitPoint = hit.point;
 			movement.frameVelocity = Vector3.zero;
 		}
+
+		//Push away rigid bodies
+		Rigidbody body = hit.collider.attachedRigidbody;
+		if (body == null || body.isKinematic)
+			return;
+		
+		if (hit.moveDirection.y < -0.3F)
+			return;
+		
+		Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
+		body.velocity += pushDir * 1.5f;
 	}
 
 	private IEnumerator SubtractNewPlatformVelocity()
@@ -603,4 +614,5 @@ public class CharacterMotorC : MonoBehaviour
 		movement.frameVelocity = Vector3.zero;
 		SendMessage("OnExternalVelocity");
 	}
+
 }

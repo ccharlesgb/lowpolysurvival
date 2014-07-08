@@ -6,6 +6,7 @@ using System.Collections.Generic;
 [RequireComponent(typeof(MeshRenderer))]
 
 [ExecuteInEditMode]
+[AddComponentMenu("Terrain/Splat Map")]
 public class TileRender : MonoBehaviour
 {
 	protected MeshFilter meshFilter
@@ -76,10 +77,10 @@ public class TileRender : MonoBehaviour
 	public Vector3 buildPos;
 
 	//Mesh Data
-	public List<Vector3> l_vertices = new List<Vector3>();
-	public List<Vector3> l_normals = new List<Vector3>();
-	public List<int> l_triangles = new List<int>();
-	public List<Vector2> l_uvs = new List<Vector2>();
+	private List<Vector3> l_vertices = new List<Vector3>();
+	private List<Vector3> l_normals = new List<Vector3>();
+	private List<int> l_triangles = new List<int>();
+	private List<Vector2> l_uvs = new List<Vector2>();
 
 	protected Vector3[] vertices 
 	{
@@ -113,18 +114,12 @@ public class TileRender : MonoBehaviour
 			return l_normals.ToArray();
 		}
 	}
-	
-	public static int sideLength = 32;
-	public static float squareSize = 2.0f;
-
-	public HeightMap mHeights;
-	public SplatMap mSplats;
-
 	MeshRenderer _meshRenderer;
 
 	static public Vector3 GetTileBounds()
 	{
-		return new Vector3(sideLength * squareSize, 0, sideLength * squareSize);
+		float bound = Map.Instance ().terrainSettings.tileSideLength * Map.Instance().terrainSettings.tileSquareSize;
+		return new Vector3(bound, 0, bound);
 	}
 
 	public void ClearMesh()
@@ -137,17 +132,30 @@ public class TileRender : MonoBehaviour
 	
 	void OnEnable() 
 	{
+		gameObject.hideFlags = HideFlags.NotEditable | HideFlags.HideInHierarchy;
 		_meshRenderer = GetComponent<MeshRenderer>();
-		//gameObject.hideFlags = HideFlags.HideAndDontSave;
-		//gameObject.hideFlags = HideFlags.DontSave;
-		//Debug.Log ("Tile Enable" + Application.isPlaying);
+	}
+
+	Vector4 CalculateSplatUV()
+	{
+		//Pos Param is the chunk of the control UV that this particular tile should use
+		Point splatCoords = Map.Instance().WorldToFieldIndex(transform.position, Map.Instance().splatField);
+		Point splatCoordsTile = Map.Instance().WorldToFieldIndex(TileRender.GetTileBounds(), Map.Instance ().splatField);
+		
+		//Adjust the control UV
+		Vector4 posParam = new Vector4();
+		posParam.w = splatCoords.x / (float)Map.Instance().splatField.Width;
+		posParam.x = splatCoords.y / (float)Map.Instance().splatField.Height;
+		posParam.y = splatCoordsTile.x / ((float)Map.Instance().splatField.Width); // UV Scale parameters
+		posParam.z = splatCoordsTile.y / ((float)Map.Instance().splatField.Height) / Map.Instance ().terrainSettings.tileSideLength;
+		posParam.z = posParam.z * Map.Instance ().terrainSettings.tileTextureScale;
+
+		return posParam;
 	}
 
 	public void CreateMesh()
 	{
-		Material mat = new Material(_meshRenderer.sharedMaterial);
-		mat.SetTexture ("_Control",mSplats.GetTileSplat (this));
-		_meshRenderer.material = mat;
+		TextureMesh ();
 		BuildMesh ();
 		GetComponent<MeshCollider>().sharedMesh = mesh;
 		lastCheckForUpdate = Time.realtimeSinceStartup;
@@ -155,36 +163,79 @@ public class TileRender : MonoBehaviour
 		ReCalculateMesh(true);
 	}
 
+	public void TextureMesh()
+	{
+
+		if (_meshRenderer.sharedMaterial == null)
+		{
+			Debug.Log ("ERROR: Couldn't find tile material.\n");
+			return;
+		}
+
+		Material mat = new Material(_meshRenderer.sharedMaterial);
+		mat.SetTexture ("_Control",Map.Instance().splatField.GetTexture()); //Delete?
+		
+		
+		mat.SetVector("_Position", CalculateSplatUV());
+		
+		_meshRenderer.material = mat; //Update the material
+
+	}
+
 	void BuildMesh()
 	{
 		ClearMesh ();
 
-		for (int x = 0; x < sideLength; x++)
+		for (int x = 0; x < Map.Instance().terrainSettings.tileSideLength; x++)
 		{
-			for (int z = 0; z < sideLength; z++)
+			for (int z = 0; z < Map.Instance().terrainSettings.tileSideLength; z++)
 			{
-				Vector3 position = new Vector3(squareSize * x, 0, squareSize*z);
+				Vector3 position = new Vector3(Map.Instance().terrainSettings.tileSquareSize * x, 0, Map.Instance().terrainSettings.tileSquareSize*z);
 				CreateFace(position);
 			}
 		}
 		buildPos = transform.position;
 	}
+
 	
+	float IntNoise(int x)			 
+	{
+		x = (x<<13) ^ x;
+		return ( 1.0f - ( (x * (x * x * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0f);    
+	}
+
+	Vector3 GetNoiseOffset(Vector3 pos)
+	{
+		float scale = Map.Instance ().terrainSettings.gridNoiseScale;
+		int hash1 = (int)(pos.x + pos.z * Map.Instance ().terrainSettings.tileSideLength);
+		int hash2 = (int)(pos.x - pos.z * Map.Instance ().terrainSettings.tileSideLength);
+		Vector3 noise = new Vector3(IntNoise(hash1), IntNoise (hash1), IntNoise ( hash2));
+		noise.x *= scale;
+		noise.z *= scale;
+		noise.y *= Map.Instance ().terrainSettings.heightNoiseScale;
+		return noise;
+	}
+		
 	void CreateFace(Vector3 pos)
 	{
 		Vector3 origin = pos;
 		int vertCount  = l_vertices.Count;
 
+		float squareSize = Map.Instance().terrainSettings.tileSquareSize;
+
 		Vector3 p0 = origin + new Vector3(0,  0, squareSize);
-		p0.y= mHeights.GetHeight (p0 + transform.position);
+		p0.y = Map.Instance().GetTerrainHeight(p0+transform.position);
+		p0 = p0 + GetNoiseOffset (p0+transform.position);
 		l_vertices.Add (p0);
 
-		Vector3 p1 = origin + new Vector3(squareSize,  0, squareSize);
-		p1.y = mHeights.GetHeight (p1 + transform.position);
+		Vector3 p1 = origin + new Vector3(squareSize, 0, squareSize);
+		p1.y = Map.Instance().GetTerrainHeight(p1+transform.position);
+		p1 = p1 + GetNoiseOffset (p1+transform.position);
 		l_vertices.Add (p1);
 
 		Vector3 p2 = origin + new Vector3(squareSize, 0, 0);
-		p2.y = mHeights.GetHeight (p2 + transform.position);
+		p2.y = Map.Instance().GetTerrainHeight(p2+transform.position);
+		p2 = p2 + GetNoiseOffset (p2+transform.position);
 		l_vertices.Add (p2);
 
 		//Build second
@@ -193,7 +244,8 @@ public class TileRender : MonoBehaviour
 		l_vertices.Add (p2);
 
 		Vector3 p3 = origin + new Vector3(0, 0, 0);
-		p3.y = mHeights.GetHeight (p3 + transform.position);
+		p3.y = Map.Instance().GetTerrainHeight(p3+transform.position);
+		p3 = p3 + GetNoiseOffset (p3+transform.position);
 		l_vertices.Add (p3);
 
 		l_triangles.Add(vertCount);
@@ -207,13 +259,13 @@ public class TileRender : MonoBehaviour
 		Vector3 norm = Vector3.Cross(p1 - p0, p2 - p0).normalized;
 		for (int i=0; i < 3; i++)
 		{
-			l_normals.Add(norm);
+			l_normals.Add(norm * 1.0f);
 		}
 
 		Vector3 norm2 = Vector3.Cross(p2 - p0, p3 - p0).normalized;
 		for (int i=0; i < 3; i++)
 		{
-			l_normals.Add(norm2);
+			l_normals.Add(norm2 * 1.0f);
 		}
 
 		for (int i = 0; i < 6; i++)
@@ -225,20 +277,19 @@ public class TileRender : MonoBehaviour
 
 	Vector2 GetUV(Vector3 vertPos)
 	{
-		float uvScale = 32.0f;
 		Vector2 uv = new Vector2(vertPos.x, vertPos.z);
-		
-		uv /= (uvScale * squareSize);
+		TerrainSettings settings = Map.Instance ().terrainSettings;
+		uv /= (settings.tileTextureScale * settings.tileSquareSize);
 
 		return uv;
 	}
 
 	void OnDestroy()
 	{
-		Debug.Log ("CLEANING MEMORY");
+		//Debug.Log ("CLEANING MEMORY");
 		ClearMesh();
 		DestroyImmediate (mesh);
-		DestroyImmediate (_meshRenderer.sharedMaterial.GetTexture("_Control"), true);
-		DestroyImmediate (_meshRenderer.sharedMaterial);
+		//DestroyImmediate (_meshRenderer.sharedMaterial.GetTexture("_Control"), true);
+		DestroyImmediate (_meshRenderer.material);
 	}
 }

@@ -1,0 +1,97 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Water
+  m_Shader: {fileID: 4800000, guid: ab014152d837887488850c253af2915c, type: 3}
+  m_ShaderKeywords: []
+  m_CustomRenderQueue: -1
+  m_SavedProperties:
+    serializedVersion: 2
+    m_TexEnvs:
+      data:
+        first:
+          name: _MainTex
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _BumpMap
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Cube
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _ParallaxMap
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+    m_Floats:
+      data:
+        first:
+          name: _Shininess
+        second: .238947332
+      data:
+        first:
+          name: _Parallax
+        second: .0250892844
+      data:
+        first:
+          name: _FogMaxHeight
+        second: 21.9200001
+      data:
+        first:
+          name: _FogMinHeight
+        second: 18.3600006
+      data:
+        first:
+          name: _Amount
+        second: .5
+      data:
+        first:
+          name: _WaveAmp
+        second: .5
+      data:
+        first:
+          name: _Wavelength
+        second: 29.5300007
+      data:
+        first:
+          name: _WaveSpeed
+        second: 14.8800001
+      data:
+        first:
+          name: _WaveAmpTan
+        second: 1
+    m_Colors:
+      data:
+        first:
+          name: _Color
+        second: {r: .245228738, g: .41006723, b: .933333337, a: .623529434}
+      data:
+        first:
+          name: _SpecColor
+        second: {r: 1, g: 1, b: 1, a: 1}
+      data:
+        first:
+          name: _ReflectColor
+        second: {r: 1, g: 1, b: 1, a: .5}
+      data:
+        first:
+          name: _FogColor
+        second: {r: .499208003, g: .579801619, b: .890196085, a: 1}

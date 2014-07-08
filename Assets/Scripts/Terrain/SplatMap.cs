@@ -39,7 +39,7 @@ public class SplatMap : MonoBehaviour {
 	//Auto generate splat map from gradients of height field
 	public void CreateMap(Texture2D grads)
 	{
-		Debug.Log ("CReate splat map");
+		Debug.Log ("Create splat map");
 		//Get the height gradients and create a spalt map from it
 		if (splatPic == null)
 			splatPic = new Texture2D(grads.width, grads.height);
@@ -73,10 +73,11 @@ public class SplatMap : MonoBehaviour {
 		}
 		splatPic.Apply ();
 	}
-	
-	Vector2 WorldToMap(Vector3 pos)
+
+	//Returns the pixel positions of the world space coord
+	public Vector2 WorldToMap(Vector3 pos)
 	{
-		Vector3 mapBounds = TileRender.GetTileBounds () * 16; //10 by 10 tiles
+		Vector3 mapBounds = TileRender.GetTileBounds () * 16; //TODO UPDATE THIS PROPERLY
 		
 		Rect mapRect = new Rect();
 		mapRect.center = Vector3.zero;

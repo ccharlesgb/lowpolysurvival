@@ -6,12 +6,9 @@ using System.Collections.Generic;
 
 [AddComponentMenu("Terrain/Tile Placer")]
 public class TilePlacer : MonoBehaviour {
-
-	public int terrainSize = 8;
+	
 	public GameObject terrainFab;
 	public List<GameObject> tiles;
-	public HeightMap heightMap;
-	public SplatMap splatMap;
 
 	public bool dirty;
 
@@ -26,7 +23,7 @@ public class TilePlacer : MonoBehaviour {
 			Debug.Log ("RECREATE LIST");
 			tiles = new List<GameObject>();
 		}
-		heightMap = GetComponent<HeightMap>();
+		//heightMap = GetComponent<HeightMap>();
 	}
 
 	void OnEnable()
@@ -40,8 +37,9 @@ public class TilePlacer : MonoBehaviour {
 				break;
 			}
 		}
-		Debug.Log ("MISSING TERRAIN " + missingTerrain);
-		Debug.Log ("TILE COUNT " + tiles.Count + " SHOULD BE: " + terrainSize * terrainSize);
+		int terrainSize = Map.Instance ().terrainSettings.tileArraySideLength;
+		//Debug.Log ("MISSING TERRAIN " + missingTerrain);
+		//Debug.Log ("TILE COUNT " + tiles.Count + " SHOULD BE: " + terrainSize * terrainSize);
 		if (tiles.Count != terrainSize * terrainSize || missingTerrain)
 		{
 			//StartCoroutine( PlaceTerrain() );
@@ -54,8 +52,8 @@ public class TilePlacer : MonoBehaviour {
 		dirty = true;
 		if (Application.isEditor)
 		{
-			Debug.Log ("call dirty");
-			splatMap.CreateMap(heightMap.heightGrad);
+			//Debug.Log ("call dirty");
+			//splatMap.CreateMap(heightMap.heightGrad);
 			PlaceTerrain ();
 			dirty = false;
 		}
@@ -78,7 +76,7 @@ public class TilePlacer : MonoBehaviour {
 	public void PlaceTerrain()
 	{
 		ClearTerrain ();
-		Debug.Log ("PLACE TERRAIN");
+		int terrainSize = Map.Instance ().terrainSettings.tileArraySideLength;
 		for (int x=0; x < terrainSize; x++)
 		{
 			for (int z=0; z < terrainSize; z++)
@@ -86,10 +84,9 @@ public class TilePlacer : MonoBehaviour {
 				Vector3 tilePos = MathTools.ScalarMultiply(new Vector3(x, 0, z),TileRender.GetTileBounds ());
 
 				GameObject tile = Instantiate (terrainFab, tilePos, Quaternion.identity) as GameObject;
-				tile.GetComponent<TileRender>().mHeights = heightMap;
-				tile.GetComponent<TileRender>().mSplats = splatMap;
+
 				tile.GetComponent<TileRender>().CreateMesh();
-				tile.transform.parent = transform;
+				tile.transform.parent = transform.Find ("Tiles");
 				tiles.Add (tile);
 
 				//yield return null;
@@ -103,7 +100,7 @@ public class TilePlacer : MonoBehaviour {
 		if (dirty)
 		{
 			Debug.Log ("call dirty");
-			splatMap.CreateMap(heightMap.heightGrad);
+			//splatMap.CreateMap(heightMap.heightGrad);
 			PlaceTerrain ();
 			dirty = false;
 		}

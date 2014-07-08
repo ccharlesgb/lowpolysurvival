@@ -65,6 +65,9 @@ public class InventoryRegen : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
+		if (inventory == null)
+			enabled = false;
+
 		foreach (KeyValuePair<string, RegenInfo> pair in itemDic)
 		{
 			ItemHandle hand = inventory.FindItem (pair.Key);

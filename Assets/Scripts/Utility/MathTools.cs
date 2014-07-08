@@ -2,6 +2,29 @@ using UnityEngine;
 using System;
 using System.Collections;
 
+public struct Point
+{
+	public int x;
+	public int y;
+
+	public Point(int _x, int _y)
+	{
+		x = _x; y = _y;
+	}
+
+	public Point(Point pnt)
+	{
+		x = pnt.x;
+		y = pnt.y;
+	}
+	
+	public bool Equals(IntCoord other)
+	{
+		return x == other.x && y == other.y;
+	}
+
+}
+
 public struct IntCoord : IEquatable<IntCoord>
 {
 	public int x;
