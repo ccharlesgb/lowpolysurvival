@@ -66,6 +66,8 @@ public class InventoryGUI : MonoBehaviour
 	public float boxPadding = 5;
 	public float boxAreaPadding = 5;
 
+	public GUISkin guiSkin;
+
 	void Awake()
 	{
 		inv = GetComponent<Inventory>();
@@ -115,6 +117,8 @@ public class InventoryGUI : MonoBehaviour
 	
 	void MyWindow(int id)
 	{
+		GUI.skin = guiSkin;
+
 		DrawItemList();
 
 		// Close button
@@ -141,8 +145,13 @@ public class InventoryGUI : MonoBehaviour
 
 	private void DrawItem(Rect itemRect, int i, ItemContainer it)
 	{
-		if (GUI.Button(itemRect, it.item.itemName + "\n" + it.amount))
+		//if (GUI.Button(itemRect, it.item.itemName + "\n" + it.amount))
+		if (GUI.Button(itemRect, it.item.itemIcon))
 		{
+
+			
+
+
 			if (Event.current.button == 0) //Left mouse
 			{
 				//
@@ -152,6 +161,13 @@ public class InventoryGUI : MonoBehaviour
 				inv.DropItem(it.item.itemName, 1);
 			}
 		}
-		
+
+		//if (it.item.isStackable)
+		//{
+			GUI.Label(new Rect(itemRect.x, itemRect.y, boxSize, boxSize), "" + it.amount, "Stacks");
+		//}
+
 	}
+
+	
 }
