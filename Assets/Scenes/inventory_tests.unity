@@ -103,6 +103,7 @@ Transform:
   m_Children:
   - {fileID: 931625844}
   m_Father: {fileID: 1060224355}
+  m_RootOrder: 0
 --- !u!23 &97501344
 Renderer:
   m_ObjectHideFlags: 0
@@ -122,9 +123,8 @@ Renderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
-  m_SortingLayer: 0
-  m_SortingOrder: 0
   m_SortingLayerID: 0
+  m_SortingOrder: 0
 --- !u!33 &97501345
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -200,8 +200,11 @@ Camera:
     m_Bits: 4294967295
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
   m_HDR: 0
   m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: .0219999999
 --- !u!4 &100502276
 Transform:
   m_ObjectHideFlags: 0
@@ -213,6 +216,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
+  m_RootOrder: 0
 --- !u!1 &931625841
 GameObject:
   m_ObjectHideFlags: 0
@@ -249,9 +253,8 @@ Renderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
-  m_SortingLayer: 0
-  m_SortingOrder: 0
   m_SortingLayerID: 0
+  m_SortingOrder: 0
 --- !u!33 &931625843
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -271,6 +274,7 @@ Transform:
   m_LocalScale: {x: .5, y: .5, z: .5}
   m_Children: []
   m_Father: {fileID: 97501343}
+  m_RootOrder: 0
 --- !u!1 &1060224354
 GameObject:
   m_ObjectHideFlags: 0
@@ -302,6 +306,7 @@ Transform:
   - {fileID: 97501343}
   - {fileID: 1141152233}
   m_Father: {fileID: 0}
+  m_RootOrder: 2
 --- !u!114 &1060224356
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -416,6 +421,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1060224355}
+  m_RootOrder: 1
 --- !u!114 &1141152237
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -529,9 +535,8 @@ Renderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
-  m_SortingLayer: 0
-  m_SortingOrder: 0
   m_SortingLayerID: 0
+  m_SortingOrder: 0
 --- !u!64 &1213476706
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -563,3 +568,4 @@ Transform:
   m_LocalScale: {x: 5, y: 1, z: 5}
   m_Children: []
   m_Father: {fileID: 0}
+  m_RootOrder: 1
