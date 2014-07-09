@@ -6,5 +6,4 @@ public class ItemContainer : ScriptableObject
 {
 	public InventoryItem item;
 	public int amount;
-
 }

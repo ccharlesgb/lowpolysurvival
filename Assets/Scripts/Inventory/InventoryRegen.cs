@@ -73,6 +73,11 @@ public class InventoryRegen : MonoBehaviour
 		foreach (KeyValuePair<string, RegenInfo> pair in itemDic)
 		{
 			ItemContainer container = inventory.GetContainer(pair.Key);
+			if (container != null)
+			{
+				if (container.amount >= pair.Value.max)
+					continue;
+			}
 			if (pair.Value.lastRegen + (1/pair.Value.regen) < Time.time)
 			{
 				inventory.AddItem (pair.Key, 1);
