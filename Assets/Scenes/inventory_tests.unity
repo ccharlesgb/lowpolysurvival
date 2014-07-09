@@ -452,6 +452,7 @@ MonoBehaviour:
   boxSize: 50
   boxPadding: 5
   boxAreaPadding: 5
+  guiSkin: {fileID: 11400000, guid: d1777573b906a5b499612c134ee75d76, type: 2}
 --- !u!114 &1141152239
 MonoBehaviour:
   m_ObjectHideFlags: 0
