@@ -115,30 +115,44 @@ public class InventoryGUI : MonoBehaviour
 	
 	void MyWindow(int id)
 	{
-		Rect itemRect = new Rect(0,20, boxSize, boxSize);
-		for (int i = 0; i < inv.containerList.Count; i++)
-		{
-			ItemContainer it = inv.containerList[i];
-			if (it != null)
-			{
-				itemRect.x = i * (boxSize + boxPadding) + boxAreaPadding;
-				if (GUI.Button(itemRect, it.item.itemName + "\n" + it.amount))
-				{
-					if (Event.current.button == 0) //Left mouse
-					{
-						//
-					}
-					else if (Event.current.button == 1) //Right mouse
-					{
-						inv.DropItem(it.item.itemName, 1);
-					}
-				}
-			}
-		}
+		DrawItemList();
+
 		// Close button
 		if (GUI.Button(new Rect(10, this.windowSize.height - 40, this.windowSize.width - 20, 30), "Close"))
 		{
 			this.renderGUI = false;
 		}
+	}
+
+	private void DrawItemList()
+	{
+		Rect itemRect = new Rect(0, 20, boxSize, boxSize);
+		for (int i = 0; i < inv.containerList.Count; i++)
+		{
+			ItemContainer it = inv.containerList[i];
+			DrawItem(itemRect, i, it);
+		}
+	}
+
+	private void DrawItem(Rect itemRect, int i, ItemContainer it)
+	{
+		if (it == null)
+		{
+			return;
+		}
+
+		itemRect.x = i * (boxSize + boxPadding) + boxAreaPadding;
+		if (GUI.Button(itemRect, it.item.itemName + "\n" + it.amount))
+		{
+			if (Event.current.button == 0) //Left mouse
+			{
+				//
+			}
+			else if (Event.current.button == 1) //Right mouse
+			{
+				inv.DropItem(it.item.itemName, 1);
+			}
+		}
+		
 	}
 }
