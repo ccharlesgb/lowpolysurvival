@@ -13,6 +13,9 @@ public class Inventory : MonoBehaviour
 	void Start () 
 	{
 		masterList = MasterList.Instance.itemList;
+
+		AddItem("Wood", 5);
+		AddItem("Stone", 10);
 	}
 
 	public void AddItem(string name, int amount)

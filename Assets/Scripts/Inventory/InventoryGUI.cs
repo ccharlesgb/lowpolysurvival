@@ -55,18 +55,21 @@ class InventoryNotification
 
 public class InventoryGUI : MonoBehaviour 
 {
+	// Inventory to connect to.
 	public Inventory inv;
+
+	// GUI skin to use for inventory.
+	public GUISkin guiSkin;
+
 	//List of notifications when a new item is added
 	List<InventoryNotification> notifications = new List<InventoryNotification>();
-	public bool showInv = false;
+	//public bool showInv = false;
 	public bool renderGUI = false;
 	public Rect windowSize;
 
 	public float boxSize = 50;
 	public float boxPadding = 5;
 	public float boxAreaPadding = 5;
-
-	public GUISkin guiSkin;
 
 	void Awake()
 	{
@@ -131,6 +134,10 @@ public class InventoryGUI : MonoBehaviour
 	private void DrawItemList()
 	{
 		Rect itemRect = new Rect(0, 20, boxSize, boxSize);
+
+		string toolTipText = null;
+		int toolTipItem = 0;
+
 		for (int i = 0; i < inv.containerList.Count; i++)
 		{
 			ItemContainer it = inv.containerList[i];
@@ -138,9 +145,36 @@ public class InventoryGUI : MonoBehaviour
 			if (it != null)
 			{
 				itemRect.x = i * (boxSize + boxPadding) + boxAreaPadding;
+
+				if (MouseOverItem(ref itemRect, i, Event.current.mousePosition))
+				{
+					toolTipText = it.item.itemName;
+					toolTipItem = i;
+				}
+
 				DrawItem(itemRect, i, it);
 			}
 		}
+
+		if (toolTipText != null)
+		{
+			DrawToolTip(itemRect, toolTipText, toolTipItem);
+		}
+
+	}
+
+	private void DrawToolTip(Rect itemRect, string toolTipText, int toolTipItem)
+	{
+		var x = toolTipItem * (boxSize + boxPadding) + boxAreaPadding;
+		var y = itemRect.y + 60;
+
+		GUI.Label(new Rect(x, y, boxSize + boxPadding, 60), toolTipText, "ToolTip");
+	}
+
+	private bool MouseOverItem(ref Rect itemRect, int i, Vector2 mousePosition)
+	{
+		return mousePosition.x > itemRect.x && mousePosition.x < (i + 1) * (boxSize + boxPadding) + boxAreaPadding &&
+		       mousePosition.y > itemRect.y && mousePosition.y < (i + 1) * (boxSize + boxPadding) + boxAreaPadding;
 	}
 
 	private void DrawItem(Rect itemRect, int i, ItemContainer it)
