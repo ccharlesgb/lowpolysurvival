@@ -17,10 +17,8 @@ public class Inventory : MonoBehaviour
 	{
 		InventoryItem item = masterList.FindByName (name);
 		if (item == null || item.itemObject == null) return; //Not a valid item
-		GameObject itemFab = Instantiate (item.itemObject, Vector3.zero, Quaternion.identity) as GameObject;
-		itemFab.transform.parent = transform;
 
-		ItemContainer container = itemFab.GetComponent<ItemContainer>();
+		ItemContainer container = ScriptableObject.CreateInstance<ItemContainer>();
 		container.item = item;
 		container.amount = amount;
 		containerList.Add (container);
@@ -64,6 +62,32 @@ public class Inventory : MonoBehaviour
 			AddItem (other.item.itemName, amount);
 		}
 		other.amount -= amount;
+	}
+
+	public void DropItem(string name, int amount)
+	{
+		Debug.Log ("Container drop" + name);
+		ItemContainer container = GetContainer (name);
+		if (container == null) return;
+		Debug.Log ("Container not null");
+		if (container.amount < amount) return;
+
+		GameObject itemFab = Instantiate (container.item.itemObject, transform.position, Quaternion.identity) as GameObject;
+
+		itemFab.GetComponent<ItemBehaviour>().Init(container);
+
+		container.amount -= amount;
+
+		//We've run out of this item
+		if (container.amount <= 0)
+		{
+			RemoveItem(container);
+		}
+	}
+
+	public void RemoveItem(ItemContainer ct)
+	{
+		containerList.Remove (ct);
 	}
 	
 	// Update is called once per frame

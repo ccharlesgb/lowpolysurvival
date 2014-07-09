@@ -130,7 +130,7 @@ public class InventoryGUI : MonoBehaviour
 					}
 					else if (Event.current.button == 1) //Right mouse
 					{
-						//inv.DropItem(it);
+						inv.DropItem(it.item.itemName, 1);
 					}
 				}
 			}
