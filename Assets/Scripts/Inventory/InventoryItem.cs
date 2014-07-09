@@ -9,4 +9,6 @@ public class InventoryItem
 	public Texture2D itemIcon = null;
 	public bool isStackable = false;
 	public int stackSize = 1;
+
+	public bool isEquipable = true;
 }
