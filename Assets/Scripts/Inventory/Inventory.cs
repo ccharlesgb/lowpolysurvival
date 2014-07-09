@@ -104,6 +104,7 @@ public class Inventory : MonoBehaviour
 		ItemBehaviour behav = other.gameObject.GetComponent<ItemBehaviour>();
 		if (behav != null)
 		{
+			Debug.Log (other.gameObject);
 			PickupItem(behav);
 		}
 	}
