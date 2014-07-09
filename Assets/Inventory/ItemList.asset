@@ -16,7 +16,9 @@ MonoBehaviour:
     itemObject: {fileID: 100000, guid: 7c7289cf94a8ac34499897da8f5d9950, type: 2}
     itemIcon: {fileID: 2800000, guid: a86b9575488481f42ab3225170c350ca, type: 3}
     isStackable: 1
+    stackSize: 1
   - itemName: Stone
     itemObject: {fileID: 100000, guid: c71c774e8b80d7b4aa02c176f5e8e310, type: 2}
     itemIcon: {fileID: 2800000, guid: 038d0e1d049461346b67ce626ac272ac, type: 3}
     isStackable: 1
+    stackSize: 1

@@ -12,11 +12,10 @@ public class Inventory : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
-		AddItem ("Wood", 10);
-		AddItem("Stone", 5);
+		masterList = MasterList.Instance.itemList;
 	}
 
-	void AddItem(string name, int amount)
+	public void AddItem(string name, int amount)
 	{
 		InventoryItem item = masterList.FindByName (name);
 		if (item == null || item.itemObject == null) return; //Not a valid item
@@ -50,6 +49,7 @@ public class Inventory : MonoBehaviour
 
 	public ItemContainer GetContainer(string name)
 	{
+		if (containerList.Count == 0) return null;
 		for (int i=0; i < containerList.Count; i++)
 		{
 			if (containerList[i].item.itemName == name)
@@ -105,18 +105,14 @@ public class Inventory : MonoBehaviour
 		ItemBehaviour behav = other.gameObject.GetComponent<ItemBehaviour>();
 		if (behav != null)
 		{
-			Debug.Log (other.gameObject);
 			PickupItem(behav);
 		}
 	}
 
 	bool CanPickup(ItemBehaviour itemBehave)
 	{
-		Debug.Log (itemBehave.spawnTime);
-		Debug.Log (Time.time);
 		if (itemBehave.spawnTime + pickupDelay > Time.time)
 		{
-			Debug.Log ("TOO SOON");
 			return false;
 		}
 		return true;

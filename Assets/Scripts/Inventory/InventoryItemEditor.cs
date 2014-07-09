@@ -99,6 +99,9 @@ public class InventoryItemEditor : EditorWindow
 				itemList.itemList[viewIndex-1].itemObject = EditorGUILayout.ObjectField ("Item Prefab", itemList.itemList[viewIndex-1].itemObject, typeof(GameObject), false) as GameObject;
 
 				itemList.itemList[viewIndex-1].isStackable = (bool)EditorGUILayout.Toggle ("Stackable",itemList.itemList[viewIndex-1].isStackable, GUILayout.ExpandWidth (false));
+				GUI.enabled = itemList.itemList[viewIndex-1].isStackable;
+				itemList.itemList[viewIndex-1].stackSize = (int)EditorGUILayout.IntField ("Stack Size", itemList.itemList[viewIndex-1].stackSize);
+				GUI.enabled = true;
 			}
 			else
 			{

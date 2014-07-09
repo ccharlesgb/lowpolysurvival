@@ -170,15 +170,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 891fc4283bd1044418f6047d1947bc37, type: 3}
+  m_Script: {fileID: 11500000, guid: fe16d97e9e46c3848af5dfaf4b2c6000, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  items:
-  - item:
-      name: Wood
-      stackable: 1
-    amount: 10
-  gui: {fileID: 0}
+  containerList:
+  - {fileID: 0}
+  pickupDelay: .5
+  masterList: {fileID: 0}
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1

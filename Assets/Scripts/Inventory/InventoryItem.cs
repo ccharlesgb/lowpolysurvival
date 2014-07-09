@@ -8,4 +8,5 @@ public class InventoryItem
 	public GameObject itemObject = null; //Prefab pointing 
 	public Texture2D itemIcon = null;
 	public bool isStackable = false;
+	public int stackSize = 1;
 }
