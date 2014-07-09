@@ -13,6 +13,7 @@ public class Inventory : MonoBehaviour
 	void Start () 
 	{
 		AddItem ("Wood", 10);
+		AddItem("Stone", 5);
 	}
 
 	void AddItem(string name, int amount)
