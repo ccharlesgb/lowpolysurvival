@@ -130,18 +130,17 @@ public class InventoryGUI : MonoBehaviour
 		for (int i = 0; i < inv.containerList.Count; i++)
 		{
 			ItemContainer it = inv.containerList[i];
-			DrawItem(itemRect, i, it);
+
+			if (it != null)
+			{
+				itemRect.x = i * (boxSize + boxPadding) + boxAreaPadding;
+				DrawItem(itemRect, i, it);
+			}
 		}
 	}
 
 	private void DrawItem(Rect itemRect, int i, ItemContainer it)
 	{
-		if (it == null)
-		{
-			return;
-		}
-
-		itemRect.x = i * (boxSize + boxPadding) + boxAreaPadding;
 		if (GUI.Button(itemRect, it.item.itemName + "\n" + it.amount))
 		{
 			if (Event.current.button == 0) //Left mouse
