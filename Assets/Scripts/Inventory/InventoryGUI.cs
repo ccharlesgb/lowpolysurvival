@@ -119,10 +119,20 @@ public class InventoryGUI : MonoBehaviour
 		for (int i = 0; i < inv.items.Count; i++)
 		{
 			ItemHandle it = inv.items[i];
-			if (it != null)
+			if (it.IsValid())
 			{
 				itemRect.x = i * (boxSize + boxPadding) + boxAreaPadding;
-				GUI.Box(itemRect, it.item.name + "\n" + it.amount);
+				if (GUI.Button(itemRect, it.item.name + "\n" + it.amount))
+				{
+					if (Event.current.button == 0) //Left mouse
+					{
+						//
+					}
+					else if (Event.current.button == 1) //Right mouse
+					{
+						inv.DropItem(it);
+					}
+				}
 			}
 		}
 		// Close button

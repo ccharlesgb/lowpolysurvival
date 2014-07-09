@@ -18,12 +18,12 @@ public class InventoryEditor : Editor
 		{
 			int amount = 0;
 			ItemHandle test = inv.FindItem(list.items[i].name);
-			if (test != null && test.amount > 0)
+			if (test.IsValid () && test.amount > 0)
 				amount = test.amount;
 
 			amount = EditorGUILayout.IntField (list.items[i].name, amount);
 
-			if (test == null && amount > 0)
+			if (test.IsValid () && amount > 0)
 			{
 				ItemHandle it = new ItemHandle();
 				it.item = list.items[i];
@@ -31,7 +31,7 @@ public class InventoryEditor : Editor
 				inv.AddItem (it);
 			}
 
-			if (test != null)
+			if (test.IsValid ())
 			{
 				test.amount = amount;
 			}

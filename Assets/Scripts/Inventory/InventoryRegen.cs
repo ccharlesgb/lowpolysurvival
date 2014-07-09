@@ -71,7 +71,7 @@ public class InventoryRegen : MonoBehaviour {
 		foreach (KeyValuePair<string, RegenInfo> pair in itemDic)
 		{
 			ItemHandle hand = inventory.FindItem (pair.Key);
-			if (hand == null || hand.amount < pair.Value.max)
+			if (!hand.IsValid () || hand.amount < pair.Value.max)
 			{
 				if (pair.Value.lastRegen + (1/pair.Value.regen) < Time.time)
 				{

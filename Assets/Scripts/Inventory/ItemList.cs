@@ -15,7 +15,7 @@ public class ItemList : Singleton<ItemList>
 	void LoadItems()
 	{
 		//Add default items for now
-		Item it = new Item();
+		/*Item it = new Item();
 		it.name = "Wood";
 		it.stackable = true;
 		AddItem (it);
@@ -24,7 +24,7 @@ public class ItemList : Singleton<ItemList>
 		it.name = "Stone";
 		it.stackable = true;
 		
-		AddItem (it);
+		AddItem (it);*/
 	}
 
 	void AddItem(Item item)

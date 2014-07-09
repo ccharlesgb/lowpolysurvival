@@ -3,13 +3,12 @@ using System.Collections;
 
 public class Axe : MonoBehaviour 
 {
-
 	public float primaryFireDelay = 1.0f;
 	float nextPrimaryFire = 0.0f;
 
 	public float hitRange = 2.0f;
 
-	public GameObject player;
+	public Inventory inventory;
 
 	// Use this for initialization
 	void Start () 
@@ -46,25 +45,25 @@ public class Axe : MonoBehaviour
 			GameObject obj = hit.collider.gameObject;
 			if (obj != null)
 			{
-				float distance = (obj.transform.position - player.transform.position).magnitude;
+				float distance = (obj.transform.position - transform.position).magnitude;
 				if (distance > hitRange)
 					return;
 				Inventory inv = obj.GetComponent<Inventory>();
 				if (inv != null) //It has an inventory we can harvest!
 				{
 					ItemHandle itemHarvest = inv.FindItem ("Wood"); //Does it have any wood?
-					if (itemHarvest != null)
+					if (itemHarvest.IsValid ())
 					{
 						if (itemHarvest.amount > 1)
 						{
 							itemHarvest.amount--;
 
-							if (player)
+							if (inventory)
 							{
 								ItemHandle toAdd = new ItemHandle();
 								toAdd.item = itemHarvest.item;
 								toAdd.amount = 1;
-								player.GetComponent<Inventory>().AddItem(toAdd);
+								inventory.AddItem(toAdd);
 							}
 						}
 					}

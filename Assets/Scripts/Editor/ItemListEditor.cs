@@ -18,8 +18,7 @@ public class ItemListEditor : Editor
 			EditorGUILayout.Separator();
 			mlist.items[i].name = EditorGUILayout.TextField ("Name ", mlist.items[i].name);
 			mlist.items[i].stackable = EditorGUILayout.Toggle ("Stackable", mlist.items[i].stackable);
-			//EditorGUILayout.
-
+			mlist.items[i].worldColor = EditorGUILayout.ColorField ("Color", mlist.items[i].worldColor);
 		}
 		//Add Remove items
 		EditorGUILayout.BeginHorizontal();
