@@ -148,10 +148,6 @@ public class InventoryGUI : MonoBehaviour
 		//if (GUI.Button(itemRect, it.item.itemName + "\n" + it.amount))
 		if (GUI.Button(itemRect, it.item.itemIcon))
 		{
-
-			
-
-
 			if (Event.current.button == 0) //Left mouse
 			{
 				//
@@ -162,10 +158,11 @@ public class InventoryGUI : MonoBehaviour
 			}
 		}
 
-		//if (it.item.isStackable)
-		//{
+		// Draw the stack count.
+		if (it.item.isStackable)
+		{
 			GUI.Label(new Rect(itemRect.x, itemRect.y, boxSize, boxSize), "" + it.amount, "Stacks");
-		//}
+		}
 
 	}
 
