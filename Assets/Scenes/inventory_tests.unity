@@ -396,6 +396,7 @@ GameObject:
   - 114: {fileID: 1141152237}
   - 114: {fileID: 1141152239}
   - 114: {fileID: 1141152238}
+  - 135: {fileID: 1141152240}
   m_Layer: 0
   m_Name: Inventory
   m_TagString: Untagged
@@ -410,7 +411,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1141152232}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: .354984939, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1060224355}
@@ -426,6 +427,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   containerList: []
+  pickupDelay: 1
   masterList: {fileID: 11400000, guid: b10bf5417c7b29e46aed0d1008aa15e5, type: 2}
 --- !u!114 &1141152238
 MonoBehaviour:
@@ -462,6 +464,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   showKey: 113
+--- !u!135 &1141152240
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1141152232}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1213476704
 GameObject:
   m_ObjectHideFlags: 0

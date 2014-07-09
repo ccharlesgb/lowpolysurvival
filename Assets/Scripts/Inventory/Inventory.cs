@@ -6,6 +6,8 @@ public class Inventory : MonoBehaviour
 {
 	public List<ItemContainer> containerList = new List<ItemContainer>();
 
+	public float pickupDelay = 0.5f;
+
 	public ItemList masterList;
 	// Use this for initialization
 	void Start () 
@@ -18,10 +20,19 @@ public class Inventory : MonoBehaviour
 		InventoryItem item = masterList.FindByName (name);
 		if (item == null || item.itemObject == null) return; //Not a valid item
 
-		ItemContainer container = ScriptableObject.CreateInstance<ItemContainer>();
-		container.item = item;
-		container.amount = amount;
-		containerList.Add (container);
+		ItemContainer container = GetContainer (name);
+
+		if (container == null)
+		{
+			container = ScriptableObject.CreateInstance<ItemContainer>();
+			container.item = item;
+			container.amount = amount;
+			containerList.Add (container);
+		}
+		else
+		{
+			container.amount += amount;
+		}
 	}
 
 	public bool HasItem(string name)
@@ -66,15 +77,13 @@ public class Inventory : MonoBehaviour
 
 	public void DropItem(string name, int amount)
 	{
-		Debug.Log ("Container drop" + name);
 		ItemContainer container = GetContainer (name);
 		if (container == null) return;
-		Debug.Log ("Container not null");
 		if (container.amount < amount) return;
 
 		GameObject itemFab = Instantiate (container.item.itemObject, transform.position, Quaternion.identity) as GameObject;
 
-		itemFab.GetComponent<ItemBehaviour>().Init(container);
+		itemFab.GetComponent<ItemBehaviour>().Init(container, amount);
 
 		container.amount -= amount;
 
@@ -90,9 +99,33 @@ public class Inventory : MonoBehaviour
 		containerList.Remove (ct);
 	}
 	
-	// Update is called once per frame
-	void Update () 
+	void OnTriggerStay(Collider other)
 	{
-	
+		ItemBehaviour behav = other.gameObject.GetComponent<ItemBehaviour>();
+		if (behav != null)
+		{
+			PickupItem(behav);
+		}
+	}
+
+	bool CanPickup(ItemBehaviour itemBehave)
+	{
+		Debug.Log (itemBehave.spawnTime);
+		Debug.Log (Time.time);
+		if (itemBehave.spawnTime + pickupDelay > Time.time)
+		{
+			Debug.Log ("TOO SOON");
+			return false;
+		}
+		return true;
+	}
+
+	public void PickupItem(ItemBehaviour itemBehave)
+	{
+		if (!CanPickup (itemBehave)) return;
+
+		AddItem (itemBehave.container.item.itemName, itemBehave.container.amount);
+
+		Destroy(itemBehave.gameObject);
 	}
 }
