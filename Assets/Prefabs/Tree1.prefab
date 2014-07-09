@@ -173,8 +173,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe16d97e9e46c3848af5dfaf4b2c6000, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  containerList:
-  - {fileID: 0}
+  containerList: []
   pickupDelay: .5
   masterList: {fileID: 0}
 --- !u!114 &11400002
