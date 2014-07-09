@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -17,7 +18,8 @@ public class RegenInfo
 }
 
 //Component to slowly regenerate an items inventory until it reaches a max value
-public class InventoryRegen : MonoBehaviour {
+public class InventoryRegen : MonoBehaviour 
+{
 
 	public Inventory inventory;
 
@@ -70,16 +72,12 @@ public class InventoryRegen : MonoBehaviour {
 
 		foreach (KeyValuePair<string, RegenInfo> pair in itemDic)
 		{
-			ItemHandle hand = inventory.FindItem (pair.Key);
-			if (!hand.IsValid () || hand.amount < pair.Value.max)
+			ItemContainer container = inventory.GetContainer(pair.Key);
+			if (container != null && container.amount < pair.Value.max)
 			{
 				if (pair.Value.lastRegen + (1/pair.Value.regen) < Time.time)
 				{
-					ItemHandle it = new ItemHandle();
-					it.item = ItemList.Instance.GetItem (pair.Key);
-					it.amount = 1;
-					inventory.AddItem(it);
-
+					inventory.TransferItem (container, (int)pair.Value.regen);
 					pair.Value.lastRegen = Time.time;
 				}
 			}

@@ -2,74 +2,73 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Inventory : MonoBehaviour {
+public class Inventory : MonoBehaviour 
+{
+	public List<ItemContainer> containerList = new List<ItemContainer>();
 
-	public List<ItemHandle> items = new List<ItemHandle>();
-	public InventoryGUI gui;
-	public GameObject worldItemFab;
-	void Awake()
-	{
-
-	}
-
+	public ItemList masterList;
 	// Use this for initialization
 	void Start () 
 	{
-	
+		AddItem ("Wood", 10);
+	}
+
+	void AddItem(string name, int amount)
+	{
+		InventoryItem item = masterList.FindByName (name);
+		if (item == null || item.itemObject == null) return; //Not a valid item
+		GameObject itemFab = Instantiate (item.itemObject, Vector3.zero, Quaternion.identity) as GameObject;
+		itemFab.transform.parent = transform;
+
+		ItemContainer container = itemFab.GetComponent<ItemContainer>();
+		container.item = item;
+		container.amount = amount;
+		containerList.Add (container);
+	}
+
+	public bool HasItem(string name)
+	{
+		for (int i=0; i < containerList.Count; i++)
+		{
+			if (containerList[i].item.itemName == name)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public ItemContainer GetContainer(string name)
+	{
+		for (int i=0; i < containerList.Count; i++)
+		{
+			if (containerList[i].item.itemName == name)
+			{
+				return containerList[i];
+			}
+		}
+		return null;
+	}
+
+	public void TransferItem(ItemContainer other, int amount)
+	{
+		if (other == null) return;
+
+		//Does the other inventory have enough of this item to give it to us?
+		if (other.amount < amount) return; //More validation needed here
+
+		ItemContainer container = GetContainer (other.item.itemName);
+
+		if (container == null)
+		{
+			AddItem (other.item.itemName, amount);
+		}
+		other.amount -= amount;
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
 	
-	}
-
-	public ItemHandle FindItem(string name)
-	{
-		for (int i =0; i < items.Count; i++)
-		{
-			if (items[i].IsValid () && name == items[i].item.name)
-			{
-				return items[i];
-			}
-		}
-		return ItemHandle.Empty ();
-	}
-	
-	public void AddItem(ItemHandle it)
-	{
-		ItemHandle testItem = FindItem(it.item.name);
-		if (testItem.IsValid ())
-		{
-			testItem.amount += it.amount;
-		}
-		else
-		{
-			items.Add (it);
-		}
-		//Display a notification telling the player he has a new item
-		if (gui != null)
-			gui.AddNotification (it);
-	}
-
-	public void DropItem(ItemHandle it)
-	{
-		ItemHandle testItem = FindItem (it.item.name);
-		if (testItem.IsValid())
-			return; //Can't drop an item we dont have
-
-		if (testItem.amount <= 0)
-			return;
-
-		testItem.amount--;
-
-		CreateWorldItem(testItem);
-	}
-
-	public void CreateWorldItem(ItemHandle it)
-	{
-		Vector3 spawnPos = transform.position;
-		GameObject cube = Instantiate(worldItemFab, spawnPos, Quaternion.identity) as GameObject;
-		cube.GetComponent<WorldItem>().OnDropped (it);
 	}
 }

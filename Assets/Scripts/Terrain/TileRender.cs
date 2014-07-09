@@ -290,6 +290,6 @@ public class TileRender : MonoBehaviour
 		ClearMesh();
 		DestroyImmediate (mesh);
 		//DestroyImmediate (_meshRenderer.sharedMaterial.GetTexture("_Control"), true);
-		DestroyImmediate (_meshRenderer.material);
+		//DestroyImmediate (_meshRenderer.material);
 	}
 }
