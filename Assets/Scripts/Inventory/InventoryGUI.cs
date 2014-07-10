@@ -5,7 +5,8 @@ using System.Collections.Generic;
 class InventoryNotification
 {
 	public float timeCreated;
-	public ItemContainer item;
+	public InventoryItem item;
+	public int amount;
 	static float lifeTime = 3.0f;
 
 	private bool deleteMe;
@@ -22,9 +23,10 @@ class InventoryNotification
 		
 	}
 
-	public InventoryNotification(ItemContainer hand)
+	public InventoryNotification(InventoryItem it, int amt)
 	{
-		item = hand;
+		item = it;
+		amount = amt;
 		timeCreated = Time.time;
 		DeleteMe = false;
 	}
@@ -38,7 +40,7 @@ class InventoryNotification
 		float progress = (Time.time - timeCreated) / lifeTime;
 		float moveAmount = h / 0.5f;
 		Rect position = new Rect(w - sizeX, h - sizeY - (progress * moveAmount), sizeX, sizeY);
-		string message = "Added " + item.item.itemName + " x" + item.amount.ToString();
+		string message = "Added " + item.itemName + " x" + amount.ToString();
 
 		Color boxCol = GUI.color;
 		boxCol.a = 1.0f - progress;
@@ -98,8 +100,8 @@ public class InventoryGUI : MonoBehaviour
 	{
 		GUI.skin = guiSkin;
 		var bdr = GUI.skin.window.border;
-		Debug.Log("Left: " + bdr.left + " Right: " + bdr.right);
-		Debug.Log("Top: " + bdr.top + " Bottom: " + bdr.bottom);
+		//Debug.Log("Left: " + bdr.left + " Right: " + bdr.right);
+		//Debug.Log("Top: " + bdr.top + " Bottom: " + bdr.bottom);
 
 		if (this.renderGUI)
 		{
@@ -116,9 +118,9 @@ public class InventoryGUI : MonoBehaviour
 		}
 	}
 
-	public void AddNotification(ItemContainer hand)
+	public void AddNotification(InventoryItem it, int amount)
 	{
-		InventoryNotification not = new InventoryNotification(hand);
+		InventoryNotification not = new InventoryNotification(it, amount);
 		notifications.Add (not);
 
 	}

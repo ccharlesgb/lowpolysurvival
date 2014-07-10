@@ -6,6 +6,8 @@ public class Inventory : MonoBehaviour
 {
 	public List<ItemContainer> containerList = new List<ItemContainer>();
 
+	public InventoryGUI inventoryGUI;
+
 	public float pickupDelay = 0.5f;
 
 	public ItemList masterList;
@@ -63,6 +65,13 @@ public class Inventory : MonoBehaviour
 		return null;
 	}
 
+	public void SendNotification(ItemContainer it, int amount)
+	{
+		if (inventoryGUI == null) return;
+
+		inventoryGUI.AddNotification (it.item, amount);
+	}
+
 	public void TransferItem(ItemContainer other, int amount)
 	{
 		if (other == null) return;
@@ -77,6 +86,8 @@ public class Inventory : MonoBehaviour
 			AddItem (other.item.itemName, amount);
 		}
 		other.amount -= amount;
+
+		SendNotification(container, amount);
 	}
 
 	public void DropItem(string name, int amount)
@@ -126,7 +137,7 @@ public class Inventory : MonoBehaviour
 		if (!CanPickup (itemBehave)) return;
 
 		AddItem (itemBehave.container.item.itemName, itemBehave.container.amount);
-
+		SendNotification(itemBehave.container, itemBehave.container.amount);
 		Destroy(itemBehave.gameObject);
 	}
 }
