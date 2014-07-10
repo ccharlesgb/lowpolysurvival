@@ -19,11 +19,11 @@ public class InventoryShower : MonoBehaviour {
 		{
 			if (Input.GetKeyDown(showKey))
 			{
-				invGUI.renderGUI = true;
+				invGUI.RenderGUI = true;
 			}
 			else if (Input.GetKeyUp (showKey))
 			{
-				invGUI.renderGUI = false;
+				invGUI.RenderGUI = false;
 			}
 		}
 	}
