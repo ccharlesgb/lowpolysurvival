@@ -40,12 +40,10 @@ public class Axe : MonoBehaviour, IHolster
 			GameObject obj = hit.collider.gameObject;
 			if (obj != null)
 			{
-				Debug.Log("DISTANCE");
 				float distance = (obj.transform.position - transform.position).magnitude;
 				if (distance > hitRange)
 					return;
 				Inventory inv = obj.GetComponent<Inventory>();
-				Debug.Log("AXE INV " + inv);
 				if (inv != null) //It has an inventory we can harvest!
 				{
 					ItemContainer itemHarvest = inv.GetContainer ("Wood");

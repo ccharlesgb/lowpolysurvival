@@ -8,6 +8,7 @@ public class Inventory : MonoBehaviour
 
 	public InventoryGUI inventoryGUI;
 
+	public bool canPickup = false;
 	public float pickupDelay = 0.5f;
 
 	public GameObject holstered = null;
@@ -43,6 +44,7 @@ public class Inventory : MonoBehaviour
 		{
 			container.amount += amount;
 		}
+		SendNotification(container, amount);
 	}
 
 	private int FindFirstEmptySlot()
@@ -112,13 +114,8 @@ public class Inventory : MonoBehaviour
 
 		ItemContainer container = GetContainer (other.item.itemName);
 
-		if (container == null)
-		{
-			AddItem (other.item.itemName, amount);
-		}
+		AddItem (other.item.itemName, amount);
 		other.amount -= amount;
-
-		SendNotification(container, amount);
 	}
 
 	public void DropItem(string name, int amount)
@@ -147,6 +144,7 @@ public class Inventory : MonoBehaviour
 	
 	void OnTriggerStay(Collider other)
 	{
+		if (!canPickup) return;
 		ItemBehaviour behav = other.gameObject.GetComponent<ItemBehaviour>();
 		if (behav != null)
 		{
@@ -168,7 +166,6 @@ public class Inventory : MonoBehaviour
 		if (!CanPickup (itemBehave)) return;
 
 		AddItem (itemBehave.container.item.itemName, itemBehave.container.amount);
-		SendNotification(itemBehave.container, itemBehave.container.amount);
 		Destroy(itemBehave.gameObject);
 	}
 
