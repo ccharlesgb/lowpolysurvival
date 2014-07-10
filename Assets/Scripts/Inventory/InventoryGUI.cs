@@ -55,51 +55,45 @@ class InventoryNotification
 	}
 }
 
-public class InventoryGUI : MonoBehaviour 
+public class InventoryGUI : MonoBehaviour
 {
 	// Size of the slot container
 	private const int SlotsX = 5;
 	private const int SlotsY = 5;
-
-	// Inventory to connect to.
-	public Inventory Inv;
+	private readonly List<InventoryNotification> _notifications = new List<InventoryNotification>();
+	
+	public float BoxAreaPadding = 5;
+	public float BoxPadding = 5;
+	public float BoxSize = 50;
 
 	// GUI skin to use for inventory.
 	public GUISkin GUISkin;
+	public Inventory Inv;
 
-	//public bool showInv = false;
 	public bool RenderGUI = false;
 	public Rect WindowSize;
 
-	public float BoxSize = 50;
-	public float BoxPadding = 5;
-	public float BoxAreaPadding = 5;
-
-	//List of notifications when a new item is added
-	private readonly List<InventoryNotification> _notifications = new List<InventoryNotification>();
-
-	private bool _isDraggingItem;
 	private ItemContainer _draggedItem;
+	private bool _isDraggingItem;
 
-	void Awake()
+	private void Awake()
 	{
 		Inv = GetComponent<Inventory>();
 		if (Inv == null)
 		{
-			Debug.Log ("Need inventory object to have GUI");
+			Debug.Log("Need inventory object to have GUI");
 		}
 		RenderGUI = false;
 	}
 
 	// Use this for initialization
-	void Start () 
+	private void Start()
 	{
-		this.WindowSize = new Rect(0, 0, 10 + (BoxSize + BoxPadding) * 5, 50 + (BoxSize + BoxPadding) * 5);
-	
+		WindowSize = new Rect(0, 0, 10 + (BoxSize + BoxPadding)*5, 50 + (BoxSize + BoxPadding)*5);
 	}
-	
+
 	// Update is called once per frame
-	void Update () 
+	private void Update()
 	{
 		var v = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
 		if (_isDraggingItem && Input.GetMouseButtonUp(0) && !WindowSize.Contains(v))
@@ -109,11 +103,11 @@ public class InventoryGUI : MonoBehaviour
 		}
 	}
 
-	void OnGUI()
+	private void OnGUI()
 	{
 		GUI.skin = GUISkin;
 
-		if (this.RenderGUI)
+		if (RenderGUI)
 		{
 			GUI.Window(0, WindowSize, MyWindow, "Inventory");
 		}
@@ -124,10 +118,10 @@ public class InventoryGUI : MonoBehaviour
 
 		for (int i = 0; i < _notifications.Count; i++)
 		{
-			_notifications[i].DrawGUI ();
+			_notifications[i].DrawGUI();
 			if (_notifications[i].DeleteMe)
 			{
-				_notifications.RemoveAt (i);
+				_notifications.RemoveAt(i);
 				i--;
 			}
 		}
@@ -135,19 +129,18 @@ public class InventoryGUI : MonoBehaviour
 
 	public void AddNotification(InventoryItem it, int amount)
 	{
-		InventoryNotification not = new InventoryNotification(it, amount);
-		_notifications.Add (not);
-
+		var not = new InventoryNotification(it, amount);
+		_notifications.Add(not);
 	}
-	
-	void MyWindow(int id)
+
+	private void MyWindow(int id)
 	{
-		
 		DrawItemList();
 
 		if (_isDraggingItem)
 		{
-			Graphics.DrawTexture(new Rect(Event.current.mousePosition.x, Event.current.mousePosition.y, BoxSize, BoxSize), _draggedItem.item.itemIcon);
+			Graphics.DrawTexture(new Rect(Event.current.mousePosition.x, Event.current.mousePosition.y, BoxSize, BoxSize),
+				_draggedItem.item.itemIcon);
 		}
 
 		/*
@@ -161,7 +154,7 @@ public class InventoryGUI : MonoBehaviour
 
 	private void DrawItemList()
 	{
-		Rect itemRect = new Rect(0, 65, BoxSize, BoxSize);
+		var itemRect = new Rect(0, 65, BoxSize, BoxSize);
 
 		ItemContainer[] items = InventoryListToArray();
 
@@ -170,13 +163,13 @@ public class InventoryGUI : MonoBehaviour
 		{
 			for (int x = 0; x < SlotsX; x++)
 			{
-				int slot = x + y * SlotsX;
+				int slot = x + y*SlotsX;
 				ItemContainer it = items[slot];
 
-				Rect rect = new Rect(5 + BoxPadding / 2 + x * (BoxSize + BoxPadding), 45 + y * (BoxSize + BoxPadding), BoxSize, BoxSize);
-				
+				var rect = new Rect(5 + BoxPadding/2 + x*(BoxSize + BoxPadding), 45 + y*(BoxSize + BoxPadding), BoxSize, BoxSize);
+
 				GUI.Box(rect, "" + x + y);
-				
+
 				// Draw the Item.
 				if (it != null)
 				{
@@ -188,18 +181,14 @@ public class InventoryGUI : MonoBehaviour
 				{
 					StopDragging(slot, it);
 				}
-				
 			}
 		}
-
-		
-
 	}
 
 	private void DrawItem(Rect rect, int x, int y, ItemContainer it)
 	{
 		Event e = Event.current;
-		
+
 		if (rect.Contains(e.mousePosition))
 		{
 			DrawToolTip(rect, it.item.itemName);
@@ -221,7 +210,7 @@ public class InventoryGUI : MonoBehaviour
 		{
 			if (e.button == 0) //Left mouse
 			{
-				Inv.HolsterItem (it);
+				Inv.HolsterItem(it);
 			}
 			else if (Event.current.button == 1) //Right mouse
 			{
@@ -237,7 +226,7 @@ public class InventoryGUI : MonoBehaviour
 	}
 
 	/// <summary>
-	///		Set the currently dragged item.
+	///     Set the currently dragged item.
 	/// </summary>
 	/// <param name="it">ItemContainer to drag.</param>
 	private void StartDragging(ItemContainer it)
@@ -247,7 +236,7 @@ public class InventoryGUI : MonoBehaviour
 	}
 
 	/// <summary>
-	///		Drop handling.
+	///     Drop handling.
 	/// </summary>
 	/// <param name="slot">Slot to drop the item into.</param>
 	/// <param name="it">Item already in the slot, null if empty.</param>
@@ -270,7 +259,7 @@ public class InventoryGUI : MonoBehaviour
 	}
 
 	/// <summary>
-	///		Reset the dragging status.
+	///     Reset the dragging status.
 	/// </summary>
 	private void ResetDragging()
 	{
@@ -281,7 +270,7 @@ public class InventoryGUI : MonoBehaviour
 	private ItemContainer[] InventoryListToArray()
 	{
 		// TODO: Break out the array size.
-		ItemContainer[] array = new ItemContainer[25];
+		var array = new ItemContainer[25];
 		foreach (ItemContainer container in Inv.containerList)
 		{
 			array[container.slot] = container;
@@ -291,10 +280,9 @@ public class InventoryGUI : MonoBehaviour
 
 	private void DrawToolTip(Rect itemRect, string toolTipText)
 	{
-		var x = itemRect.x;
-		var y = itemRect.y - 15;
+		float x = itemRect.x;
+		float y = itemRect.y - 15;
 
 		GUI.Label(new Rect(x, y, BoxSize + BoxPadding, 60), toolTipText, "ToolTip");
 	}
-	
 }
