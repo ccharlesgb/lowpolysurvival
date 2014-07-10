@@ -34,7 +34,7 @@ public class Inventory : MonoBehaviour
 				slot = FindFirstEmptySlot();
 			}
 
-			container = ScriptableObject.CreateInstance<ItemContainer>();
+			container = new ItemContainer();
 			container.item = item;
 			container.amount = amount;
 			container.slot = slot;

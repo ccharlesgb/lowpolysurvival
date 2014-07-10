@@ -11,7 +11,7 @@ public class ItemBehaviour : MonoBehaviour
 	public void Init(ItemContainer ct, int amount)
 	{
 		if (ct == null) return;
-		container = ScriptableObject.CreateInstance <ItemContainer>();
+		container = new ItemContainer();
 		container.item = ct.item;
 		container.amount = amount;
 
