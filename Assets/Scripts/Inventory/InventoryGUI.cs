@@ -99,9 +99,6 @@ public class InventoryGUI : MonoBehaviour
 	void OnGUI()
 	{
 		GUI.skin = guiSkin;
-		var bdr = GUI.skin.window.border;
-		//Debug.Log("Left: " + bdr.left + " Right: " + bdr.right);
-		//Debug.Log("Top: " + bdr.top + " Bottom: " + bdr.bottom);
 
 		if (this.renderGUI)
 		{
