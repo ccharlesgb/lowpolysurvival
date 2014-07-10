@@ -73,8 +73,6 @@ public class InventoryGUI : MonoBehaviour
 	public float boxPadding = 5;
 	public float boxAreaPadding = 5;
 
-	public GameObject holstered = null;
-
 	private bool draggingItem;
 	private ItemContainer draggedItem;
 
@@ -214,15 +212,7 @@ public class InventoryGUI : MonoBehaviour
 		{
 			if (e.button == 0) //Left mouse
 			{
-				if (holstered != null)
-				{
-					Destroy (holstered);
-				}
-				GameObject itemFab = Instantiate (it.item.itemObject, transform.position, Quaternion.identity) as GameObject;
-				itemFab.GetComponent<ItemBehaviour>().Init(it, 1);
-				itemFab.GetComponent<ItemBehaviour>().Holster (inv);
-				holstered = itemFab;
-
+				inv.HolsterItem (it);
 			}
 			else if (Event.current.button == 1) //Right mouse
 			{
