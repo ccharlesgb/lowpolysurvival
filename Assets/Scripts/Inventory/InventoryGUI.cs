@@ -164,21 +164,8 @@ public class InventoryGUI : MonoBehaviour
 					continue;
 				}
 
-				/*
-				if (MouseOverItem(ref itemRect, i, Event.current.mousePosition))
-				{
-					toolTipText = it.item.itemName;
-					toolTipItem = i;
-				}
-				*/
-
 				DrawItemNew(x, y, items[slot]);
 			}
-		}
-
-		if (toolTipText != null)
-		{
-			DrawToolTip(itemRect, toolTipText, toolTipItem);
 		}
 
 	}
@@ -186,6 +173,12 @@ public class InventoryGUI : MonoBehaviour
 	private void DrawItemNew(int x, int y, ItemContainer it)
 	{
 		Rect rect = new Rect(5 + boxPadding / 2 + x * (boxSize + boxPadding), 45 + y * (boxSize + boxPadding), boxSize, boxSize);
+
+		if (MouseOverItem(rect, Event.current.mousePosition))
+		{
+			DrawToolTip(rect, it.item.itemName);
+		}
+		
 		if (GUI.Button(rect, it.item.itemIcon))
 		{
 			if (Event.current.button == 0) //Left mouse
@@ -216,18 +209,18 @@ public class InventoryGUI : MonoBehaviour
 		return array;
 	}
 
-	private void DrawToolTip(Rect itemRect, string toolTipText, int toolTipItem)
+	private void DrawToolTip(Rect itemRect, string toolTipText)
 	{
-		var x = toolTipItem * (boxSize + boxPadding) + boxAreaPadding;
-		var y = itemRect.y + 60;
+		var x = itemRect.x;
+		var y = itemRect.y - 15;
 
 		GUI.Label(new Rect(x, y, boxSize + boxPadding, 60), toolTipText, "ToolTip");
 	}
 
-	private bool MouseOverItem(ref Rect itemRect, int i, Vector2 mousePosition)
+	private bool MouseOverItem(Rect itemRect, Vector2 mousePosition)
 	{
-		return mousePosition.x > itemRect.x && mousePosition.x < (i + 1) * (boxSize + boxPadding) + boxAreaPadding &&
-		       mousePosition.y > itemRect.y && mousePosition.y < (i + 1) * (boxSize + boxPadding) + boxAreaPadding;
+		return mousePosition.x > itemRect.x && mousePosition.x < itemRect.x + boxSize &&
+			   mousePosition.y > itemRect.y && mousePosition.y < itemRect.y + boxSize;
 	}
 	
 }
