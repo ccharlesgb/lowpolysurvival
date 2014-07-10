@@ -2,8 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-[System.Serializable]
-public class ItemContainer
+public class ItemContainer : ScriptableObject
 {
 	public InventoryItem item;
 	public int amount;

@@ -15,9 +15,6 @@ public class Inventory : MonoBehaviour
 	void Start () 
 	{
 		masterList = MasterList.Instance.itemList;
-
-		AddItem("Wood", 5, 8);
-		AddItem("Stone", 10);
 	}
 
 	public void AddItem(string name, int amount, int slot = -1)
@@ -34,7 +31,7 @@ public class Inventory : MonoBehaviour
 				slot = FindFirstEmptySlot();
 			}
 
-			container = new ItemContainer();
+			container = ScriptableObject.CreateInstance<ItemContainer>();
 			container.item = item;
 			container.amount = amount;
 			container.slot = slot;
