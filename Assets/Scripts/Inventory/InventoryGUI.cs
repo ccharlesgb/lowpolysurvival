@@ -57,6 +57,9 @@ class InventoryNotification
 
 public class InventoryGUI : MonoBehaviour 
 {
+	private const int slotsX = 5;
+	private const int slotsY = 5;
+
 	// Inventory to connect to.
 	public Inventory inv;
 
@@ -154,9 +157,6 @@ public class InventoryGUI : MonoBehaviour
 	private void DrawItemList()
 	{
 		Rect itemRect = new Rect(0, 65, boxSize, boxSize);
-
-		int slotsX = 5;
-		int slotsY = 5;
 
 		ItemContainer[] items = InventoryListToArray();
 
