@@ -111,8 +111,9 @@ public class InventoryGUI : MonoBehaviour
 		}
 		else if (draggingItem)
 		{
-			draggingItem = false;
+			ResetDragging();
 		}
+
 		for (int i = 0; i < notifications.Count; i++)
 		{
 			notifications[i].DrawGUI ();
@@ -134,7 +135,6 @@ public class InventoryGUI : MonoBehaviour
 	void MyWindow(int id)
 	{
 		
-
 		DrawItemList();
 
 		if (draggingItem)
@@ -154,9 +154,6 @@ public class InventoryGUI : MonoBehaviour
 	private void DrawItemList()
 	{
 		Rect itemRect = new Rect(0, 65, boxSize, boxSize);
-
-		string toolTipText = null;
-		int toolTipItem = 0;
 
 		int slotsX = 5;
 		int slotsY = 5;
@@ -184,8 +181,7 @@ public class InventoryGUI : MonoBehaviour
 					if (draggingItem && Event.current.type == EventType.mouseUp && rect.Contains(Event.current.mousePosition))
 					{
 						draggedItem.slot = slot;
-						draggingItem = false;
-						draggedItem = null;
+						ResetDragging();
 					}
 				}
 				
@@ -205,20 +201,14 @@ public class InventoryGUI : MonoBehaviour
 			// Left mouse button.
 			if (!draggingItem && e.button == 0 && e.type == EventType.mouseDrag)
 			{
-				draggingItem = true;
-				draggedItem = it;
+				SetDraggingItem(it);
 			}
 			if (draggingItem && e.type == EventType.mouseUp)
 			{
 				// TODO: merge stacks?
 
 				// Switch place on the items.
-				int newSlot = it.slot;
-				it.slot = draggedItem.slot;
-				draggedItem.slot = newSlot;
-
-				draggingItem = false;
-				draggedItem = null;
+				SwitchItemSlot(it);
 			}
 		}
 
@@ -253,6 +243,38 @@ public class InventoryGUI : MonoBehaviour
 		{
 			GUI.Label(rect, "" + it.amount, "Stacks");
 		}
+	}
+
+	/// <summary>
+	///		Switch position of the dragged item with specified itemContainer.
+	/// </summary>
+	/// <param name="it">ItemContainer to switch slot with.</param>
+	private void SwitchItemSlot(ItemContainer it)
+	{
+		int newSlot = it.slot;
+		it.slot = draggedItem.slot;
+		draggedItem.slot = newSlot;
+
+		ResetDragging();
+	}
+
+	/// <summary>
+	///		Set the currently dragged item.
+	/// </summary>
+	/// <param name="it">ItemContainer to drag.</param>
+	private void SetDraggingItem(ItemContainer it)
+	{
+		draggingItem = true;
+		draggedItem = it;
+	}
+
+	/// <summary>
+	///		Reset the dragging status.
+	/// </summary>
+	private void ResetDragging()
+	{
+		draggingItem = false;
+		draggedItem = null;
 	}
 
 	private ItemContainer[] InventoryListToArray()
