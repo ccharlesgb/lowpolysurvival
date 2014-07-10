@@ -166,23 +166,22 @@ public class InventoryGUI : MonoBehaviour
 			for (int x = 0; x < slotsX; x++)
 			{
 				int slot = x + y * slotsX;
+				ItemContainer it = items[slot];
 
 				Rect rect = new Rect(5 + boxPadding / 2 + x * (boxSize + boxPadding), 45 + y * (boxSize + boxPadding), boxSize, boxSize);
 				
 				GUI.Box(rect, "" + x + y);
 				
-				// If slot is empty, continue to next slot.
-				if (items[slot] != null)
+				// Draw the Item.
+				if (it != null)
 				{
-					DrawItem(rect, x, y, items[slot]);
+					DrawItem(rect, x, y, it);
 				}
-				else
+
+				// Drop handling.
+				if (draggingItem && Event.current.type == EventType.mouseUp && rect.Contains(Event.current.mousePosition))
 				{
-					if (draggingItem && Event.current.type == EventType.mouseUp && rect.Contains(Event.current.mousePosition))
-					{
-						draggedItem.slot = slot;
-						ResetDragging();
-					}
+					StopDragging(slot, it);
 				}
 				
 			}
@@ -201,14 +200,7 @@ public class InventoryGUI : MonoBehaviour
 			// Left mouse button.
 			if (!draggingItem && e.button == 0 && e.type == EventType.mouseDrag)
 			{
-				SetDraggingItem(it);
-			}
-			if (draggingItem && e.type == EventType.mouseUp)
-			{
-				// TODO: merge stacks?
-
-				// Switch place on the items.
-				SwitchItemSlot(it);
+				StartDragging(it);
 			}
 		}
 
@@ -246,26 +238,36 @@ public class InventoryGUI : MonoBehaviour
 	}
 
 	/// <summary>
-	///		Switch position of the dragged item with specified itemContainer.
-	/// </summary>
-	/// <param name="it">ItemContainer to switch slot with.</param>
-	private void SwitchItemSlot(ItemContainer it)
-	{
-		int newSlot = it.slot;
-		it.slot = draggedItem.slot;
-		draggedItem.slot = newSlot;
-
-		ResetDragging();
-	}
-
-	/// <summary>
 	///		Set the currently dragged item.
 	/// </summary>
 	/// <param name="it">ItemContainer to drag.</param>
-	private void SetDraggingItem(ItemContainer it)
+	private void StartDragging(ItemContainer it)
 	{
 		draggingItem = true;
 		draggedItem = it;
+	}
+
+	/// <summary>
+	///		Drop handling.
+	/// </summary>
+	/// <param name="slot">Slot to drop the item into.</param>
+	/// <param name="it">Item already in the slot, null if empty.</param>
+	private void StopDragging(int slot, ItemContainer it)
+	{
+		if (it != null)
+		{
+			// TODO: merge stacks?
+
+			// Switch item position.
+			int newSlot = it.slot;
+			it.slot = draggedItem.slot;
+			draggedItem.slot = newSlot;
+		}
+		else
+		{
+			draggedItem.slot = slot;
+		}
+		ResetDragging();
 	}
 
 	/// <summary>
