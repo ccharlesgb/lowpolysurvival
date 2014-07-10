@@ -10,6 +10,8 @@ public class Inventory : MonoBehaviour
 
 	public float pickupDelay = 0.5f;
 
+	public GameObject holstered = null;
+
 	public ItemList masterList;
 	// Use this for initialization
 	void Start ()
@@ -168,5 +170,18 @@ public class Inventory : MonoBehaviour
 		AddItem (itemBehave.container.item.itemName, itemBehave.container.amount);
 		SendNotification(itemBehave.container, itemBehave.container.amount);
 		Destroy(itemBehave.gameObject);
+	}
+
+	public void HolsterItem(ItemContainer it)
+	{
+		if (holstered != null) //Do we already have a gameobject that is present?
+		{
+			Destroy (holstered);
+		}
+		//Spawn the new gameobject
+		GameObject itemFab = Instantiate (it.item.itemObject, transform.position, Quaternion.identity) as GameObject;
+		itemFab.GetComponent<ItemBehaviour>().Init(it, 1);
+		itemFab.GetComponent<ItemBehaviour>().Holster (this);
+		holstered = itemFab;
 	}
 }
