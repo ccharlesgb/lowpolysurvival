@@ -57,6 +57,9 @@ class InventoryNotification
 
 public class InventoryGUI : MonoBehaviour 
 {
+	private const int slotsX = 5;
+	private const int slotsY = 5;
+
 	// Inventory to connect to.
 	public Inventory inv;
 
@@ -96,7 +99,12 @@ public class InventoryGUI : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-
+		var v = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
+		if (draggingItem && Input.GetMouseButtonUp(0) && !windowSize.Contains(v))
+		{
+			inv.DropItem(draggedItem.item.itemName, draggedItem.amount);
+			ResetDragging();
+		}
 	}
 
 	void OnGUI()
@@ -137,7 +145,7 @@ public class InventoryGUI : MonoBehaviour
 
 		if (draggingItem)
 		{
-			GUI.DrawTexture(new Rect(Event.current.mousePosition.x, Event.current.mousePosition.y, boxSize, boxSize), draggedItem.item.itemIcon);
+			Graphics.DrawTexture(new Rect(Event.current.mousePosition.x, Event.current.mousePosition.y, boxSize, boxSize), draggedItem.item.itemIcon);
 		}
 
 		/*
@@ -152,9 +160,6 @@ public class InventoryGUI : MonoBehaviour
 	private void DrawItemList()
 	{
 		Rect itemRect = new Rect(0, 65, boxSize, boxSize);
-
-		int slotsX = 5;
-		int slotsY = 5;
 
 		ItemContainer[] items = InventoryListToArray();
 
@@ -184,6 +189,8 @@ public class InventoryGUI : MonoBehaviour
 				
 			}
 		}
+
+		
 
 	}
 
@@ -216,7 +223,7 @@ public class InventoryGUI : MonoBehaviour
 			}
 			else if (Event.current.button == 1) //Right mouse
 			{
-				inv.DropItem(it.item.itemName, 1);
+				//inv.DropItem(it.item.itemName, 1);
 			}
 		}
 
