@@ -112,8 +112,6 @@ public class Inventory : MonoBehaviour
 		//Does the other inventory have enough of this item to give it to us?
 		if (other.amount < amount) return; //More validation needed here
 
-		ItemContainer container = GetContainer (other.item.itemName);
-
 		AddItem (other.item.itemName, amount);
 		other.amount -= amount;
 	}

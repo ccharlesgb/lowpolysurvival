@@ -9,6 +9,7 @@ using System.Collections.Generic;
 [AddComponentMenu("Terrain/Splat Map")]
 public class TileRender : MonoBehaviour
 {
+	//PROCEDURAL MESH DEFINITIONS
 	protected MeshFilter meshFilter
 	{
 		get
@@ -72,8 +73,8 @@ public class TileRender : MonoBehaviour
 	private MeshFilter _meshFilter = null;
 	private Mesh _mesh = null;
 
+	//END MESH DEFINITIONS
 
-	public float lastCheckForUpdate;
 	public Vector3 buildPos;
 
 	//Mesh Data
@@ -116,12 +117,14 @@ public class TileRender : MonoBehaviour
 	}
 	MeshRenderer _meshRenderer;
 
+	//Returns how bix the tile is in world space
 	static public Vector3 GetTileBounds()
 	{
 		float bound = Map.Instance ().terrainSettings.tileSideLength * Map.Instance().terrainSettings.tileSquareSize;
 		return new Vector3(bound, 0, bound);
 	}
 
+	//Delete all the arrays
 	public void ClearMesh()
 	{	
 		l_vertices.Clear ();
@@ -136,6 +139,7 @@ public class TileRender : MonoBehaviour
 		_meshRenderer = GetComponent<MeshRenderer>();
 	}
 
+	//Returns the shader parameter to decide which part of the control texture this tile should use
 	Vector4 CalculateSplatUV()
 	{
 		//Pos Param is the chunk of the control UV that this particular tile should use
@@ -158,14 +162,12 @@ public class TileRender : MonoBehaviour
 		TextureMesh ();
 		BuildMesh ();
 		GetComponent<MeshCollider>().sharedMesh = mesh;
-		lastCheckForUpdate = Time.realtimeSinceStartup;
 
 		ReCalculateMesh(true);
 	}
 
 	public void TextureMesh()
 	{
-
 		if (_meshRenderer.sharedMaterial == null)
 		{
 			Debug.Log ("ERROR: Couldn't find tile material.\n");
