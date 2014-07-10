@@ -171,6 +171,12 @@ public class Inventory : MonoBehaviour
 
 	public void HolsterItem(ItemContainer it)
 	{
+		if (it == null && holstered != null) //Unholster
+		{
+			Destroy (holstered);
+			return;
+		}
+
 		if (!it.item.isEquipable) return;
 
 		if (holstered != null) //Do we already have a gameobject that is present?
