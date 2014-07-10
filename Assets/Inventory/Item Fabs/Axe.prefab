@@ -212,7 +212,7 @@ Animation:
   m_Animations:
   - {fileID: 7400000, guid: ad58084a90dbc85408d044507a712baf, type: 2}
   m_WrapMode: 0
-  m_PlayAutomatically: 1
+  m_PlayAutomatically: 0
   m_AnimatePhysics: 0
   m_CullingType: 0
 --- !u!114 &11400000
@@ -242,6 +242,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a83c8b3e535c688468f1e8acc7d542b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  primaryFireDelay: 1
+  hitRange: 10
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

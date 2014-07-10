@@ -69,6 +69,11 @@ public class ItemBehaviour : MonoBehaviour
 
 	public void RightClick(Inventory owner)
 	{
-
+		IHolster[] holsters = gameObject.GetInterfaces<IHolster>();
+		
+		foreach(IHolster holster in holsters)
+		{
+			holster.SecondaryFire(owner);
+		}
 	}
 }
