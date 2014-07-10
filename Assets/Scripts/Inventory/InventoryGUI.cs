@@ -109,6 +109,10 @@ public class InventoryGUI : MonoBehaviour
 		{
 			GUI.Window(0, windowSize, MyWindow, "Inventory");
 		}
+		else if (draggingItem)
+		{
+			draggingItem = false;
+		}
 		for (int i = 0; i < notifications.Count; i++)
 		{
 			notifications[i].DrawGUI ();
@@ -171,12 +175,20 @@ public class InventoryGUI : MonoBehaviour
 				GUI.Box(rect, "" + x + y);
 				
 				// If slot is empty, continue to next slot.
-				if (items[slot] == null)
+				if (items[slot] != null)
 				{
-					continue;
+					DrawItem(rect, x, y, items[slot]);
 				}
-
-				DrawItem(rect, x, y, items[slot]);
+				else
+				{
+					if (draggingItem && Event.current.type == EventType.mouseUp && rect.Contains(Event.current.mousePosition))
+					{
+						draggedItem.slot = slot;
+						draggingItem = false;
+						draggedItem = null;
+					}
+				}
+				
 			}
 		}
 
