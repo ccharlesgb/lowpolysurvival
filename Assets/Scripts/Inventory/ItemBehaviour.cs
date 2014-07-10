@@ -33,7 +33,7 @@ public class ItemBehaviour : MonoBehaviour
 	public void Init(ItemContainer ct, int amount)
 	{
 		if (ct == null) return;
-		container = new ItemContainer();
+		container = ItemContainer.CreateInstance<ItemContainer>();
 		container.item = ct.item;
 		container.amount = amount;
 
@@ -55,5 +55,20 @@ public class ItemBehaviour : MonoBehaviour
 	{
 		isHolstering = false;
 		transform.parent = null;
+	}
+
+	public void LeftClick(Inventory owner)
+	{
+		IHolster[] holsters = gameObject.GetInterfaces<IHolster>();
+
+		foreach(IHolster holster in holsters)
+		{
+			holster.PrimaryFire (owner);
+		}
+	}
+
+	public void RightClick(Inventory owner)
+	{
+
 	}
 }

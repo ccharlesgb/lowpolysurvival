@@ -184,4 +184,19 @@ public class Inventory : MonoBehaviour
 		itemFab.GetComponent<ItemBehaviour>().Holster (this);
 		holstered = itemFab;
 	}
+
+	void Update()
+	{
+		if (holstered != null)
+		{
+			if (Input.GetAxis ("Fire1") == 1.0f)
+			{
+				holstered.GetComponent<ItemBehaviour>().LeftClick(this);
+			}
+			if (Input.GetAxis ("Fire2") == 1.0f)
+			{
+				holstered.GetComponent<ItemBehaviour>().RightClick(this);
+			}
+		}
+	}
 }

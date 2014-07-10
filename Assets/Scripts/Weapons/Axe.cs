@@ -1,15 +1,13 @@
-﻿/*
+﻿
 using UnityEngine;
 using System.Collections;
 
-public class Axe : MonoBehaviour 
+public class Axe : MonoBehaviour, IHolster
 {
 	public float primaryFireDelay = 1.0f;
 	float nextPrimaryFire = 0.0f;
 
 	public float hitRange = 2.0f;
-
-	public Inventory inventory;
 
 	// Use this for initialization
 	void Start () 
@@ -20,13 +18,9 @@ public class Axe : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-		if (Input.GetAxis ("Fire1") == 1.0f)
-		{
-			PrimaryFire();
-		}
 	}
 
-	public void PrimaryFire()
+	public void PrimaryFire(Inventory ownerInv)
 	{
 		if (nextPrimaryFire > Time.time)
 		{
@@ -46,32 +40,29 @@ public class Axe : MonoBehaviour
 			GameObject obj = hit.collider.gameObject;
 			if (obj != null)
 			{
+				Debug.Log("DISTANCE");
 				float distance = (obj.transform.position - transform.position).magnitude;
 				if (distance > hitRange)
 					return;
 				Inventory inv = obj.GetComponent<Inventory>();
+				Debug.Log("AXE INV " + inv);
 				if (inv != null) //It has an inventory we can harvest!
 				{
-					ItemHandle itemHarvest = inv.FindItem ("Wood"); //Does it have any wood?
-					if (itemHarvest.IsValid ())
+					ItemContainer itemHarvest = inv.GetContainer ("Wood");
+					if (itemHarvest != null)
 					{
 						if (itemHarvest.amount > 1)
 						{
-							itemHarvest.amount--;
-
-							if (inventory)
-							{
-								ItemHandle toAdd = new ItemHandle();
-								toAdd.item = itemHarvest.item;
-								toAdd.amount = 1;
-								inventory.AddItem(toAdd);
-							}
+							ownerInv.TransferItem (itemHarvest, 1);
 						}
 					}
 				}
 			}
 		}
 	}
-				
+
+	public void SecondaryFire(Inventory ownerInv)
+	{
+
+	}
 }
-*/
