@@ -84,7 +84,7 @@ public class InventoryGUI : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
-
+		
 	
 	}
 	
@@ -96,6 +96,11 @@ public class InventoryGUI : MonoBehaviour
 
 	void OnGUI()
 	{
+		GUI.skin = guiSkin;
+		var bdr = GUI.skin.window.border;
+		Debug.Log("Left: " + bdr.left + " Right: " + bdr.right);
+		Debug.Log("Top: " + bdr.top + " Bottom: " + bdr.bottom);
+
 		if (this.renderGUI)
 		{
 			GUI.Window(0, windowSize, MyWindow, "Inventory");
@@ -120,7 +125,7 @@ public class InventoryGUI : MonoBehaviour
 	
 	void MyWindow(int id)
 	{
-		GUI.skin = guiSkin;
+		
 
 		DrawItemList();
 
@@ -133,7 +138,7 @@ public class InventoryGUI : MonoBehaviour
 
 	private void DrawItemList()
 	{
-		Rect itemRect = new Rect(0, 20, boxSize, boxSize);
+		Rect itemRect = new Rect(0, 35, boxSize, boxSize);
 
 		string toolTipText = null;
 		int toolTipItem = 0;
