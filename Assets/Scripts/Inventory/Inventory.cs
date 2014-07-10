@@ -122,6 +122,12 @@ public class Inventory : MonoBehaviour
 		if (container == null) return;
 		if (container.amount < amount) return;
 
+		if (holstered != null && holstered.GetComponent<ItemBehaviour>().container.item == container.item)
+		{
+			Destroy (holstered);
+			holstered = null;
+		}
+
 		GameObject itemFab = Instantiate (container.item.itemObject, transform.position, Quaternion.identity) as GameObject;
 
 		itemFab.GetComponent<ItemBehaviour>().Init(container, amount);
@@ -180,6 +186,7 @@ public class Inventory : MonoBehaviour
 		if (holstered != null) //Do we already have a gameobject that is present?
 		{
 			Destroy (holstered);
+			holstered = null;
 		}
 		//Spawn the new gameobject
 		GameObject itemFab = Instantiate (it.item.itemObject, transform.position, Quaternion.identity) as GameObject;
