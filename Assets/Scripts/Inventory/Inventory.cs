@@ -20,7 +20,7 @@ public class Inventory : MonoBehaviour
 		AddItem("Stone", 10);
 	}
 
-	public void AddItem(string name, int amount)
+	public void AddItem(string name, int amount, int slot = -1)
 	{
 		InventoryItem item = masterList.FindByName (name);
 		if (item == null || item.itemObject == null) return; //Not a valid item
@@ -29,15 +29,47 @@ public class Inventory : MonoBehaviour
 
 		if (container == null)
 		{
+			if (slot == -1)
+			{
+				slot = FindFirstEmptySlot();
+			}
+
 			container = ScriptableObject.CreateInstance<ItemContainer>();
 			container.item = item;
 			container.amount = amount;
+			container.slot = slot;
 			containerList.Add (container);
 		}
 		else
 		{
 			container.amount += amount;
 		}
+	}
+
+	private int FindFirstEmptySlot()
+	{
+		int slot = 0;
+		for (int i = 0; i < 30; i++)
+		{
+			bool found = false;
+			
+			foreach (ItemContainer container in containerList)
+			{
+				if (container.slot == i)
+				{
+					found = true;
+					break;
+				}
+			}
+
+			if (!found)
+			{
+				slot = i;
+				break;
+			}
+		}
+			
+		return slot;
 	}
 
 	public bool HasItem(string name)

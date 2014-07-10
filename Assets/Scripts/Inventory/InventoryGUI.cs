@@ -86,7 +86,7 @@ public class InventoryGUI : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
-		
+		this.windowSize = new Rect(0, 0, 10 + (boxSize + boxPadding) * 5, 50 + (boxSize + boxPadding) * 5);
 	
 	}
 	
@@ -131,35 +131,51 @@ public class InventoryGUI : MonoBehaviour
 
 		DrawItemList();
 
+		/*
 		// Close button
 		if (GUI.Button(new Rect(10, this.windowSize.height - 40, this.windowSize.width - 20, 30), "Close"))
 		{
 			this.renderGUI = false;
 		}
+		*/
 	}
 
 	private void DrawItemList()
 	{
-		Rect itemRect = new Rect(0, 35, boxSize, boxSize);
+		Rect itemRect = new Rect(0, 65, boxSize, boxSize);
 
 		string toolTipText = null;
 		int toolTipItem = 0;
 
-		for (int i = 0; i < inv.containerList.Count; i++)
+		int slotsX = 5;
+		int slotsY = 5;
+
+		ItemContainer[] items = InventoryListToArray();
+
+		// Loop all slots, by x and y.
+		for (int y = 0; y < slotsY; y++)
 		{
-			ItemContainer it = inv.containerList[i];
-
-			if (it != null)
+			for (int x = 0; x < slotsX; x++)
 			{
-				itemRect.x = i * (boxSize + boxPadding) + boxAreaPadding;
+				int slot = x + y * slotsX;
+				
+				GUI.Box(new Rect(5 + boxPadding / 2 + x * (boxSize + boxPadding), 45 + y * (boxSize + boxPadding), boxSize, boxSize), "" + x + y);
 
+				// If slot is empty, continue to next slot.
+				if (items[slot] == null)
+				{
+					continue;
+				}
+
+				/*
 				if (MouseOverItem(ref itemRect, i, Event.current.mousePosition))
 				{
 					toolTipText = it.item.itemName;
 					toolTipItem = i;
 				}
+				*/
 
-				DrawItem(itemRect, i, it);
+				DrawItemNew(x, y, items[slot]);
 			}
 		}
 
@@ -168,6 +184,39 @@ public class InventoryGUI : MonoBehaviour
 			DrawToolTip(itemRect, toolTipText, toolTipItem);
 		}
 
+	}
+
+	private void DrawItemNew(int x, int y, ItemContainer it)
+	{
+		Rect rect = new Rect(5 + boxPadding / 2 + x * (boxSize + boxPadding), 45 + y * (boxSize + boxPadding), boxSize, boxSize);
+		if (GUI.Button(rect, it.item.itemIcon))
+		{
+			if (Event.current.button == 0) //Left mouse
+			{
+				//
+			}
+			else if (Event.current.button == 1) //Right mouse
+			{
+				inv.DropItem(it.item.itemName, 1);
+			}
+		}
+
+		// Draw the stack count.
+		if (it.item.isStackable)
+		{
+			GUI.Label(rect, "" + it.amount, "Stacks");
+		}
+	}
+
+	private ItemContainer[] InventoryListToArray()
+	{
+		// TODO: Break out the array size.
+		ItemContainer[] array = new ItemContainer[25];
+		foreach (ItemContainer container in inv.containerList)
+		{
+			array[container.slot] = container;
+		}
+		return array;
 	}
 
 	private void DrawToolTip(Rect itemRect, string toolTipText, int toolTipItem)
@@ -183,29 +232,5 @@ public class InventoryGUI : MonoBehaviour
 		return mousePosition.x > itemRect.x && mousePosition.x < (i + 1) * (boxSize + boxPadding) + boxAreaPadding &&
 		       mousePosition.y > itemRect.y && mousePosition.y < (i + 1) * (boxSize + boxPadding) + boxAreaPadding;
 	}
-
-	private void DrawItem(Rect itemRect, int i, ItemContainer it)
-	{
-		//if (GUI.Button(itemRect, it.item.itemName + "\n" + it.amount))
-		if (GUI.Button(itemRect, it.item.itemIcon))
-		{
-			if (Event.current.button == 0) //Left mouse
-			{
-				//
-			}
-			else if (Event.current.button == 1) //Right mouse
-			{
-				inv.DropItem(it.item.itemName, 1);
-			}
-		}
-
-		// Draw the stack count.
-		if (it.item.isStackable)
-		{
-			GUI.Label(new Rect(itemRect.x, itemRect.y, boxSize, boxSize), "" + it.amount, "Stacks");
-		}
-
-	}
-
 	
 }
