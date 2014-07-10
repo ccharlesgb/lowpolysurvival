@@ -78,7 +78,7 @@ public class InventoryGUI : MonoBehaviour
 	//List of notifications when a new item is added
 	private readonly List<InventoryNotification> _notifications = new List<InventoryNotification>();
 
-	private bool _draggingItem;
+	private bool _isDraggingItem;
 	private ItemContainer _draggedItem;
 
 	void Awake()
@@ -102,7 +102,7 @@ public class InventoryGUI : MonoBehaviour
 	void Update () 
 	{
 		var v = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
-		if (_draggingItem && Input.GetMouseButtonUp(0) && !WindowSize.Contains(v))
+		if (_isDraggingItem && Input.GetMouseButtonUp(0) && !WindowSize.Contains(v))
 		{
 			Inv.DropItem(_draggedItem.item.itemName, _draggedItem.amount);
 			ResetDragging();
@@ -117,7 +117,7 @@ public class InventoryGUI : MonoBehaviour
 		{
 			GUI.Window(0, WindowSize, MyWindow, "Inventory");
 		}
-		else if (_draggingItem)
+		else if (_isDraggingItem)
 		{
 			ResetDragging();
 		}
@@ -145,7 +145,7 @@ public class InventoryGUI : MonoBehaviour
 		
 		DrawItemList();
 
-		if (_draggingItem)
+		if (_isDraggingItem)
 		{
 			Graphics.DrawTexture(new Rect(Event.current.mousePosition.x, Event.current.mousePosition.y, BoxSize, BoxSize), _draggedItem.item.itemIcon);
 		}
@@ -184,7 +184,7 @@ public class InventoryGUI : MonoBehaviour
 				}
 
 				// Drop handling.
-				if (_draggingItem && Event.current.type == EventType.mouseUp && rect.Contains(Event.current.mousePosition))
+				if (_isDraggingItem && Event.current.type == EventType.mouseUp && rect.Contains(Event.current.mousePosition))
 				{
 					StopDragging(slot, it);
 				}
@@ -205,7 +205,7 @@ public class InventoryGUI : MonoBehaviour
 			DrawToolTip(rect, it.item.itemName);
 
 			// Left mouse button.
-			if (!_draggingItem && e.button == 0 && e.type == EventType.mouseDrag)
+			if (!_isDraggingItem && e.button == 0 && e.type == EventType.mouseDrag)
 			{
 				StartDragging(it);
 			}
@@ -242,7 +242,7 @@ public class InventoryGUI : MonoBehaviour
 	/// <param name="it">ItemContainer to drag.</param>
 	private void StartDragging(ItemContainer it)
 	{
-		_draggingItem = true;
+		_isDraggingItem = true;
 		_draggedItem = it;
 	}
 
@@ -274,7 +274,7 @@ public class InventoryGUI : MonoBehaviour
 	/// </summary>
 	private void ResetDragging()
 	{
-		_draggingItem = false;
+		_isDraggingItem = false;
 		_draggedItem = null;
 	}
 
