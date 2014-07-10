@@ -16,7 +16,7 @@ public class Inventory : MonoBehaviour
 	{
 		masterList = MasterList.Instance.itemList;
 
-		AddItem("Wood", 5);
+		AddItem("Wood", 5, 8);
 		AddItem("Stone", 10);
 	}
 
