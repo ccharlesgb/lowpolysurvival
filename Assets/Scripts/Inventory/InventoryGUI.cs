@@ -75,6 +75,9 @@ public class InventoryGUI : MonoBehaviour
 
 	public GameObject holstered = null;
 
+	private bool draggingItem;
+	private ItemContainer draggedItem;
+
 	void Awake()
 	{
 		inv = GetComponent<Inventory>();
@@ -130,6 +133,11 @@ public class InventoryGUI : MonoBehaviour
 
 		DrawItemList();
 
+		if (draggingItem)
+		{
+			GUI.DrawTexture(new Rect(Event.current.mousePosition.x, Event.current.mousePosition.y, boxSize, boxSize), draggedItem.item.itemIcon);
+		}
+
 		/*
 		// Close button
 		if (GUI.Button(new Rect(10, this.windowSize.height - 40, this.windowSize.width - 20, 30), "Close"))
@@ -157,8 +165,10 @@ public class InventoryGUI : MonoBehaviour
 			for (int x = 0; x < slotsX; x++)
 			{
 				int slot = x + y * slotsX;
+
+				Rect rect = new Rect(5 + boxPadding / 2 + x * (boxSize + boxPadding), 45 + y * (boxSize + boxPadding), boxSize, boxSize);
 				
-				GUI.Box(new Rect(5 + boxPadding / 2 + x * (boxSize + boxPadding), 45 + y * (boxSize + boxPadding), boxSize, boxSize), "" + x + y);
+				GUI.Box(rect, "" + x + y);
 				
 				// If slot is empty, continue to next slot.
 				if (items[slot] == null)
@@ -166,24 +176,49 @@ public class InventoryGUI : MonoBehaviour
 					continue;
 				}
 
-				DrawItemNew(x, y, items[slot]);
+				DrawItem(rect, x, y, items[slot]);
 			}
 		}
 
 	}
 
-	private void DrawItemNew(int x, int y, ItemContainer it)
+	private void DrawItem(Rect rect, int x, int y, ItemContainer it)
 	{
-		Rect rect = new Rect(5 + boxPadding / 2 + x * (boxSize + boxPadding), 45 + y * (boxSize + boxPadding), boxSize, boxSize);
-
-		if (rect.Contains(Event.current.mousePosition))
+		Event e = Event.current;
+		
+		if (rect.Contains(e.mousePosition))
 		{
 			DrawToolTip(rect, it.item.itemName);
+
+			// Left mouse button.
+			if (!draggingItem && e.button == 0 && e.type == EventType.mouseDrag)
+			{
+				draggingItem = true;
+				draggedItem = it;
+			}
+			if (draggingItem && e.type == EventType.mouseUp)
+			{
+				// TODO: merge stacks?
+
+				// Switch place on the items.
+				int newSlot = it.slot;
+				it.slot = draggedItem.slot;
+				draggedItem.slot = newSlot;
+
+				draggingItem = false;
+				draggedItem = null;
+			}
 		}
-		
+
+		// Prevent the icon from being drawn if dragging it.
+		if (it == draggedItem)
+		{
+			return;
+		}
+
 		if (GUI.Button(rect, it.item.itemIcon))
 		{
-			if (Event.current.button == 0) //Left mouse
+			if (e.button == 0) //Left mouse
 			{
 				if (holstered != null)
 				{
