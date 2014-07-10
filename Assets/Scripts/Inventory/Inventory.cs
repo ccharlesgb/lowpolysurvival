@@ -12,7 +12,7 @@ public class Inventory : MonoBehaviour
 
 	public ItemList masterList;
 	// Use this for initialization
-	void Start () 
+	void Start ()
 	{
 		masterList = MasterList.Instance.itemList;
 	}

@@ -73,6 +73,8 @@ public class InventoryGUI : MonoBehaviour
 	public float boxPadding = 5;
 	public float boxAreaPadding = 5;
 
+	public GameObject holstered = null;
+
 	void Awake()
 	{
 		inv = GetComponent<Inventory>();
@@ -157,7 +159,7 @@ public class InventoryGUI : MonoBehaviour
 				int slot = x + y * slotsX;
 				
 				GUI.Box(new Rect(5 + boxPadding / 2 + x * (boxSize + boxPadding), 45 + y * (boxSize + boxPadding), boxSize, boxSize), "" + x + y);
-
+				
 				// If slot is empty, continue to next slot.
 				if (items[slot] == null)
 				{
@@ -183,7 +185,15 @@ public class InventoryGUI : MonoBehaviour
 		{
 			if (Event.current.button == 0) //Left mouse
 			{
-				//
+				if (holstered != null)
+				{
+					Destroy (holstered);
+				}
+				GameObject itemFab = Instantiate (it.item.itemObject, transform.position, Quaternion.identity) as GameObject;
+				itemFab.GetComponent<ItemBehaviour>().Init(it, 1);
+				itemFab.GetComponent<ItemBehaviour>().Holster (inv);
+				holstered = itemFab;
+
 			}
 			else if (Event.current.button == 1) //Right mouse
 			{
