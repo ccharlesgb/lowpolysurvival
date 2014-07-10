@@ -176,7 +176,7 @@ public class InventoryGUI : MonoBehaviour
 	{
 		Rect rect = new Rect(5 + boxPadding / 2 + x * (boxSize + boxPadding), 45 + y * (boxSize + boxPadding), boxSize, boxSize);
 
-		if (MouseOverItem(rect, Event.current.mousePosition))
+		if (rect.Contains(Event.current.mousePosition))
 		{
 			DrawToolTip(rect, it.item.itemName);
 		}
@@ -225,12 +225,6 @@ public class InventoryGUI : MonoBehaviour
 		var y = itemRect.y - 15;
 
 		GUI.Label(new Rect(x, y, boxSize + boxPadding, 60), toolTipText, "ToolTip");
-	}
-
-	private bool MouseOverItem(Rect itemRect, Vector2 mousePosition)
-	{
-		return mousePosition.x > itemRect.x && mousePosition.x < itemRect.x + boxSize &&
-			   mousePosition.y > itemRect.y && mousePosition.y < itemRect.y + boxSize;
 	}
 	
 }
