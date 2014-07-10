@@ -96,6 +96,8 @@ public class InventoryGUI : MonoBehaviour
 	private void Update()
 	{
 		var v = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
+
+		// Drop outside the window?
 		if (_isDraggingItem && Input.GetMouseButtonUp(0) && !WindowSize.Contains(v))
 		{
 			Inv.DropItem(_draggedItem.item.itemName, _draggedItem.amount);
@@ -142,21 +144,13 @@ public class InventoryGUI : MonoBehaviour
 			Graphics.DrawTexture(new Rect(Event.current.mousePosition.x, Event.current.mousePosition.y, BoxSize, BoxSize),
 				_draggedItem.item.itemIcon);
 		}
-
-		/*
-		// Close button
-		if (GUI.Button(new Rect(10, this.windowSize.height - 40, this.windowSize.width - 20, 30), "Close"))
-		{
-			this.renderGUI = false;
-		}
-		*/
 	}
 
 	private void DrawItemList()
 	{
 		var itemRect = new Rect(0, 65, BoxSize, BoxSize);
 
-		ItemContainer[] items = InventoryListToArray();
+		ItemContainer[] items = Inv.GetInventoryAsArray();
 
 		// Loop all slots, by x and y.
 		for (int y = 0; y < SlotsY; y++)
@@ -173,7 +167,7 @@ public class InventoryGUI : MonoBehaviour
 				// Draw the Item.
 				if (it != null)
 				{
-					DrawItem(rect, x, y, it);
+					DrawItem(rect, it);
 				}
 
 				// Drop handling.
@@ -185,7 +179,7 @@ public class InventoryGUI : MonoBehaviour
 		}
 	}
 
-	private void DrawItem(Rect rect, int x, int y, ItemContainer it)
+	private void DrawItem(Rect rect, ItemContainer it)
 	{
 		Event e = Event.current;
 
@@ -265,17 +259,6 @@ public class InventoryGUI : MonoBehaviour
 	{
 		_isDraggingItem = false;
 		_draggedItem = null;
-	}
-
-	private ItemContainer[] InventoryListToArray()
-	{
-		// TODO: Break out the array size.
-		var array = new ItemContainer[25];
-		foreach (ItemContainer container in Inv.containerList)
-		{
-			array[container.slot] = container;
-		}
-		return array;
 	}
 
 	private void DrawToolTip(Rect itemRect, string toolTipText)
