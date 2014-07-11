@@ -28,6 +28,10 @@ public class InventoryShower : MonoBehaviour {
 			    Screen.lockCursor = true;
 				invGUI.renderGUI = false;
 			}
+			else if (Input.GetKeyUp (showKey))
+			{
+				invGUI.renderGUI = false;
+			}
 		}
 	}
 }

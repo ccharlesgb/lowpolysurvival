@@ -2,8 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Inventory : MonoBehaviour 
+public class Inventory : MonoBehaviour
 {
+	public static int NbrSlots = 25;
+
 	public List<ItemContainer> containerList = new List<ItemContainer>();
 
 	public InventoryGUI inventoryGUI;
@@ -19,6 +21,17 @@ public class Inventory : MonoBehaviour
 	{
 		masterList = MasterList.Instance.itemList;
 	}
+
+	public ItemContainer[] GetInventoryAsArray()
+	{
+		var array = new ItemContainer[NbrSlots];
+		foreach (ItemContainer container in containerList)
+		{
+			array[container.slot] = container;
+		}
+		return array;
+	}
+
 
 	public void AddItem(string name, int amount, int slot = -1)
 	{
@@ -50,7 +63,7 @@ public class Inventory : MonoBehaviour
 	private int FindFirstEmptySlot()
 	{
 		int slot = 0;
-		for (int i = 0; i < 30; i++)
+		for (int i = 0; i < NbrSlots; i++)
 		{
 			bool found = false;
 			
