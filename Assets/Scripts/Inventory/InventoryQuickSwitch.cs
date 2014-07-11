@@ -16,7 +16,7 @@ public class InventoryQuickSwitch : MonoBehaviour
 	public float BoxPadding = 5;
 	public float BoxSize = 50;
 
-	private int ActiveSlot = 0;
+	private int _activeSlot = 1;
 
 	// Use this for initialization
 	void Start()
@@ -27,6 +27,14 @@ public class InventoryQuickSwitch : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
+
+		for (int i = 1; i <= 5; i++)
+		{
+			if (_activeSlot != i && Input.GetKeyDown(""+i))
+			{
+				_activeSlot = i;
+			}
+		}
 
 	}
 
@@ -42,7 +50,7 @@ public class InventoryQuickSwitch : MonoBehaviour
 		{
 			var rect = new Rect(_boxSize.x + x * (BoxSize), _boxSize.y, BoxSize, _boxSize.height);
 
-			if (x == ActiveSlot)
+			if (x == _activeSlot-1)
 			{
 				GUI.Box(rect, "" + (x + 1));
 			}
