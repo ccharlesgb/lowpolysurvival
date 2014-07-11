@@ -50,7 +50,8 @@ namespace Player
 			distance = Mathf.Lerp(distance, distanceWanted, Time.deltaTime * zoomSpeed);
 
 			// Set position to player and move "backwards" in the camera direction (zooming out).
-			this.transform.position = player.transform.position - this.transform.forward * distance;
+			transform.position = player.transform.position - this.transform.forward * distance;
+
 		}
 	}
 

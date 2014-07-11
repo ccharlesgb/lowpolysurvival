@@ -10,6 +10,8 @@ using System.Collections;
 
 public class PlayerInputController : MonoBehaviour {
 
+    public float lookSensitivity;
+
 	private CharacterMotorC cmotor;
 	// Use this for initialization
 	void Awake()
@@ -45,6 +47,14 @@ public class PlayerInputController : MonoBehaviour {
 		cmotor.inputMoveDirection = transform.rotation * directionVector;
 		cmotor.inputJump = Input.GetButton("Jump");
 
+        float xIn = Input.GetAxis("Mouse X");
+        float yIn = Input.GetAxis("Mouse Y");
+
+	    Vector3 newEuler = transform.rotation.eulerAngles;
+	    newEuler.y += xIn * lookSensitivity;
+	    transform.eulerAngles = newEuler;
+
+	    /*
 		// Generate a ray from the cursor position
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -56,6 +66,6 @@ public class PlayerInputController : MonoBehaviour {
 			Vector3 targetPostition = new Vector3(hit.point.x, this.transform.position.y, hit.point.z);
 
 			this.transform.LookAt(targetPostition);
-		}
+		}*/
 	}
 }

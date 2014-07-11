@@ -1,17 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-// https://gist.github.com/zephjc/5641540
-
-//#pragma strict
-//#pragma implicit
-//#pragma downcast
-
-// Require a character controller to be attached to the same game object
-// I had to initally comment out the following RequireComponent
-// line to make it compile and allow attaching to my Main Camera;
-// Uncommenting afterwards worked fine.
-// -- zephjc
 [RequireComponent(typeof(CharacterController))]
 
 //RequireComponent (CharacterMotor)
