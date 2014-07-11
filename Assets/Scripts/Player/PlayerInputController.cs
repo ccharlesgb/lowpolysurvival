@@ -8,9 +8,9 @@ using System.Collections;
 [AddComponentMenu("Character/Player Input Controller C")]
 //@script AddComponentMenu ("Character/FPS Input Controller")
 
-public class PlayerInputController : MonoBehaviour {
-
-    public float lookSensitivity;
+public class PlayerInputController : MonoBehaviour
+{
+    public float lookSensitivity = 2.0f;
 
 	private CharacterMotorC cmotor;
 	// Use this for initialization
