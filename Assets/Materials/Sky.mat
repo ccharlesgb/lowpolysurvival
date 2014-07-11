@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Sky
-  m_Shader: {fileID: 104, guid: 0000000000000000f000000000000000, type: 0}
+  m_Shader: {fileID: 4800000, guid: caed917f6b0a5104a96954bef1f37e1d, type: 3}
   m_ShaderKeywords: []
   m_CustomRenderQueue: -1
   m_SavedProperties:
@@ -62,7 +62,22 @@ Material:
           m_Texture: {fileID: 2800000, guid: ca109b3224495d94da74cfd55e7be3cc, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
-    m_Floats: {}
+      data:
+        first:
+          name: _WhiteTex
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+    m_Floats:
+      data:
+        first:
+          name: _GradOffset
+        second: .0700000003
+      data:
+        first:
+          name: _GradFalloff
+        second: 0
     m_Colors:
       data:
         first:
@@ -71,4 +86,20 @@ Material:
       data:
         first:
           name: _Tint
-        second: {r: .669117689, g: .491998285, b: .491998285, a: .501960814}
+        second: {r: 0, g: 0, b: 0, a: 1}
+      data:
+        first:
+          name: _Color1
+        second: {r: 1, g: .641379356, b: 0, a: 1}
+      data:
+        first:
+          name: _Color2
+        second: {r: .784775078, g: .926240742, b: .952941179, a: 1}
+      data:
+        first:
+          name: _TopColor
+        second: {r: .277136177, g: .847458243, b: .954996347, a: 1}
+      data:
+        first:
+          name: _BottomColor
+        second: {r: 1.00234807, g: 1.00216877, b: 1.00201619, a: 1}
