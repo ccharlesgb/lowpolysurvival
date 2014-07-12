@@ -20,12 +20,12 @@ public class ItemBehaviour : MonoBehaviour
 			if (item != null)
 			{
 				container = ScriptableObject.CreateInstance<ItemContainer>();
-				container.item = item;
+				container.Item = item;
 				if (!item.isStackable) amount = 1;
 				if (item.isStackable && amount > item.stackSize)
 					amount = item.stackSize;
 
-				container.amount = amount;
+				container.Amount = amount;
 			}
 		}
 	}
@@ -34,8 +34,8 @@ public class ItemBehaviour : MonoBehaviour
 	{
 		if (ct == null) return;
 		container = ItemContainer.CreateInstance<ItemContainer>();
-		container.item = ct.item;
-		container.amount = amount;
+		container.Item = ct.Item;
+		container.Amount = amount;
 
 		spawnTime = Time.time;
 	}
@@ -43,7 +43,7 @@ public class ItemBehaviour : MonoBehaviour
 	//Set this item to be the active weapon/consumable etc	
 	public bool Holster(Inventory inv)
 	{
-		if (!container.item.isEquipable) return false;
+		if (!container.Item.isEquipable) return false;
 
 		isHolstering = true;
 		transform.parent = inv.transform;

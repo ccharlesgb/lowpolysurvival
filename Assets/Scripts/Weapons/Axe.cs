@@ -49,7 +49,7 @@ public class Axe : MonoBehaviour, IHolster
 					ItemContainer itemHarvest = inv.GetContainer ("Wood");
 					if (itemHarvest != null)
 					{
-						if (itemHarvest.amount > 1)
+						if (itemHarvest.Amount > 1)
 						{
 							ownerInv.TransferItem (itemHarvest, 1);
 						}

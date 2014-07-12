@@ -1,10 +1,22 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 
+/// <summary>
+///		Basic container for items, that adds amount and slot.
+/// </summary>
 public class ItemContainer : ScriptableObject
 {
-	public InventoryItem item;
-	public int amount;
-	public int slot;
+	/// <summary>
+	/// Item the container refers to.
+	/// </summary>
+	public InventoryItem Item;
+
+	/// <summary>
+	/// The amount we have of the item.
+	/// </summary>
+	public int Amount;
+
+	/// <summary>
+	/// What "inventory" slot the item is located in.
+	/// </summary>
+	public int Slot;
 }

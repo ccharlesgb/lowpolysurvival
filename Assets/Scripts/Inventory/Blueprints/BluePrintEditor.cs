@@ -104,15 +104,15 @@ public class BluePrintEditor : EditorWindow
                 if (GUILayout.Button("Add Input Part", GUILayout.ExpandWidth(false)))
                 {
                     ItemContainer newPart = ScriptableObject.CreateInstance<ItemContainer>();
-                    newPart.item = null;
-                    newPart.amount = 1;
+                    newPart.Item = null;
+                    newPart.Amount = 1;
                     curPrint.requiredItems.Add(newPart);
                 }
                 if (GUILayout.Button("Add Output Part", GUILayout.ExpandWidth(false)))
                 {
                     ItemContainer newPart = ScriptableObject.CreateInstance<ItemContainer>();
-                    newPart.item = null;
-                    newPart.amount = 1;
+                    newPart.Item = null;
+                    newPart.Amount = 1;
                     curPrint.outputItems.Add(newPart);
                 }
                 GUILayout.EndHorizontal();

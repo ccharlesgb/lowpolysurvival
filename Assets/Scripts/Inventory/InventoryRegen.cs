@@ -75,7 +75,7 @@ public class InventoryRegen : MonoBehaviour
 			ItemContainer container = inventory.GetContainer(pair.Key);
 			if (container != null)
 			{
-				if (container.amount >= pair.Value.max)
+				if (container.Amount >= pair.Value.max)
 					continue;
 			}
 			if (pair.Value.lastRegen + (1/pair.Value.regen) < Time.time)

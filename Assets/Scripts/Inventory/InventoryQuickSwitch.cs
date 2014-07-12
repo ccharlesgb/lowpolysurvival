@@ -91,7 +91,7 @@ public class InventoryQuickSwitch : MonoBehaviour
 
 			if (it != null)
 			{
-				GUI.DrawTexture(new Rect(rect.x + 5, rect.y + 20, BoxSize - 10, BoxSize - 10), it.item.itemIcon);
+				GUI.DrawTexture(new Rect(rect.x + 5, rect.y + 20, BoxSize - 10, BoxSize - 10), it.Item.itemIcon);
 			}
 
 		}

@@ -100,7 +100,7 @@ public class InventoryGUI : MonoBehaviour
 		// Drop outside the window?
 		if (_isDraggingItem && Input.GetMouseButtonUp(0) && !WindowSize.Contains(v))
 		{
-			Inv.DropItem(_draggedItem.item.itemName, _draggedItem.amount);
+			Inv.DropItem(_draggedItem.Item.itemName, _draggedItem.Amount);
 			ResetDragging();
 		}
 	}
@@ -142,7 +142,7 @@ public class InventoryGUI : MonoBehaviour
 		if (_isDraggingItem)
 		{
 			Graphics.DrawTexture(new Rect(Event.current.mousePosition.x, Event.current.mousePosition.y, BoxSize, BoxSize),
-				_draggedItem.item.itemIcon);
+				_draggedItem.Item.itemIcon);
 		}
 	}
 
@@ -185,7 +185,7 @@ public class InventoryGUI : MonoBehaviour
 
 		if (rect.Contains(e.mousePosition))
 		{
-			DrawToolTip(rect, it.item.itemName);
+			DrawToolTip(rect, it.Item.itemName);
 
 			// Left mouse button.
 			if (!_isDraggingItem && e.button == 0 && e.type == EventType.mouseDrag)
@@ -200,7 +200,7 @@ public class InventoryGUI : MonoBehaviour
 			return;
 		}
 
-		if (GUI.Button(rect, it.item.itemIcon))
+		if (GUI.Button(rect, it.Item.itemIcon))
 		{
 			if (e.button == 0) //Left mouse
 			{
@@ -213,9 +213,9 @@ public class InventoryGUI : MonoBehaviour
 		}
 
 		// Draw the stack count.
-		if (it.item.isStackable)
+		if (it.Item.isStackable)
 		{
-			GUI.Label(rect, "" + it.amount, "Stacks");
+			GUI.Label(rect, "" + it.Amount, "Stacks");
 		}
 	}
 
@@ -241,13 +241,13 @@ public class InventoryGUI : MonoBehaviour
 			// TODO: merge stacks?
 
 			// Switch item position.
-			int newSlot = it.slot;
-			it.slot = _draggedItem.slot;
-			_draggedItem.slot = newSlot;
+			int newSlot = it.Slot;
+			it.Slot = _draggedItem.Slot;
+			_draggedItem.Slot = newSlot;
 		}
 		else
 		{
-			_draggedItem.slot = slot;
+			_draggedItem.Slot = slot;
 		}
 		ResetDragging();
 	}

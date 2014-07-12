@@ -27,7 +27,7 @@ public class Inventory : MonoBehaviour
 		var array = new ItemContainer[NbrSlots];
 		foreach (ItemContainer container in containerList)
 		{
-			array[container.slot] = container;
+			array[container.Slot] = container;
 		}
 		return array;
 	}
@@ -48,14 +48,14 @@ public class Inventory : MonoBehaviour
 			}
 
 			container = ScriptableObject.CreateInstance<ItemContainer>();
-			container.item = item;
-			container.amount = amount;
-			container.slot = slot;
+			container.Item = item;
+			container.Amount = amount;
+			container.Slot = slot;
 			containerList.Add (container);
 		}
 		else
 		{
-			container.amount += amount;
+			container.Amount += amount;
 		}
 		SendNotification(container, amount);
 	}
@@ -69,7 +69,7 @@ public class Inventory : MonoBehaviour
 			
 			foreach (ItemContainer container in containerList)
 			{
-				if (container.slot == i)
+				if (container.Slot == i)
 				{
 					found = true;
 					break;
@@ -90,7 +90,7 @@ public class Inventory : MonoBehaviour
 	{
 		for (int i=0; i < containerList.Count; i++)
 		{
-			if (containerList[i].item.itemName == name)
+			if (containerList[i].Item.itemName == name)
 			{
 				return true;
 			}
@@ -103,7 +103,7 @@ public class Inventory : MonoBehaviour
 		if (containerList.Count == 0) return null;
 		for (int i=0; i < containerList.Count; i++)
 		{
-			if (containerList[i].item.itemName == name)
+			if (containerList[i].Item.itemName == name)
 			{
 				return containerList[i];
 			}
@@ -115,7 +115,7 @@ public class Inventory : MonoBehaviour
 	{
 		if (inventoryGUI == null) return;
 
-		inventoryGUI.AddNotification (it.item, amount);
+		inventoryGUI.AddNotification (it.Item, amount);
 	}
 
 	public void TransferItem(ItemContainer other, int amount)
@@ -123,32 +123,32 @@ public class Inventory : MonoBehaviour
 		if (other == null) return;
 
 		//Does the other inventory have enough of this item to give it to us?
-		if (other.amount < amount) return; //More validation needed here
+		if (other.Amount < amount) return; //More validation needed here
 
-		AddItem (other.item.itemName, amount);
-		other.amount -= amount;
+		AddItem (other.Item.itemName, amount);
+		other.Amount -= amount;
 	}
 
 	public void DropItem(string name, int amount)
 	{
 		ItemContainer container = GetContainer (name);
 		if (container == null) return;
-		if (container.amount < amount) return;
+		if (container.Amount < amount) return;
 
-		if (holstered != null && holstered.GetComponent<ItemBehaviour>().container.item == container.item)
+		if (holstered != null && holstered.GetComponent<ItemBehaviour>().container.Item == container.Item)
 		{
 			Destroy (holstered);
 			holstered = null;
 		}
 
-		GameObject itemFab = Instantiate (container.item.itemObject, transform.position, Quaternion.identity) as GameObject;
+		GameObject itemFab = Instantiate (container.Item.itemObject, transform.position, Quaternion.identity) as GameObject;
 
 		itemFab.GetComponent<ItemBehaviour>().Init(container, amount);
 
-		container.amount -= amount;
+		container.Amount -= amount;
 
 		//We've run out of this item
-		if (container.amount <= 0)
+		if (container.Amount <= 0)
 		{
 			RemoveItem(container);
 		}
@@ -182,7 +182,7 @@ public class Inventory : MonoBehaviour
 	{
 		if (!CanPickup (itemBehave)) return;
 
-		AddItem (itemBehave.container.item.itemName, itemBehave.container.amount);
+		AddItem (itemBehave.container.Item.itemName, itemBehave.container.Amount);
 		Destroy(itemBehave.gameObject);
 	}
 
@@ -198,7 +198,7 @@ public class Inventory : MonoBehaviour
 			return;
 		}
 
-		if (!it.item.isEquipable) return;
+		if (!it.Item.isEquipable) return;
 
 		if (holstered != null) //Do we already have a gameobject that is present?
 		{
@@ -206,7 +206,7 @@ public class Inventory : MonoBehaviour
 			holstered = null;
 		}
 		//Spawn the new gameobject
-		GameObject itemFab = Instantiate (it.item.itemObject, transform.position, Quaternion.identity) as GameObject;
+		GameObject itemFab = Instantiate (it.Item.itemObject, transform.position, Quaternion.identity) as GameObject;
 		itemFab.GetComponent<ItemBehaviour>().Init(it, 1);
 		itemFab.GetComponent<ItemBehaviour>().Holster (this);
 		holstered = itemFab;
