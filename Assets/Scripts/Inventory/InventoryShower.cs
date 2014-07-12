@@ -1,33 +1,35 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-public class InventoryShower : MonoBehaviour {
-
-	InventoryGUI invGUI;
-	public KeyCode showKey;
+/// <summary>
+/// Sets the InventoryGUI to render when ShowKey is pressed.
+/// </summary>
+public class InventoryShower : MonoBehaviour
+{
+	public KeyCode ShowKey;
+	private InventoryGUI _invGUI;
 
 	// Use this for initialization
-	void Start () 
+	private void Start()
 	{
-		invGUI = GetComponent<InventoryGUI>();
+		_invGUI = GetComponent<InventoryGUI>();
 	}
-	
+
 	// Update is called once per frame
-	void Update () 
+	private void Update()
 	{
-		if (invGUI != null)
+		// Terminate if we have no InventoryGUI.
+		if (_invGUI == null) return;
+
+		if (Input.GetKeyDown(ShowKey))
 		{
-			if (Input.GetKeyDown(showKey))
-			{
-			    Screen.lockCursor = true;
-                Screen.lockCursor = false;
-				invGUI.RenderGUI = true;
-			}
-			else if (Input.GetKeyUp (showKey))
-			{
-			    Screen.lockCursor = true;
-				invGUI.RenderGUI = false;
-			}
+			Screen.lockCursor = true;
+			Screen.lockCursor = false;
+			_invGUI.RenderGUI = true;
+		}
+		else if (Input.GetKeyUp(ShowKey))
+		{
+			Screen.lockCursor = true;
+			_invGUI.RenderGUI = false;
 		}
 	}
 }
