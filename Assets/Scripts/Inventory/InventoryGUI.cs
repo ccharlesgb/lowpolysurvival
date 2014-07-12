@@ -204,7 +204,7 @@ public class InventoryGUI : MonoBehaviour
 		{
 			if (e.button == 0) //Left mouse
 			{
-				Inv.HolsterItem(it);
+				//Inv.HolsterItem(it);
 			}
 			else if (Event.current.button == 1) //Right mouse
 			{

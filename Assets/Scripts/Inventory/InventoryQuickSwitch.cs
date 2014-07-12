@@ -16,7 +16,9 @@ public class InventoryQuickSwitch : MonoBehaviour
 	public float BoxPadding = 5;
 	public float BoxSize = 50;
 
+	private ItemContainer[] _items;
 	private int _activeSlot = 1;
+	private ItemContainer _activeItem;
 
 	// Use this for initialization
 	void Start()
@@ -31,14 +33,39 @@ public class InventoryQuickSwitch : MonoBehaviour
 		_boxSize.x = (Screen.width - _boxSize.width)/2;
 		_boxSize.y = Screen.height - (_boxSize.height + 5);
 
+		_items = Inv.GetInventoryAsArray();
+
 		for (int i = 1; i <= 5; i++)
 		{
 			if (_activeSlot != i && Input.GetKeyDown(""+i))
 			{
-				_activeSlot = i;
+				SetActiveSlot(i);
 			}
 		}
 
+		// Check if the item in the active slot was changed.
+		if (_activeItem != _items[_activeSlot - 1])
+		{
+			SetActiveSlot(_activeSlot);
+		}
+
+	}
+
+	// Note, slot is 1 higher than it should be, (starts at 1 rather than 0).
+	private void SetActiveSlot(int slot)
+	{
+		_activeSlot = slot;
+
+		// Remove the existing item
+		Inv.HolsterItem(null);
+
+		// Set the new item.
+		_activeItem = _items[slot - 1];
+
+		if (_activeItem != null)
+		{
+			Inv.HolsterItem(_activeItem);
+		}
 	}
 
 	void OnGUI()
@@ -46,8 +73,6 @@ public class InventoryQuickSwitch : MonoBehaviour
 		GUI.skin = GUISkin;
 
 		GUI.Box(_boxSize, "");
-
-		ItemContainer[] items = Inv.GetInventoryAsArray();
 
 		for (int x = 0; x < 5; x++)
 		{
@@ -62,7 +87,7 @@ public class InventoryQuickSwitch : MonoBehaviour
 				GUI.Box(rect, "" + (x + 1), "NotActiveBox");
 			}
 
-			ItemContainer it = items[x];
+			ItemContainer it = _items[x];
 
 			if (it != null)
 			{
