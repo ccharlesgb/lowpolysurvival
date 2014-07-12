@@ -75,6 +75,8 @@ public class DayCycle : MonoBehaviour
         RenderSettings.skybox.SetColor("_TopColor", skyCol1);
         RenderSettings.skybox.SetColor("_BottomColor", skyCol2);
 
+        RenderSettings.fogColor = skyCol1;
+
         Color newAmbient = ambientLightDay * dayAmount + ambientLightDusk * duskAmount + ambientLightNight * nightAmount;
         RenderSettings.ambientLight = newAmbient;
     }
