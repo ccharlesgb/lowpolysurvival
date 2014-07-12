@@ -193,6 +193,10 @@ public class Inventory : MonoBehaviour
 			Destroy (holstered);
 			return;
 		}
+		else if (it == null)
+		{
+			return;
+		}
 
 		if (!it.item.isEquipable) return;
 
