@@ -6,7 +6,17 @@ public class ItemList : ScriptableObject
 {
 	public List<InventoryItem> itemList;
 
-	public InventoryItem FindByName(string name)
+    public List<string> GetItemNames()
+    {
+        List<string> nameList = new List<string>();
+        for (int i = 0; i < itemList.Count; i++)
+        {
+            nameList.Add(itemList[i].itemName);
+        }
+        return nameList;
+    }
+
+    public InventoryItem FindByName(string name)
 	{
 		for (int i=0; i < itemList.Count; i++)
 		{
