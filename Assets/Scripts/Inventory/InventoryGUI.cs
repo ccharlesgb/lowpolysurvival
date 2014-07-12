@@ -55,6 +55,9 @@ class InventoryNotification
 	}
 }
 
+/// <summary>
+///		GUI for the Inventory.
+/// </summary>
 public class InventoryGUI : MonoBehaviour
 {
 	// Size of the slot container
@@ -70,7 +73,7 @@ public class InventoryGUI : MonoBehaviour
 	public GUISkin GUISkin;
 	public Inventory Inv;
 
-	public bool renderGUI = false;
+	public bool RenderGUI = false;
 	public Rect WindowSize;
 
 	private ItemContainer _draggedItem;
@@ -83,7 +86,7 @@ public class InventoryGUI : MonoBehaviour
 		{
 			Debug.Log("Need inventory object to have GUI");
 		}
-		renderGUI = false;
+		RenderGUI = false;
 	}
 
 	// Use this for initialization
@@ -109,7 +112,7 @@ public class InventoryGUI : MonoBehaviour
 	{
 		GUI.skin = GUISkin;
 
-		if (renderGUI)
+		if (RenderGUI)
 		{
 			GUI.Window(0, WindowSize, MyWindow, "Inventory");
 		}

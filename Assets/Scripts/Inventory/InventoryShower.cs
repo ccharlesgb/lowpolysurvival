@@ -21,16 +21,12 @@ public class InventoryShower : MonoBehaviour {
 			{
 			    Screen.lockCursor = true;
                 Screen.lockCursor = false;
-				invGUI.renderGUI = true;
+				invGUI.RenderGUI = true;
 			}
 			else if (Input.GetKeyUp (showKey))
 			{
 			    Screen.lockCursor = true;
-				invGUI.renderGUI = false;
-			}
-			else if (Input.GetKeyUp (showKey))
-			{
-				invGUI.renderGUI = false;
+				invGUI.RenderGUI = false;
 			}
 		}
 	}
