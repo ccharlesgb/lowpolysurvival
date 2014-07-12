@@ -27,6 +27,9 @@ public class InventoryQuickSwitch : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
+		// Update the box location.
+		_boxSize.x = (Screen.width - _boxSize.width)/2;
+		_boxSize.y = Screen.height - (_boxSize.height + 5);
 
 		for (int i = 1; i <= 5; i++)
 		{
