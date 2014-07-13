@@ -1,12 +1,15 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using UnityEditor;
+
 
 [CustomEditor(typeof(Map))]
 public class MapEditor : Editor
 {
     private bool paintingTexture = false;
-    private int paintChannel = 0;
+
+    private Map.BrushSettings brushSettings = new Map.BrushSettings();
 
     public override void OnInspectorGUI()
     {
@@ -35,9 +38,14 @@ public class MapEditor : Editor
             }
         }
 
+
         GUI.enabled = paintingTexture;
 
-        paintChannel = EditorGUILayout.IntSlider("Splat Channel", paintChannel, 1, 3);
+        brushSettings.paintChannel = EditorGUILayout.IntSlider("Splat Channel", brushSettings.paintChannel, 1, 3);
+        brushSettings.opacity = EditorGUILayout.Slider("Brush Opacity", brushSettings.opacity, 0.0f, 1.0f);
+        brushSettings.size = EditorGUILayout.Slider("Brush Size", brushSettings.size, 1.0f, 10.0f);
+
+        GUI.enabled = true;
     }
 
     void OnSceneGUI()
@@ -59,10 +67,9 @@ public class MapEditor : Editor
 
                 if (Physics.Raycast(ray, out hit))
                 {
-                    Debug.Log(hit.collider.gameObject);
                     Vector3 terrainPos = hit.point;
                     terrainPos.y = 0.0f;
-                    map.PaintSplat(terrainPos, paintChannel);
+                    map.PaintSplat(terrainPos, brushSettings);
                 }
                 else
                 {

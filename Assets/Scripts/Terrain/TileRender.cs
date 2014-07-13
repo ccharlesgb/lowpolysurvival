@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Net.Sockets;
+using UnityEditor;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -136,6 +138,7 @@ public class TileRender : MonoBehaviour
 	void OnEnable() 
 	{
 		gameObject.hideFlags = HideFlags.NotEditable | HideFlags.HideInHierarchy;
+	    gameObject.hideFlags = HideFlags.None;
 		_meshRenderer = GetComponent<MeshRenderer>();
 	}
 
@@ -164,6 +167,11 @@ public class TileRender : MonoBehaviour
 		GetComponent<MeshCollider>().sharedMesh = mesh;
 
 		ReCalculateMesh(true);
+
+#if UNITY_EDITOR
+        AssetDatabase.CreateAsset( mesh, "Assets/Terrain/Tiles/tile"+transform.position.x+" "+transform.position.z+".asset" );
+        AssetDatabase.SaveAssets();
+#endif
 	}
 
 	public void TextureMesh()
@@ -290,7 +298,7 @@ public class TileRender : MonoBehaviour
 	{
 		//Debug.Log ("CLEANING MEMORY");
 		ClearMesh();
-		DestroyImmediate (mesh);
+		//DestroyImmediate (mesh);
 		//DestroyImmediate (_meshRenderer.sharedMaterial.GetTexture("_Control"), true);
 		//DestroyImmediate (_meshRenderer.material);
 	}

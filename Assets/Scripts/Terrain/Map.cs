@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Reflection;
+using UnityEditor;
 using UnityEngine;
 using System.Collections;
 
@@ -48,15 +50,22 @@ public class Map : MonoBehaviour
         int splatChannel = 0;
     }
 
-    public void PaintSplat(Vector3 pos, int channel)
+    public class BrushSettings
     {
-        Debug.Log("pos " + pos);
-        Point splatCoord = WorldToFieldIndex(pos, splatField);
-        Debug.Log(splatCoord.x + "   " + splatCoord.y);
+        public float size;
+        public float opacity;
+        public int paintChannel;
+    }
 
-        int brushSize = 3;
-        float brushOpacity = 1.0f;
-        float brushWidth = 2.0f;
+    //Called by the editor paints a certain amount of the splat channel to the map
+    public void PaintSplat(Vector3 pos, BrushSettings settings)
+    {
+
+        Point splatCoord = WorldToFieldIndex(pos, splatField);
+
+        int brushSize = (int)settings.size;
+        float brushOpacity = settings.opacity;
+        float brushWidth = brushSize / 2.0f;
         for (int x = -brushSize; x < brushSize; x++)
         {
             for (int y = -brushSize; y < brushSize; y++)
@@ -68,7 +77,7 @@ public class Map : MonoBehaviour
 
                 Vector3 addVal = new Vector3(-brushStrength, -brushStrength, -brushStrength);
                 //Debug.Log("Brush Strength " + brushStrength);
-                addVal[channel - 1] = brushStrength * 2;
+                addVal[settings.paintChannel - 1] = brushStrength * 2;
                 originalVal += addVal;
                 originalVal.x = Mathf.Clamp(originalVal.x, 0.0f, 1.0f);
                 originalVal.y = Mathf.Clamp(originalVal.y, 0.0f, 1.0f);

@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 [System.Serializable]
-public class VectorField
+public class VectorField : ScriptableObject
 {
 	//Properties
 	public bool IsEmpty

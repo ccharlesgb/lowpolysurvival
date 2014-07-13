@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Random = UnityEngine.Random;
 
 [System.Serializable]
-public class FloatField
+public class FloatField : ScriptableObject
 {
 	//Properties
 	public bool IsEmpty
