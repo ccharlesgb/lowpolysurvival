@@ -2,6 +2,9 @@
 using System.Collections;
 using UnityEditor;
 
+/// <summary>
+///		Creates an inventory asset.
+/// </summary>
 public class CreateItemList
 {
 	[MenuItem("Assets/Create/Inventory Item List")]

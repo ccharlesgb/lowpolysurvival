@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 /// <summary>
-///		Basic container for items, that adds amount and slot.
+///		Basic container for InventoryItems, that adds amount and slot.
 /// </summary>
 public class ItemContainer : ScriptableObject
 {

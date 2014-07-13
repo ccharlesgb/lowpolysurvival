@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+///		Container for items.
+/// </summary>
 [System.Serializable]
 public class InventoryItem
 {
