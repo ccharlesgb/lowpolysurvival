@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Runtime.Remoting.Messaging;
+using UnityEngine;
 using System.Collections;
 
 // Require a character controller to be attached to the same game object
@@ -24,7 +25,15 @@ public class PlayerInputController : MonoBehaviour
 	{
 		// Get the input vector from keyboard or analog stick
 		Vector3 directionVector;
-		directionVector = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+
+        if (!Screen.lockCursor) //Disable character movement if we are menuing
+        {
+            cmotor.inputMoveDirection = Vector3.zero;
+            return;
+        }
+
+	    directionVector = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+		
 		if (directionVector != Vector3.zero)
 		{
 			// Get the length of the directon vector and then normalize it
@@ -45,7 +54,7 @@ public class PlayerInputController : MonoBehaviour
 
 		// Apply the direction to the CharacterMotor
 		cmotor.inputMoveDirection = transform.rotation * directionVector;
-		cmotor.inputJump = Input.GetButton("Jump");
+	    cmotor.inputJump = Input.GetButton("Jump");
 
         float xIn = Input.GetAxis("Mouse X");
         float yIn = Input.GetAxis("Mouse Y");
@@ -54,18 +63,20 @@ public class PlayerInputController : MonoBehaviour
 	    newEuler.y += xIn * lookSensitivity;
 	    transform.eulerAngles = newEuler;
 
-	    /*
-		// Generate a ray from the cursor position
-		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-		RaycastHit hit;
-
-		if (Physics.Raycast(ray, out hit))
-		{
-			// Create a target position using the X and Y position from our raycast, but keep the current y.
-			Vector3 targetPostition = new Vector3(hit.point.x, this.transform.position.y, hit.point.z);
-
-			this.transform.LookAt(targetPostition);
-		}*/
 	}
 }
+
+/*
+// Generate a ray from the cursor position
+Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+RaycastHit hit;
+
+if (Physics.Raycast(ray, out hit))
+{
+    // Create a target position using the X and Y position from our raycast, but keep the current y.
+    Vector3 targetPostition = new Vector3(hit.point.x, this.transform.position.y, hit.point.z);
+
+    this.transform.LookAt(targetPostition);
+}*/

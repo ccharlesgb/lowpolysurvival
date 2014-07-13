@@ -23,6 +23,10 @@ public struct Point
 		return x == other.x && y == other.y;
 	}
 
+    public override string ToString()
+    {
+        return x + " " + y;
+    }
 }
 
 public struct IntCoord : IEquatable<IntCoord>
@@ -206,9 +210,16 @@ class MathTools
 		}
 	}
 
-	public static float Gaussian(float x, float amp, float position, float width)
-	{
-		return amp * Mathf.Exp (-((x-position)*(x-position))/(width*width));
+    public static float Gaussian(float x, float amp, float position, float width)
+    {
+        return amp*Mathf.Exp(-((x - position)*(x - position))/(width*width));
+    }
+
+    public static float Gaussian2D(Vector2 val, float amp, Vector2 pos, Vector2 width)
+    {
+        float paramX = ((val.x - pos.x) * (val.x - pos.x)) / (width.x * width.x);
+        float paramY = ((val.y - pos.y) * (val.y - pos.y)) / (width.y * width.y);
+		return amp * Mathf.Exp (-(paramX + paramY));
 	}
 }
 

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -83,6 +84,30 @@ public class VectorField
 		}
 		previewTex.Apply ();
 	}
+
+    public void UpdatePreviewAt(Rect box)
+    {
+        if (previewTex == null)
+            previewTex = new Texture2D(Width, Height);
+        Point curPoint;
+        Color curCol = new Color();
+
+        for (int x = (int)box.left; x < (int)box.right; x++)
+        {
+            for (int y = (int)box.top; y < (int)box.bottom; y++)
+            {
+                int index = CoordToIndex(x, y);
+                curPoint = IndexToCoord(index);
+                curCol.r = GetValue(index).x;
+                curCol.g = GetValue(index).y;
+                curCol.b = GetValue(index).z;
+                previewTex.SetPixel(x, y, curCol);
+            }
+        }
+
+
+        previewTex.Apply();
+    }
 	
 	//Create from Texture
 	public void CreateFromTexture(Texture2D tex)
@@ -95,7 +120,7 @@ public class VectorField
 		}
 		previewTex = new Texture2D(height, width); //Recreate the preview
 		Point coord;
-		for (int i=0; i < Size - 1; i++)
+		for (int i=0; i < Size; i++)
 		{
 			coord = IndexToCoord (i);
 			//Debug.Log (i);
@@ -109,35 +134,35 @@ public class VectorField
 		previewTex.SetPixels (tex.GetPixels ());
 		previewTex.Apply ();
 	}
-	
-	//Conversion from coord to index / vice versa
-	public int CoordToIndex(int x, int y)
-	{
-		return (y * width) + x;
-	}
-	
-	public Point IndexToCoord(int index)
-	{
-		return new Point(index % width, (int)(index / width));
-	}
-	
-	//Validations
-	public bool IndexIsValid(int index)
-	{
-		return (index >= 0) && (index < (Size - 1));
-	}
-	public bool CoordIsValid(int x, int y)
-	{
-		return IndexIsValid(CoordToIndex (x,y));
-	}
+
+    //Conversion from coord to index / vice versa
+    public int CoordToIndex(int x, int y)
+    {
+        return (y * width) + x;
+    }
+
+    public Point IndexToCoord(int index)
+    {
+        return new Point(index % width, (int)(index / width));
+    }
+
+    //Validations
+    public bool IndexIsValid(int index)
+    {
+        return (index >= 0) && (index <= fieldArray.Count);
+    }
+    public bool CoordIsValid(int x, int y)
+    {
+        return IndexIsValid(CoordToIndex(x, y));
+    }
 	
 	//Get and Set
 	public Vector3 GetValue(int index)
 	{
 		if (!IndexIsValid (index))
 		{
-			Debug.Log ("Out of bounds on float field.");
-			return Vector3.zero;
+            throw new Exception("Out of bounds on vector field");
+            //return;
 		}
 		return fieldArray[index];
 	}
@@ -156,8 +181,8 @@ public class VectorField
 	{
 		if (!IndexIsValid (index))
 		{
-			Debug.Log ("Out of bounds on float field.");
-			return;
+            throw new Exception("Out of bounds on vector field");
+            return;
 		}
 		fieldArray[index] = value;
 		if (fieldArray[index].sqrMagnitude > maxVal.sqrMagnitude)

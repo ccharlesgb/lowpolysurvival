@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Random = UnityEngine.Random;
 
 [System.Serializable]
 public class FloatField
@@ -65,6 +67,7 @@ public class FloatField
 		{
 			fieldArray.Add(value);
 		}
+	    Debug.Log("FA COUNT " + fieldArray.Count);
 		minVal = value;
 		maxVal = value;
 	}
@@ -87,6 +90,7 @@ public class FloatField
 	//Create from Texture
 	public void CreateFromTexture(Texture2D tex)
 	{
+	    Debug.Log("CREATE FROM TEXTURE");
 		height = tex.height;
 		width = tex.width;
 		if (!IsEmpty) //Do we have anything inside us?
@@ -95,7 +99,7 @@ public class FloatField
 		}
 		previewTex = new Texture2D(height, width); //Recreate the preview
 		Point coord;
-		for (int i=0; i < Size - 1; i++)
+		for (int i=0; i < Size; i++)
 		{
 			coord = IndexToCoord (i);
 			//Debug.Log (i);
@@ -123,7 +127,7 @@ public class FloatField
 	//Validations
 	public bool IndexIsValid(int index)
 	{
-		return (index >= 0) && (index < fieldArray.Count - 1);
+		return (index >= 0) && (index <= fieldArray.Count);
 	}
 	public bool CoordIsValid(int x, int y)
 	{
@@ -135,14 +139,20 @@ public class FloatField
 	{
 		if (!IndexIsValid (index))
 		{
-			Debug.Log ("Out of bounds on float field.");
-			return float.NaN;
+		    throw new Exception("Get Out of bounds on float field: " + index);
+		    // return;
 		}
 		return fieldArray[index];
 	}
 	public float GetValue(int x, int y)
 	{
 		int index = CoordToIndex(x,y);
+        if (!IndexIsValid(index))
+        {
+            throw new Exception("Get Out of bounds on float field: " + x + " " + y + "(INDEX " +index);
+            // return;
+        }
+
 		return GetValue (index);
 	}
 
@@ -155,7 +165,7 @@ public class FloatField
 	{
 		if (!IndexIsValid (index))
 		{
-			Debug.Log ("Out of bounds on float field.");
+            throw new Exception("Set Out of bounds on float field: " + index);
 			return;
 		}
 		fieldArray[index] = value;
@@ -191,7 +201,7 @@ public class FloatField
 		float valAtPos = GetValue (x,y);
 		Vector2 gradient = new Vector2();
 
-		if (x >= Width - gap - 1 || y >= Height - gap - 1)
+		if (x >= Width - gap - 2 || y >= Height - gap - 2)
 		{
 			return gradient;
 		}

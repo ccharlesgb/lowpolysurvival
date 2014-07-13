@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 
 [ExecuteInEditMode]
@@ -36,7 +37,53 @@ public class Map : MonoBehaviour
 	public SplatSettings splatSettings;
 	public TerrainSettings terrainSettings;
 
-	public Point WorldToFieldIndex(Vector3 pos, VectorField field)
+    public void EndTexturePaint()
+    {
+        
+
+    }
+
+    public void BeginTexturePaint()
+    {
+        int splatChannel = 0;
+    }
+
+    public void PaintSplat(Vector3 pos, int channel)
+    {
+        Debug.Log("pos " + pos);
+        Point splatCoord = WorldToFieldIndex(pos, splatField);
+        Debug.Log(splatCoord.x + "   " + splatCoord.y);
+
+        int brushSize = 3;
+        float brushOpacity = 1.0f;
+        float brushWidth = 2.0f;
+        for (int x = -brushSize; x < brushSize; x++)
+        {
+            for (int y = -brushSize; y < brushSize; y++)
+            {
+                Vector3 originalVal = splatField.GetValue(splatCoord.x + x, splatCoord.y + y);
+
+                float brushStrength = MathTools.Gaussian2D(new Vector2(x, y), brushOpacity, Vector2.zero,
+                    new Vector2(brushWidth, brushWidth));
+
+                Vector3 addVal = new Vector3(-brushStrength, -brushStrength, -brushStrength);
+                //Debug.Log("Brush Strength " + brushStrength);
+                addVal[channel - 1] = brushStrength * 2;
+                originalVal += addVal;
+                originalVal.x = Mathf.Clamp(originalVal.x, 0.0f, 1.0f);
+                originalVal.y = Mathf.Clamp(originalVal.y, 0.0f, 1.0f);
+                originalVal.z = Mathf.Clamp(originalVal.z, 0.0f, 1.0f);
+
+                splatField.SetValue(splatCoord.x + x, splatCoord.y + y, originalVal);
+            }
+        }
+
+        Rect box = new Rect(splatCoord.x - brushSize, splatCoord.y - brushSize, brushSize * 2, brushSize * 2);
+        splatField.UpdatePreviewAt(box);
+
+    }
+
+    public Point WorldToFieldIndex(Vector3 pos, VectorField field)
 	{
 		Vector3 mapBounds = TileRender.GetTileBounds () * terrainSettings.tileArraySideLength;
 		Rect mapRect = new Rect();

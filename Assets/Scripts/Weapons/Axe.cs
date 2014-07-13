@@ -32,10 +32,13 @@ public class Axe : MonoBehaviour, IHolster
 		RaycastHit hit;
 		
 		// Generate a ray from the cursor position
-		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		
+	    Ray ray = new Ray();
+	    ray.origin = ownerInv.transform.position;
+	    ray.direction = ownerInv.transform.forward;
+
 		if (Physics.Raycast(ray, out hit))
 		{
+            Debug.Log(hit.collider.gameObject);
 			//Does this object have a resource?
 			GameObject obj = hit.collider.gameObject;
 			if (obj != null)
@@ -63,4 +66,12 @@ public class Axe : MonoBehaviour, IHolster
 	{
 
 	}
+
+    void OnDrawGizmos()
+    {
+        //Ray ray = new Ray();
+        //ray.origin = ownerInv.transform.position;
+        //ray.direction = ownerInv.transform.forward;
+        //Gizmos.DrawRay(ray);
+    }
 }

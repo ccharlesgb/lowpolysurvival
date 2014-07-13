@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -65,18 +66,9 @@ public class Inventory : MonoBehaviour
 		int slot = 0;
 		for (int i = 0; i < NbrSlots; i++)
 		{
-			bool found = false;
-			
-			foreach (ItemContainer container in containerList)
-			{
-				if (container.Slot == i)
-				{
-					found = true;
-					break;
-				}
-			}
+			bool found = containerList.Any(container => container != null && container.Slot == i);
 
-			if (!found)
+		    if (!found)
 			{
 				slot = i;
 				break;
@@ -88,27 +80,14 @@ public class Inventory : MonoBehaviour
 
 	public bool HasItem(string name)
 	{
-		for (int i=0; i < containerList.Count; i++)
-		{
-			if (containerList[i].Item.itemName == name)
-			{
-				return true;
-			}
-		}
-		return false;
+	    return containerList.Any(t => t.Item.itemName == name);
 	}
 
+    //Searches for the container with this name
 	public ItemContainer GetContainer(string name)
 	{
 		if (containerList.Count == 0) return null;
-		for (int i=0; i < containerList.Count; i++)
-		{
-			if (containerList[i].Item.itemName == name)
-			{
-				return containerList[i];
-			}
-		}
-		return null;
+	    return containerList.FirstOrDefault(t => t.Item.itemName == name);
 	}
 
 	public void SendNotification(ItemContainer it, int amount)
@@ -159,6 +138,7 @@ public class Inventory : MonoBehaviour
 		containerList.Remove (ct);
 	}
 	
+    //Handles item picking up from the collider trigger
 	void OnTriggerStay(Collider other)
 	{
 		if (!canPickup) return;
@@ -212,10 +192,12 @@ public class Inventory : MonoBehaviour
 		holstered = itemFab;
 	}
 
+    //Handles firing
 	void Update()
 	{
 		if (holstered != null)
 		{
+		    if (!Screen.lockCursor) return; //Dont fire when opening menu
 			if (Input.GetAxis ("Fire1") == 1.0f)
 			{
 				holstered.GetComponent<ItemBehaviour>().LeftClick(this);
