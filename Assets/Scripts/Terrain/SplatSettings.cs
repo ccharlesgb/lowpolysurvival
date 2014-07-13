@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SplatSettings : MonoBehaviour 
+public class SplatSettings : MonoBehaviour
 {
+    //How "smoothed out" the splat map is
+    public int splatSubSamples;
 
 	//Material 1 parameters
 	public float mat1_amp;

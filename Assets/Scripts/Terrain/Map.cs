@@ -152,7 +152,7 @@ public class Map : MonoBehaviour
 	{
 		heightField.CreateFromTexture(heightTexture);
 		FloatField gradientMag = new FloatField();
-		heightField.CalculateGradient(gradientMag, 4);
+		heightField.CalculateGradient(gradientMag, splatSettings.splatSubSamples);
 		splatField.Create (heightField.Height, heightField.Width, Vector3.zero);
 		for (int i=0; i < gradientMag.Size; i++)
 		{
