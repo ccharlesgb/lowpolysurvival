@@ -1,14 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
 /// <summary>
 ///		Inventory QuickSwitch, bar in the bottom of the page, shows the first items in the inventory.
 /// </summary>
+[RequireComponent (typeof (InventoryHolsterHandler))]
 public class InventoryQuickSwitch : MonoBehaviour
 {
 
 	// Inventory to connect to.
 	public Inventory Inv;
+
+	private InventoryHolsterHandler _holsterHandler;
 
 	// GUI skin to use for inventory.
 	public GUISkin GUISkin;
@@ -26,7 +30,7 @@ public class InventoryQuickSwitch : MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
-
+		_holsterHandler = GetComponent<InventoryHolsterHandler>();
 	}
 
 	// Update is called once per frame
@@ -60,14 +64,14 @@ public class InventoryQuickSwitch : MonoBehaviour
 		_activeSlot = slot;
 
 		// Remove the existing item
-		Inv.HolsterItem(null);
+		_holsterHandler.SetActiveItem(null);
 
 		// Set the new item.
 		_activeItem = _items[slot - 1];
 
 		if (_activeItem != null)
 		{
-			Inv.HolsterItem(_activeItem);
+			_holsterHandler.SetActiveItem(_activeItem);
 		}
 	}
 

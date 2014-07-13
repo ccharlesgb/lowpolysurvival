@@ -11,12 +11,13 @@ public class Inventory : MonoBehaviour
 	public delegate void ItemAddedHandler(InventoryItem container, int amount);
 	public static event ItemAddedHandler OnItemAdded;
 
+	public delegate void ItemRemovedHandler(ItemContainer container, int amount);
+	public static event ItemRemovedHandler OnItemRemoved;
+
 	public List<ItemContainer> containerList = new List<ItemContainer>();
 
 	public bool canPickup = false;
 	public float pickupDelay = 0.5f;
-
-	public GameObject holstered = null;
 
 	public ItemList masterList;
 	// Use this for initialization
@@ -116,10 +117,9 @@ public class Inventory : MonoBehaviour
 		if (container == null) return;
 		if (container.Amount < amount) return;
 
-		if (holstered != null && holstered.GetComponent<ItemBehaviour>().container.Item == container.Item)
+		if (OnItemRemoved != null)
 		{
-			Destroy (holstered);
-			holstered = null;
+			OnItemRemoved(container, amount);
 		}
 
 		GameObject itemFab = Instantiate (container.Item.itemObject, transform.position, Quaternion.identity) as GameObject;
@@ -168,46 +168,4 @@ public class Inventory : MonoBehaviour
 		Destroy(itemBehave.gameObject);
 	}
 
-	public void HolsterItem(ItemContainer it)
-	{
-		if (it == null && holstered != null) //Unholster
-		{
-			Destroy (holstered);
-			return;
-		}
-		else if (it == null)
-		{
-			return;
-		}
-
-		if (!it.Item.isEquipable) return;
-
-		if (holstered != null) //Do we already have a gameobject that is present?
-		{
-			Destroy (holstered);
-			holstered = null;
-		}
-		//Spawn the new gameobject
-		GameObject itemFab = Instantiate (it.Item.itemObject, transform.position, Quaternion.identity) as GameObject;
-		itemFab.GetComponent<ItemBehaviour>().Init(it, 1);
-		itemFab.GetComponent<ItemBehaviour>().Holster (this);
-		holstered = itemFab;
-	}
-
-    //Handles firing
-	void Update()
-	{
-		if (holstered != null)
-		{
-		    if (!Screen.lockCursor) return; //Dont fire when opening menu
-			if (Input.GetAxis ("Fire1") == 1.0f)
-			{
-				holstered.GetComponent<ItemBehaviour>().LeftClick(this);
-			}
-			if (Input.GetAxis ("Fire2") == 1.0f)
-			{
-				holstered.GetComponent<ItemBehaviour>().RightClick(this);
-			}
-		}
-	}
 }
