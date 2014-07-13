@@ -17,7 +17,9 @@ public class RegenInfo
 	}
 }
 
-//Component to slowly regenerate an items inventory until it reaches a max value
+/// <summary>
+///		Component to slowly regenerate an items inventory until it reaches a max value
+/// </summary>
 public class InventoryRegen : MonoBehaviour 
 {
 

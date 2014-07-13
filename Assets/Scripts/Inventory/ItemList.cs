@@ -2,6 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 
+/// <summary>
+///		List of InventoryItems.
+/// </summary>
 public class ItemList : ScriptableObject
 {
 	public List<InventoryItem> itemList;

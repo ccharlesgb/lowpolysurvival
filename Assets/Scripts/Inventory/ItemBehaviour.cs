@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+///		Behaviour for Items.
+/// </summary>
 public class ItemBehaviour : MonoBehaviour 
 {
 	public ItemContainer container;

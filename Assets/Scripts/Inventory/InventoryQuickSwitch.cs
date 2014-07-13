@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+///		Inventory QuickSwitch, bar in the bottom of the page, shows the first items in the inventory.
+/// </summary>
 public class InventoryQuickSwitch : MonoBehaviour
 {
 
