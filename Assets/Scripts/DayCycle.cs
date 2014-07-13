@@ -80,4 +80,10 @@ public class DayCycle : MonoBehaviour
         Color newAmbient = ambientLightDay * dayAmount + ambientLightDusk * duskAmount + ambientLightNight * nightAmount;
         RenderSettings.ambientLight = newAmbient;
     }
+
+    void OnDisable()
+    {
+        RenderSettings.skybox.SetColor("_TopColor", skyColorDay);
+        RenderSettings.skybox.SetColor("_BottomColor", skyColorDay2);
+    }
 }
