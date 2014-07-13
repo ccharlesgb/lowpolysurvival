@@ -12,8 +12,8 @@ public class CreateItemList
 	{
 		ItemList asset = ScriptableObject.CreateInstance<ItemList>();
 
-		AssetDatabase.CreateAsset (asset, "Assets/Inventory/ItemList.asset");
-		AssetDatabase.SaveAssets ();
+		AssetDatabase.CreateAsset(asset, "Assets/Inventory/ItemList.asset");
+		AssetDatabase.SaveAssets();
 		return asset;
 	}
 }
