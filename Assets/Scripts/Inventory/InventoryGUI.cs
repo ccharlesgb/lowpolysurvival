@@ -132,6 +132,16 @@ public class InventoryGUI : MonoBehaviour
 		}
 	}
 
+	private void OnEnable()
+	{
+		Inventory.OnItemAdded += AddNotification;
+	}
+
+	private void OnDisable()
+	{
+		Inventory.OnItemAdded -= AddNotification;
+	}
+
 	public void AddNotification(InventoryItem it, int amount)
 	{
 		var not = new InventoryNotification(it, amount);

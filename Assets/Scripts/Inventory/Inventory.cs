@@ -6,9 +6,11 @@ public class Inventory : MonoBehaviour
 {
 	public static int NbrSlots = 25;
 
-	public List<ItemContainer> containerList = new List<ItemContainer>();
+	// We need an event for communicating with the GUI.
+	public delegate void ItemAddedHandler(InventoryItem container, int amount);
+	public static event ItemAddedHandler OnItemAdded;
 
-	public InventoryGUI inventoryGUI;
+	public List<ItemContainer> containerList = new List<ItemContainer>();
 
 	public bool canPickup = false;
 	public float pickupDelay = 0.5f;
@@ -113,9 +115,9 @@ public class Inventory : MonoBehaviour
 
 	public void SendNotification(ItemContainer it, int amount)
 	{
-		if (inventoryGUI == null) return;
+		if (OnItemAdded == null) return;
 
-		inventoryGUI.AddNotification (it.Item, amount);
+		OnItemAdded(it.Item, amount);
 	}
 
 	public void TransferItem(ItemContainer other, int amount)
