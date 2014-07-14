@@ -138,7 +138,6 @@ public class Inventory : MonoBehaviour
     //Similar to Drop Item but the item doesnt get spawned it just gets 'used up'
     public void UseItem(string name, int amount)
     {
-        Debug.Log("USING UP " + name);
         ItemContainer container = GetContainer(name);
         if (container == null) return;
         if (container.Amount < amount) return;

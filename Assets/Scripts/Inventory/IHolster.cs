@@ -8,7 +8,7 @@ using System.Collections;
 public interface IHolster
 {
     void OnHolster(Inventory ownerInv);
-    Void OnDeHolster(Inventory ownerInv);
+    void OnDeHolster(Inventory ownerInv);
 	void PrimaryFire(Inventory ownerInv);
 	void SecondaryFire(Inventory ownerInv);
 }
