@@ -60,13 +60,15 @@ public class MapEditor : Editor
         {
             if (Camera.current != null)
             {
-                Ray ray = Camera.current.ScreenPointToRay(Event.current.mousePosition);
-                
+                Vector2 mousePos = Event.current.mousePosition;
+                mousePos.y *= -1.0f;
+                mousePos.y += (float)Camera.current.GetScreenHeight();
+                Ray ray = Camera.current.ScreenPointToRay(mousePos);
                 RaycastHit hit = new RaycastHit();
-                Debug.DrawLine(ray.origin, ray.origin + ray.direction * 1000);
-
                 if (Physics.Raycast(ray, out hit))
                 {
+                    Debug.Log(hit.point);
+                    Debug.DrawLine(hit.point, hit.point + new Vector3(0,100,0), Color.white, 1.0f, false);
                     Vector3 terrainPos = hit.point;
                     terrainPos.y = 0.0f;
                     map.PaintSplat(terrainPos, brushSettings);

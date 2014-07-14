@@ -50,6 +50,7 @@ public class Map : MonoBehaviour
         int splatChannel = 0;
     }
 
+    [System.Serializable]
     public class BrushSettings
     {
         public float size;
