@@ -28,6 +28,7 @@ public class VectorField : ScriptableObject
 	}
 	
 	//Data
+    [SerializeField]
 	private List<Vector3> fieldArray = new List<Vector3>();
 	
 	//Size params

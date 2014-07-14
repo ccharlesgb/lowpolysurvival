@@ -1,0 +1,238 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &100000
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400000}
+  - 108: {fileID: 10800000}
+  - 114: {fileID: 11400000}
+  - 114: {fileID: 11400002}
+  m_Layer: 0
+  m_Name: Sun
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &400000
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_LocalRotation: {x: .382683486, y: 0, z: 0, w: .923879564}
+  m_LocalPosition: {x: 512, y: 128, z: 512}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+--- !u!108 &10800000
+Light:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Type: 1
+  m_Color: {r: 1, g: .991588831, b: .396078408, a: 1}
+  m_Intensity: .790000021
+  m_Range: 10
+  m_SpotAngle: 30
+  m_CookieSize: 15.8999996
+  m_Shadows:
+    m_Type: 1
+    m_Resolution: -1
+    m_Strength: 1
+    m_Bias: 2
+    m_Softness: 4
+    m_SoftnessFade: 1
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_ActuallyLightmapped: 0
+  m_Flare: {fileID: 12100000, guid: 09ebe82dbd1113c3d000dc0b8d76c639, type: 2}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_Lightmapping: 1
+  m_ShadowSamples: 1
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
+  m_IndirectIntensity: 1
+  m_AreaSize: {x: 1, y: 1}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1a657f87e14cfa4982f1b3a4cf9da11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dayProgress: 0
+  dayLength: 1
+  skyIntensity:
+    serializedVersion: 2
+    m_Curve:
+    - time: .199999988
+      value: 0
+      inSlope: -0
+      outSlope: -0
+      tangentMode: 0
+    - time: .239999995
+      value: .5
+      inSlope: -.0366458371
+      outSlope: -.0366458371
+      tangentMode: 0
+    - time: .74000001
+      value: .5
+      inSlope: -.0087931836
+      outSlope: -.0087931836
+      tangentMode: 0
+    - time: .799999952
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  sunHeight: .800000012
+  sun: {fileID: 10800000}
+  startTime: 0
+  hourTime: 0
+  ambientLightDay: {r: .819607854, g: .731733561, b: .334271431, a: 1}
+  ambientLightNight: {r: .114048436, g: .241624907, b: .403921574, a: 1}
+  ambientLightDusk: {r: .80392158, g: .600300074, b: .245905414, a: 1}
+  skyColorDay: {r: .276539773, g: .845545948, b: .952941179, a: 1}
+  skyColorDay2: {r: 1, g: 1, b: 1, a: 1}
+  skyDayAmount:
+    serializedVersion: 2
+    m_Curve:
+    - time: .25
+      value: 0
+      inSlope: -0
+      outSlope: -0
+      tangentMode: 0
+    - time: .5
+      value: 1
+      inSlope: -.0087931836
+      outSlope: -.0087931836
+      tangentMode: 0
+    - time: .75
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  skyColorNight: {r: .0364167616, g: .0756189972, b: .125490203, a: 1}
+  skyColorNight2: {r: .0546251424, g: .126826733, b: .188235298, a: 1}
+  skyNightAmount:
+    serializedVersion: 2
+    m_Curve:
+    - time: .099999994
+      value: 1
+      inSlope: -0
+      outSlope: -0
+      tangentMode: 0
+    - time: .299999982
+      value: 0
+      inSlope: -.0087931836
+      outSlope: -.0087931836
+      tangentMode: 0
+    - time: .699999988
+      value: 0
+      inSlope: .0234026983
+      outSlope: .0234026983
+      tangentMode: 0
+    - time: .899999976
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  skyColorDusk: {r: .255101889, g: .389636219, b: .56078434, a: 1}
+  skyColorDusk2: {r: 1, g: .641379356, b: 0, a: 1}
+  skyDuskAmount:
+    serializedVersion: 2
+    m_Curve:
+    - time: .149999991
+      value: 0
+      inSlope: -0
+      outSlope: -0
+      tangentMode: 0
+    - time: .25
+      value: 1
+      inSlope: -.0087931836
+      outSlope: -.0087931836
+      tangentMode: 0
+    - time: .349999994
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: .649999976
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: .75
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: .849999964
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+--- !u!114 &11400002
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfa47d278a01b14448f61caf5525d739, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dayCycleLength: 20
+  currentCycleTime: 0
+  currentPhase: 2
+  hoursPerDay: 24
+  dawnTimeOffset: 3
+  worldTimeHour: 0
+  fullLight: {r: .992156863, g: .972549021, b: .874509811, a: 1}
+  fullDark: {r: .125490203, g: .109803922, b: .180392161, a: 1}
+  dawnDuskSkybox: {fileID: 0}
+  dawnDuskFog: {r: .521568656, g: .486274511, b: .400000006, a: 1}
+  daySkybox: {fileID: 0}
+  dayFog: {r: .70588237, g: .815686285, b: .819607854, a: 1}
+  nightSkybox: {fileID: 0}
+  nightFog: {r: .0470588244, g: .0588235296, b: .356862754, a: 1}
+  skyColorDay: {r: .298316032, g: .552951574, b: .717647076, a: 1}
+  skyColorNight: {r: .183744699, g: .280647069, b: .403921574, a: 1}
+  skyColorDawnDusk: {r: 1, g: .641379356, b: 0, a: 1}
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 100000}
+  m_IsPrefabParent: 1
+  m_IsExploded: 1

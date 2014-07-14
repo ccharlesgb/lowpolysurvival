@@ -32,23 +32,12 @@ public class Map : MonoBehaviour
 	public float discreteCount;
 	public float heightScale;
 
-	public Texture2D heightTexture;
+	//public Texture2D heightTexture;
 	
 	public FloatField heightField;
 	public VectorField splatField;
 	public SplatSettings splatSettings;
 	public TerrainSettings terrainSettings;
-
-    public void EndTexturePaint()
-    {
-        
-
-    }
-
-    public void BeginTexturePaint()
-    {
-        int splatChannel = 0;
-    }
 
     [System.Serializable]
     public class BrushSettings
@@ -90,7 +79,55 @@ public class Map : MonoBehaviour
 
         Rect box = new Rect(splatCoord.x - brushSize, splatCoord.y - brushSize, brushSize * 2, brushSize * 2);
         splatField.UpdatePreviewAt(box);
+    }
 
+    //Called by the editor paints the vertex heights
+    public void PaintHeight(Vector3 pos, BrushSettings settings)
+    {
+
+        Point heightCoord = WorldToFieldIndex(pos, heightField);
+
+        int brushSize = (int)settings.size;
+        float brushOpacity = settings.opacity;
+        float brushWidth = brushSize / 2.0f;
+        
+
+
+        for (int x = -brushSize; x < brushSize; x++)
+        {
+            for (int y = -brushSize; y < brushSize; y++)
+            {
+                float originalVal = heightField.GetValue(heightCoord.x + x, heightCoord.y + y);
+
+                //2D gaussian can be used to model a 'soft' paint brush
+                float brushStrength = MathTools.Gaussian2D(new Vector2(x, y), brushOpacity, Vector2.zero,
+                    new Vector2(brushWidth, brushWidth));
+
+                originalVal += brushStrength;
+                originalVal = Mathf.Clamp(originalVal, 0.0f, 1.0f);
+
+                heightField.SetValue(heightCoord.x + x, heightCoord.y + y, originalVal);
+            }
+        }
+
+        Rect box = new Rect(heightCoord.x - brushSize, heightCoord.y - brushSize, brushSize * 2, brushSize * 2);
+        heightField.UpdatePreviewAt(box);
+
+        TilePlacer placer = GetComponent<TilePlacer>();
+
+        float brushSizeWorld = terrainSettings.tileSquareSize * 2.0f;
+
+        TileRender tile = placer.GetTileAt(pos + new Vector3(-brushSizeWorld, 0, -brushSizeWorld));
+        tile.CreateMesh();
+
+        tile = placer.GetTileAt(pos + new Vector3(+brushSizeWorld, 0, -brushSizeWorld));
+        tile.CreateMesh();
+
+        tile = placer.GetTileAt(pos + new Vector3(+brushSizeWorld, 0, +brushSizeWorld));
+        tile.CreateMesh();
+
+        tile = placer.GetTileAt(pos + new Vector3(-brushSizeWorld, 0, +brushSizeWorld));
+        tile.CreateMesh();
     }
 
     public Point WorldToFieldIndex(Vector3 pos, VectorField field)
@@ -148,18 +185,42 @@ public class Map : MonoBehaviour
 		}
 		return val * heightScale;
 	}
-	
-	public void UpdateFloatFields()
-	{
-		heightField.CreateFromTexture(heightTexture);
-		FloatField gradientMag = new FloatField();
-		heightField.CalculateGradient(gradientMag, splatSettings.splatSubSamples);
-		splatField.Create (heightField.Height, heightField.Width, Vector3.zero);
-		for (int i=0; i < gradientMag.Size; i++)
-		{
-			splatField.SetValue (i, splatSettings.GetSplatChannelValue (gradientMag.GetValue (i)));
-		}
-		splatField.UpdatePreview ();
 
+    public void ResetHeightMap()
+    {
+        heightField.Create(1024, 1024, 0.5f);
+        CalculateSplatsFromHeights();
+    }
+
+    public void LoadHeightMap(string relpath)
+    {
+        Texture2D heightMap = AssetDatabase.LoadAssetAtPath(relpath, typeof(Texture2D)) as Texture2D;
+        if (heightMap == null)
+        {
+            Debug.Log("Couldn't load texture!");
+            return;
+        }
+
+        heightField.CreateFromTexture(heightMap);
+        CalculateSplatsFromHeights();
+    }
+
+    public void CalculateSplatsFromHeights()
+    {
+        var gradientMag = ScriptableObject.CreateInstance<FloatField>();
+        heightField.CalculateGradient(gradientMag, splatSettings.splatSubSamples);
+        splatField.Create(heightField.Height, heightField.Width, Vector3.zero);
+        for (int i = 0; i < gradientMag.Size; i++)
+        {
+            splatField.SetValue(i, splatSettings.GetSplatChannelValue(gradientMag.GetValue(i)));
+        }
+        splatField.UpdatePreview();
+
+        DestroyImmediate(gradientMag);
+    }
+
+    public void UpdateFloatFields()
+	{
+		
 	}
 }

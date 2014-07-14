@@ -169,8 +169,12 @@ public class TileRender : MonoBehaviour
 		ReCalculateMesh(true);
 
 #if UNITY_EDITOR
-        AssetDatabase.CreateAsset( mesh, "Assets/Terrain/Tiles/tile"+transform.position.x+" "+transform.position.z+".asset" );
-        AssetDatabase.SaveAssets();
+	    string path = "Assets/Terrain/Tiles/tile" + transform.position.x + " " + transform.position.z + ".asset";
+        Mesh tryMesh = (Mesh)AssetDatabase.LoadAssetAtPath(path, typeof(Mesh));
+	    //if (tryMesh != null)
+	   //     AssetDatabase.DeleteAsset(path);
+       // AssetDatabase.CreateAsset( mesh, path );
+        //AssetDatabase.SaveAssets();
 #endif
 	}
 

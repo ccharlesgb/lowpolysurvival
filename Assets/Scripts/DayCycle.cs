@@ -6,12 +6,14 @@ public class DayCycle : MonoBehaviour
 {
     public float dayProgress = 0.0f; //Current progression 0-1
     public float dayLength = 1.0f; //Length of the day in minutes
-    private float tickIncrement = 0.0f; //How much to update the day each frame
     public AnimationCurve skyIntensity;
     public float sunHeight = 1.0f;
     public Light sun;
 
+    public float startTime; //Start hour
     public float hourTime;
+
+    private float timeOffset; //Offset for Time.time (sets the start hour)
 
     //Light Colours
     public Color ambientLightDay;
@@ -31,7 +33,8 @@ public class DayCycle : MonoBehaviour
 
     public void Start()
     {
-        dayProgress = 0.0f;
+        dayProgress = startTime/24.0f;
+        timeOffset = startTime/24.0f;
         sun = GetComponent<Light>();
     }
 
@@ -39,7 +42,7 @@ public class DayCycle : MonoBehaviour
     {
         //Update progress
         float delta = Time.fixedDeltaTime;
-        dayProgress = (Time.time/60.0f)/dayLength;
+        dayProgress = (Time.time/60.0f)/dayLength + timeOffset;
         dayProgress = dayProgress - Mathf.Floor(dayProgress);
 
         //Change light intensity based off curve

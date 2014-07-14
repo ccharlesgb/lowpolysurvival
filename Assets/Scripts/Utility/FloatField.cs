@@ -30,7 +30,7 @@ public class FloatField : ScriptableObject
 
 	//Data
 	[SerializeField]
-	[HideInInspector]
+	//[HideInInspector]
 	public List<float> fieldArray = new List<float>();
 
 	//Size params
@@ -70,6 +70,8 @@ public class FloatField : ScriptableObject
 	    Debug.Log("FA COUNT " + fieldArray.Count);
 		minVal = value;
 		maxVal = value;
+
+	    UpdatePreview();
 	}
 
 	public void UpdatePreview()
@@ -86,6 +88,31 @@ public class FloatField : ScriptableObject
 		}
 		previewTex.Apply ();
 	}
+
+    //Update a certain amount of the preview texture
+    public void UpdatePreviewAt(Rect box)
+    {
+        if (previewTex == null)
+            previewTex = new Texture2D(Width, Height);
+        Point curPoint;
+        Color curCol = new Color();
+
+        for (int x = (int)box.left; x < (int)box.right; x++)
+        {
+            for (int y = (int)box.top; y < (int)box.bottom; y++)
+            {
+                int index = CoordToIndex(x, y);
+                curPoint = IndexToCoord(index);
+                curCol.r = GetValue(index);
+                curCol.g = GetValue(index);
+                curCol.b = GetValue(index);
+                previewTex.SetPixel(x, y, curCol);
+            }
+        }
+        Debug.Log("Updating preview");
+
+        previewTex.Apply();
+    }
 
 	//Create from Texture
 	public void CreateFromTexture(Texture2D tex)
@@ -211,25 +238,29 @@ public class FloatField : ScriptableObject
 		return gradient;
 	}
 
-	public void CalculateGradient(FloatField output, int subSamples=1)
-	{
-		Vector2 gradient = new Vector2();
-		output.Create (Height, Width);
-		float grad = 0.0f;
-		float maxGrad = 0.0f;
-		for (int i=0; i < Size; i++)
-		{
-			gradient = GetFieldGradient(i, subSamples);
-			grad = gradient.magnitude;
-			if (grad > maxGrad)
-				maxGrad = grad;
-			output.SetValue (i, grad);
-		}
-		//Normalize the gradient map
-		for (int i=0; i < Size; i++)
-		{
-			output.SetValue(i, output.GetValue (i) / maxGrad);
-		}
-		output.UpdatePreview ();
+    public void CalculateGradient(FloatField output, int subSamples = 1)
+    {
+        Vector2 gradient = new Vector2();
+        output.Create(Height, Width);
+        float grad = 0.0f;
+        float maxGrad = 0.0f;
+        for (int i = 0; i < Size; i++)
+        {
+            gradient = GetFieldGradient(i, subSamples);
+            grad = gradient.magnitude;
+            if (grad > maxGrad)
+                maxGrad = grad;
+            output.SetValue(i, grad);
+        }
+        //Normalize the gradient map
+        if (maxGrad != 0.0f)
+        {
+            for (int i = 0; i < Size; i++)
+            {
+                output.SetValue(i, output.GetValue(i)/maxGrad);
+            }
+        }
+
+        output.UpdatePreview ();
 	}
 }

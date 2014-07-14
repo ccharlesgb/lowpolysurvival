@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -73,7 +74,57 @@ public class TilePlacer : MonoBehaviour {
 		tiles.Clear ();
 	}
 
-	public void PlaceTerrain()
+    public TileRender GetTileAt(Vector3 pos)
+    {
+        Vector3 posIndex = MathTools.ScalarDivide(pos, TileRender.GetTileBounds());
+
+        int x = (int) posIndex.x;
+        int z = (int) posIndex.z;
+
+        int arrayIndex = z + x * Map.Instance().terrainSettings.tileArraySideLength;
+        return tiles[arrayIndex].GetComponent<TileRender>();
+    }
+
+    public TileRender[] GetTilesInBounds(Rect rect, out int size)
+    {
+        Vector3 tL = rect.min;
+        Vector3 bR = rect.max;
+        Vector3 tR = rect.min + new Vector2(rect.width, 0.0f);
+        Vector3 bL = rect.max - new Vector2(rect.width, 0.0f);
+        tL.z = tL.y;
+        bR.z = bR.y;
+        tR.z = tR.y;
+        bL.z = bL.y;
+        TileRender tLTile = GetTileAt(tL);
+        TileRender tRTile = GetTileAt(tR);
+        TileRender bLTile = GetTileAt(bL);
+        TileRender bRTile = GetTileAt(bR);
+
+        int uniqueTiles = 0;
+        var tileArray = new TileRender[4];
+        tileArray[0] = tLTile;
+        uniqueTiles++;
+
+        if (tRTile != tLTile)
+        {
+            tileArray[uniqueTiles] = tRTile;
+            uniqueTiles++;
+        }
+        if (bLTile != tLTile && bLTile != tRTile)
+        {
+            tileArray[uniqueTiles] = bLTile;
+            uniqueTiles++;
+        }
+        if (bRTile != tLTile && bRTile != tRTile && bRTile != bLTile)
+        {
+            tileArray[uniqueTiles] = bRTile;
+            uniqueTiles++;
+        }
+        size = uniqueTiles;
+        return tileArray;
+    }
+
+    public void PlaceTerrain()
 	{
 		ClearTerrain ();
 		int terrainSize = Map.Instance ().terrainSettings.tileArraySideLength;

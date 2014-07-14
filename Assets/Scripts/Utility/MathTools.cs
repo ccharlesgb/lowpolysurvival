@@ -196,7 +196,13 @@ class MathTools
 		Vector3 result = new Vector3(a.x*b.x, a.y*b.y, a.z*b.z);
 		return result;
 	}
-	
+
+    public static Vector3 ScalarDivide(Vector3 a, Vector3 b)
+    {
+        Vector3 result = new Vector3(a.x / b.x, a.y / b.y, a.z / b.z);
+        return result;
+    }
+
 	public static bool IsInRange(float val, float min, float max)
 	{
 		return (val >= min && val <= max);	

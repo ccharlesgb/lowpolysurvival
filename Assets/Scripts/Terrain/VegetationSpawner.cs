@@ -34,8 +34,8 @@ public class VegetationSpawner : MonoBehaviour
 	void OnEnable()
 	{
 		map = Map.Instance();
-		if (vegField == null)
-			vegField = new FloatField();
+	    if (vegField == null)
+	        vegField = ScriptableObject.CreateInstance<FloatField>();
 	}
 
 	public void ClearVeg()
