@@ -99,6 +99,11 @@ public class InventoryQuickSwitch : MonoBehaviour
 			if (it != null)
 			{
 				GUI.DrawTexture(new Rect(rect.x + 5, rect.y + 20, BoxSize - 10, BoxSize - 10), it.Item.itemIcon);
+                // Draw the stack count.
+                if (it.Item.isStackable)
+                {
+                    GUI.Label(rect, "" + it.Amount, "Stacks");
+                }
 			}
 
 		}
