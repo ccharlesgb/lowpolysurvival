@@ -44,7 +44,7 @@ class InventoryHolsterHandler : MonoBehaviour
 			Destroy(ActiveItem);
 			return;
 		}
-		else if (it == null)
+		if (it == null)
 		{
 			return;
 		}
