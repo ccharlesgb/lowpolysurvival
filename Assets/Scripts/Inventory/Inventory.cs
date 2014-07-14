@@ -89,7 +89,6 @@ public class Inventory : MonoBehaviour
     //Searches for the container with this name
 	public ItemContainer GetContainer(string name)
 	{
-		if (containerList.Count == 0) return null;
 	    return containerList.FirstOrDefault(t => t.Item.itemName == name);
 	}
 
