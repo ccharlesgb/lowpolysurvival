@@ -24,7 +24,7 @@ public class Use : MonoBehaviour
 
 	    if (currentHover != null && Input.GetKeyDown(useKey))
 	    {
-	        currentHover.OnUse();
+	        currentHover.OnUse(gameObject);
 	    }
 	}
 

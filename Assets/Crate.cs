@@ -13,7 +13,7 @@ public class Crate : MonoBehaviour, IUseable
         GetComponent<MeshRenderer>().material.color = Color.white;
     }
 
-    public void OnUse()
+    public void OnUse(GameObject user)
     {
         Debug.Log("YOU USED ME!");
     }
