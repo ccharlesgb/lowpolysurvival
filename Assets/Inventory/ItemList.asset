@@ -30,3 +30,9 @@ MonoBehaviour:
     isStackable: 0
     stackSize: 1
     isEquipable: 1
+  - itemName: Fence
+    itemObject: {fileID: 100000, guid: 90c7407b3d966154d8d6e033414f425a, type: 2}
+    itemIcon: {fileID: 2800000, guid: 908a1c8ecd118f12a000e6888f962b59, type: 3}
+    isStackable: 1
+    stackSize: 10
+    isEquipable: 1

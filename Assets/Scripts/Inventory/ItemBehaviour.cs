@@ -13,7 +13,7 @@ public class ItemBehaviour : MonoBehaviour
 
 	//Hack to make it so you can add items in editor
 	public string itemName;
-	public int amount;
+	public int startAmount;
 
 	void Start()
 	{
@@ -24,11 +24,11 @@ public class ItemBehaviour : MonoBehaviour
 			{
 				container = ScriptableObject.CreateInstance<ItemContainer>();
 				container.Item = item;
-				if (!item.isStackable) amount = 1;
-				if (item.isStackable && amount > item.stackSize)
-					amount = item.stackSize;
+                if (!item.isStackable) startAmount = 1;
+                if (item.isStackable && startAmount > item.stackSize)
+                    startAmount = item.stackSize;
 
-				container.Amount = amount;
+				container.Amount = startAmount;
 			}
 		}
 	}
@@ -51,11 +51,14 @@ public class ItemBehaviour : MonoBehaviour
 		isHolstering = true;
 		transform.parent = inv.transform;
 
+        gameObject.GetInterface<IHolster>().OnHolster(inv);
+
 		return true;
 	}
 
-	public void UnHolster()
+	public void UnHolster(Inventory inv)
 	{
+        gameObject.GetInterface<IHolster>().OnDeHolster(inv);
 		isHolstering = false;
 		transform.parent = null;
 	}

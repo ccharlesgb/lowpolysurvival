@@ -1,24 +1,43 @@
 ﻿
+using System;
 using UnityEngine;
 using System.Collections;
 
 public class Axe : MonoBehaviour, IHolster
 {
-	public float primaryFireDelay = 1.0f;
-	float nextPrimaryFire = 0.0f;
+    public float primaryFireDelay = 1.0f;
+    private float nextPrimaryFire = 0.0f;
 
-	public float hitRange = 2.0f;
+    public float hitRange = 2.0f;
 
-	// Use this for initialization
-	void Start () 
-	{
-		nextPrimaryFire = 0.0f;
-	}
-	
-	// Update is called once per frame
-	void Update () 
-	{
-	}
+    private Animation _animation;
+
+    void OnEnable()
+    {
+        _animation = GetComponent<Animation>();
+    }
+
+    // Use this for initialization
+    private void Start()
+    {
+        nextPrimaryFire = 0.0f;
+    }
+
+    // Update is called once per frame
+    private void Update()
+    {
+    }
+
+    public void OnHolster(Inventory ownerInv)
+    {
+        _animation.Play();
+        _animation.Stop();
+    }
+
+    public void OnDeHolster(Inventory ownerInv)
+    {
+        
+    }
 
 	public void PrimaryFire(Inventory ownerInv)
 	{
@@ -38,7 +57,6 @@ public class Axe : MonoBehaviour, IHolster
 
 		if (Physics.Raycast(ray, out hit))
 		{
-            Debug.Log(hit.collider.gameObject);
 			//Does this object have a resource?
 			GameObject obj = hit.collider.gameObject;
 			if (obj != null)
