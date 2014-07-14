@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -135,6 +136,28 @@ public class Inventory : MonoBehaviour
 		}
 	}
 
+    //Similar to Drop Item but the item doesnt get spawned it just gets 'used up'
+    public void UseItem(string name, int amount)
+    {
+        Debug.Log("USING UP " + name);
+        ItemContainer container = GetContainer(name);
+        if (container == null) return;
+        if (container.Amount < amount) return;
+
+        if (OnItemRemoved != null)
+        {
+            OnItemRemoved(container, amount);
+        }
+
+        container.Amount -= amount;
+
+        //We've run out of this item
+        if (container.Amount <= 0)
+        {
+            RemoveItem(container);
+        }
+
+    }
 	public void RemoveItem(ItemContainer ct)
 	{
 		containerList.Remove (ct);

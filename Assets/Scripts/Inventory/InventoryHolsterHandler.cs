@@ -54,6 +54,7 @@ class InventoryHolsterHandler : MonoBehaviour
 
 		if (ActiveItem != null) //Do we already have a gameobject that is present?
 		{
+            ActiveItem.GetComponent<ItemBehaviour>().UnHolster(_inventory);
 			Destroy(ActiveItem);
 			ActiveItem = null;
 		}

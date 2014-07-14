@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 
 /// <summary>
@@ -6,6 +7,8 @@ using System.Collections;
 /// </summary>
 public interface IHolster
 {
+    void OnHolster(Inventory ownerInv);
+    Void OnDeHolster(Inventory ownerInv);
 	void PrimaryFire(Inventory ownerInv);
 	void SecondaryFire(Inventory ownerInv);
 }
