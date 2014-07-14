@@ -8,7 +8,7 @@ class InventoryHolsterHandler : MonoBehaviour
 
 	private void Start()
 	{
-		_inventory = GetComponent<Inventory>();
+		
 	}
 
 	private void Update()
@@ -29,12 +29,13 @@ class InventoryHolsterHandler : MonoBehaviour
 
 	private void OnEnable()
 	{
-		Inventory.OnItemRemoved += RemoveCheck;
+		_inventory = GetComponent<Inventory>();
+		_inventory.OnItemRemoved += RemoveCheck;
 	}
 
 	private void OnDisable()
 	{
-		Inventory.OnItemRemoved -= RemoveCheck;
+		_inventory.OnItemRemoved -= RemoveCheck;
 	}
 
 	public void SetActiveItem(ItemContainer it)

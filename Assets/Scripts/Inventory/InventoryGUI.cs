@@ -134,12 +134,12 @@ public class InventoryGUI : MonoBehaviour
 
 	private void OnEnable()
 	{
-		Inventory.OnItemAdded += AddNotification;
+		Inv.OnItemAdded += AddNotification;
 	}
 
 	private void OnDisable()
 	{
-		Inventory.OnItemAdded -= AddNotification;
+		Inv.OnItemAdded -= AddNotification;
 	}
 
 	public void AddNotification(InventoryItem it, int amount)

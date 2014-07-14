@@ -9,10 +9,10 @@ public class Inventory : MonoBehaviour
 
 	// We need an event for communicating with the GUI.
 	public delegate void ItemAddedHandler(InventoryItem container, int amount);
-	public static event ItemAddedHandler OnItemAdded;
+	public event ItemAddedHandler OnItemAdded;
 
 	public delegate void ItemRemovedHandler(ItemContainer container, int amount);
-	public static event ItemRemovedHandler OnItemRemoved;
+	public event ItemRemovedHandler OnItemRemoved;
 
 	public List<ItemContainer> containerList = new List<ItemContainer>();
 
