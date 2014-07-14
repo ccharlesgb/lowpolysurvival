@@ -68,9 +68,10 @@ class InventoryHolsterHandler : MonoBehaviour
 	private void RemoveCheck(ItemContainer it, int amount)
 	{
 		if (ActiveItem == null) return;
-
-		if (ActiveItem.GetComponent<ItemBehaviour>().container.Item == it.Item)
+            
+		if (ActiveItem.GetComponent<ItemBehaviour>().container.Item == it.Item && it.Amount == 0)
 		{
+            ActiveItem.GetComponent<ItemBehaviour>().UnHolster(_inventory);
 			Destroy(ActiveItem);
 			ActiveItem = null;
 		}

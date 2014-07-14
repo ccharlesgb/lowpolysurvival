@@ -50,7 +50,7 @@ public class ItemBehaviour : MonoBehaviour
 
 		isHolstering = true;
 		transform.parent = inv.transform;
-
+	    transform.rotation = Quaternion.identity; //NOT WORKING?
         gameObject.GetInterface<IHolster>().OnHolster(inv);
 
 		return true;
