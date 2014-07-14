@@ -43,7 +43,7 @@ public class MapEditor : Editor
 
         brushSettings.paintChannel = EditorGUILayout.IntSlider("Splat Channel", brushSettings.paintChannel, 1, 3);
         brushSettings.opacity = EditorGUILayout.Slider("Brush Opacity", brushSettings.opacity, 0.0f, 1.0f);
-        brushSettings.size = EditorGUILayout.Slider("Brush Size", brushSettings.size, 1.0f, 10.0f);
+        brushSettings.size = EditorGUILayout.Slider("Brush Size", brushSettings.size, 1.0f, 100.0f);
 
         GUI.enabled = true;
     }
@@ -56,7 +56,7 @@ public class MapEditor : Editor
         {
             HandleUtility.AddDefaultControl(0);
         }
-        if (Event.current.type == EventType.mouseDrag)
+        if (Event.current.type == EventType.mouseDrag && Event.current.button == 0)
         {
             if (Camera.current != null)
             {
@@ -67,8 +67,6 @@ public class MapEditor : Editor
                 RaycastHit hit = new RaycastHit();
                 if (Physics.Raycast(ray, out hit))
                 {
-                    Debug.Log(hit.point);
-                    Debug.DrawLine(hit.point, hit.point + new Vector3(0,100,0), Color.white, 1.0f, false);
                     Vector3 terrainPos = hit.point;
                     terrainPos.y = 0.0f;
                     map.PaintSplat(terrainPos, brushSettings);

@@ -78,7 +78,7 @@ public class Map : MonoBehaviour
 
                 Vector3 addVal = new Vector3(-brushStrength, -brushStrength, -brushStrength);
                 //Debug.Log("Brush Strength " + brushStrength);
-                addVal[settings.paintChannel - 1] = brushStrength * 2;
+                addVal[settings.paintChannel - 1] += brushStrength * 2;
                 originalVal += addVal;
                 originalVal.x = Mathf.Clamp(originalVal.x, 0.0f, 1.0f);
                 originalVal.y = Mathf.Clamp(originalVal.y, 0.0f, 1.0f);
