@@ -25,7 +25,7 @@ public class InventoryItemEditor : EditorWindow
 
 	private void OnGUI()
 	{
-		GUILayout.Label("Inventory Item Editor", EditorStyles.boldLabel);
+		GUILayout.Label("Inventory ItemDetails Editor", EditorStyles.boldLabel);
 		GUILayout.BeginHorizontal();
 		if (itemList != null)
 		{
@@ -75,11 +75,11 @@ public class InventoryItemEditor : EditorWindow
 			}
 			GUILayout.Space(60);
 
-			if (GUILayout.Button("Add Item", GUILayout.ExpandWidth(false)))
+			if (GUILayout.Button("Add ItemDetails", GUILayout.ExpandWidth(false)))
 			{
 				AddItem();
 			}
-			if (GUILayout.Button("Delete Item", GUILayout.ExpandWidth(false)))
+			if (GUILayout.Button("Delete ItemDetails", GUILayout.ExpandWidth(false)))
 			{
 				DeleteItem(viewIndex - 1);
 			}
@@ -90,18 +90,18 @@ public class InventoryItemEditor : EditorWindow
 			{
 				GUILayout.BeginHorizontal();
 
-				viewIndex = Mathf.Clamp(EditorGUILayout.IntField("Current Item", viewIndex, GUILayout.ExpandWidth(false)), 1,
+				viewIndex = Mathf.Clamp(EditorGUILayout.IntField("Current ItemDetails", viewIndex, GUILayout.ExpandWidth(false)), 1,
 					itemList.itemList.Count);
 				EditorGUILayout.LabelField("of    " + itemList.itemList.Count);
 				GUILayout.EndHorizontal();
 
-				itemList.itemList[viewIndex - 1].itemName = EditorGUILayout.TextField("Item Name",
+				itemList.itemList[viewIndex - 1].itemName = EditorGUILayout.TextField("ItemDetails Name",
 					itemList.itemList[viewIndex - 1].itemName as string);
 				itemList.itemList[viewIndex - 1].itemIcon =
-					EditorGUILayout.ObjectField("Item Icon", itemList.itemList[viewIndex - 1].itemIcon, typeof (Texture2D), false) as
+					EditorGUILayout.ObjectField("ItemDetails Icon", itemList.itemList[viewIndex - 1].itemIcon, typeof (Texture2D), false) as
 						Texture2D;
 				itemList.itemList[viewIndex - 1].itemObject =
-					EditorGUILayout.ObjectField("Item Prefab", itemList.itemList[viewIndex - 1].itemObject, typeof (GameObject), false)
+					EditorGUILayout.ObjectField("ItemDetails Prefab", itemList.itemList[viewIndex - 1].itemObject, typeof (GameObject), false)
 						as GameObject;
 
 				itemList.itemList[viewIndex - 1].isStackable =
@@ -131,9 +131,9 @@ public class InventoryItemEditor : EditorWindow
 
 	private void AddItem()
 	{
-		InventoryItem newItem = new InventoryItem();
-		newItem.itemName = "New Item";
-		itemList.itemList.Add(newItem);
+		ItemDetails newItemDetails = new ItemDetails();
+		newItemDetails.itemName = "New ItemDetails";
+		itemList.itemList.Add(newItemDetails);
 		viewIndex = itemList.itemList.Count;
 	}
 

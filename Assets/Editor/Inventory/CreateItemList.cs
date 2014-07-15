@@ -7,7 +7,7 @@ using UnityEditor;
 /// </summary>
 public class CreateItemList
 {
-	[MenuItem("Assets/Create/Inventory Item List")]
+	[MenuItem("Assets/Create/Inventory ItemDetails List")]
 	public static ItemList Create()
 	{
 		ItemList asset = ScriptableObject.CreateInstance<ItemList>();

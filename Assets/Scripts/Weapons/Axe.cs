@@ -67,12 +67,12 @@ public class Axe : MonoBehaviour, IHolster
 				Inventory inv = obj.GetComponent<Inventory>();
 				if (inv != null) //It has an inventory we can harvest!
 				{
-					ItemContainer itemHarvest = inv.GetContainer ("Wood");
+					ItemSlot itemHarvest = inv.GetContainer ("Wood");
 					if (itemHarvest != null)
 					{
 						if (itemHarvest.Amount > 1)
 						{
-							ownerInv.TransferItem (itemHarvest, 1);
+							ownerInv.TransferItem (itemHarvest, 1, inv);
 						}
 					}
 				}

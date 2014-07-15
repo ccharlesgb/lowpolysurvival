@@ -7,6 +7,6 @@ using System.Collections;
 public class Blueprint
 {
     public string printName;
-    public List<ItemContainer> requiredItems;
-    public List<ItemContainer> outputItems;
+    public List<ItemSlot> requiredItems;
+    public List<ItemSlot> outputItems;
 }

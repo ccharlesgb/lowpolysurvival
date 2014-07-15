@@ -75,18 +75,18 @@ public class BluePrintEditor : EditorWindow
             }
             GUILayout.Space(60);
 
-            if (GUILayout.Button("Add Item", GUILayout.ExpandWidth(false)))
+            if (GUILayout.Button("Add ItemDetails", GUILayout.ExpandWidth(false)))
             {
                 AddItem();
             }
-            if (GUILayout.Button("Delete Item", GUILayout.ExpandWidth(false)))
+            if (GUILayout.Button("Delete ItemDetails", GUILayout.ExpandWidth(false)))
             {
                 DeleteItem(viewIndex - 1);
             }
 
             GUILayout.EndHorizontal();
 
-            //Grab all the item names so we can create a drop down
+            //Grab all the ItemDetails names so we can create a drop down
             List<string> itemNames = MasterList.Instance.itemList.GetItemNames();
 
             if (blueprintList.blueprintList.Count > 0)
@@ -103,15 +103,15 @@ public class BluePrintEditor : EditorWindow
                 //Adds a new required part to the current blueprint
                 if (GUILayout.Button("Add Input Part", GUILayout.ExpandWidth(false)))
                 {
-                    ItemContainer newPart = ScriptableObject.CreateInstance<ItemContainer>();
-                    newPart.Item = null;
+                    ItemSlot newPart = ScriptableObject.CreateInstance<ItemSlot>();
+                    newPart.ItemDetails = null;
                     newPart.Amount = 1;
                     curPrint.requiredItems.Add(newPart);
                 }
                 if (GUILayout.Button("Add Output Part", GUILayout.ExpandWidth(false)))
                 {
-                    ItemContainer newPart = ScriptableObject.CreateInstance<ItemContainer>();
-                    newPart.Item = null;
+                    ItemSlot newPart = ScriptableObject.CreateInstance<ItemSlot>();
+                    newPart.ItemDetails = null;
                     newPart.Amount = 1;
                     curPrint.outputItems.Add(newPart);
                 }
@@ -122,18 +122,18 @@ public class BluePrintEditor : EditorWindow
 
                 /*for (int i2 = 0; i2 < curPrint.requiredItems.Count; i2++)
                 {
-                    string itemName = EditorGUILayout.TextField("Part Item", curPrint.requiredItems[i2].item.itemName as string);
-                    InventoryItem testItem = MasterList.Instance.itemList.FindByName(itemName);
+                    string itemName = EditorGUILayout.TextField("Part ItemDetails", curPrint.requiredItems[i2].ItemDetails.itemName as string);
+                    ItemDetails testItem = MasterList.Instance.itemList.FindByName(itemName);
                     if (testItem != null)
                     {
-                        curPrint.requiredItems[i2].item = testItem;
+                        curPrint.requiredItems[i2].ItemDetails = testItem;
                     }
                 }*/
 
                 /*
-                itemList.itemList[viewIndex - 1].itemName = EditorGUILayout.TextField("Item Name", itemList.itemList[viewIndex - 1].itemName as string);
-                itemList.itemList[viewIndex - 1].itemIcon = EditorGUILayout.ObjectField("Item Icon", itemList.itemList[viewIndex - 1].itemIcon, typeof(Texture2D), false) as Texture2D;
-                itemList.itemList[viewIndex - 1].itemObject = EditorGUILayout.ObjectField("Item Prefab", itemList.itemList[viewIndex - 1].itemObject, typeof(GameObject), false) as GameObject;
+                itemList.itemList[viewIndex - 1].itemName = EditorGUILayout.TextField("ItemDetails Name", itemList.itemList[viewIndex - 1].itemName as string);
+                itemList.itemList[viewIndex - 1].itemIcon = EditorGUILayout.ObjectField("ItemDetails Icon", itemList.itemList[viewIndex - 1].itemIcon, typeof(Texture2D), false) as Texture2D;
+                itemList.itemList[viewIndex - 1].itemObject = EditorGUILayout.ObjectField("ItemDetails Prefab", itemList.itemList[viewIndex - 1].itemObject, typeof(GameObject), false) as GameObject;
 
                 itemList.itemList[viewIndex - 1].isStackable = (bool)EditorGUILayout.Toggle("Stackable", itemList.itemList[viewIndex - 1].isStackable, GUILayout.ExpandWidth(false));
                 GUI.enabled = itemList.itemList[viewIndex - 1].isStackable;

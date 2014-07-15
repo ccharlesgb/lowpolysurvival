@@ -38,7 +38,7 @@ class InventoryHolsterHandler : MonoBehaviour
 		_inventory.OnItemRemoved -= RemoveCheck;
 	}
 
-	public void SetActiveItem(ItemContainer it)
+	public void SetActiveItem(ItemSlot it)
 	{
 		if (it == null && ActiveItem != null) //Unholster
 		{
@@ -58,20 +58,20 @@ class InventoryHolsterHandler : MonoBehaviour
 			ActiveItem = null;
 		}
 
-        if (!it.Item.isEquipable) return;
+        if (!it.ItemDetails.isEquipable) return;
 
 		//Spawn the new gameobject
-		GameObject itemFab = Instantiate(it.Item.itemObject, transform.position, Quaternion.identity) as GameObject;
+		GameObject itemFab = Instantiate(it.ItemDetails.itemObject, transform.position, Quaternion.identity) as GameObject;
 		itemFab.GetComponent<ItemBehaviour>().Init(it, 1);
 		itemFab.GetComponent<ItemBehaviour>().Holster(_inventory);
 		ActiveItem = itemFab;
 	}
 
-	private void RemoveCheck(ItemContainer it, int amount)
+	private void RemoveCheck(ItemSlot it, int amount)
 	{
 		if (ActiveItem == null) return;
             
-		if (ActiveItem.GetComponent<ItemBehaviour>().container.Item == it.Item && it.Amount == 0)
+		if (ActiveItem.GetComponent<ItemBehaviour>().slot.ItemDetails == it.ItemDetails && it.Amount == 0)
 		{
             ActiveItem.GetComponent<ItemBehaviour>().UnHolster(_inventory);
 			Destroy(ActiveItem);

@@ -6,7 +6,7 @@ using System.Collections;
 /// </summary>
 public class ItemBehaviour : MonoBehaviour 
 {
-	public ItemContainer container;
+	public ItemSlot slot;
 	public float spawnTime;
 
 	public bool isHolstering;
@@ -17,36 +17,36 @@ public class ItemBehaviour : MonoBehaviour
 
 	void Start()
 	{
-		if (container == null)
+		if (slot == null)
 		{
-			InventoryItem item = MasterList.Instance.itemList.FindByName(itemName);
-			if (item != null)
+			ItemDetails itemDetails = MasterList.Instance.itemList.FindByName(itemName);
+			if (itemDetails != null)
 			{
-				container = ScriptableObject.CreateInstance<ItemContainer>();
-				container.Item = item;
-                if (!item.isStackable) startAmount = 1;
-                if (item.isStackable && startAmount > item.stackSize)
-                    startAmount = item.stackSize;
+				slot = ScriptableObject.CreateInstance<ItemSlot>();
+				slot.ItemDetails = itemDetails;
+                if (!itemDetails.isStackable) startAmount = 1;
+                if (itemDetails.isStackable && startAmount > itemDetails.stackSize)
+                    startAmount = itemDetails.stackSize;
 
-				container.Amount = startAmount;
+				slot.Amount = startAmount;
 			}
 		}
 	}
 
-	public void Init(ItemContainer ct, int amount)
+	public void Init(ItemSlot ct, int amount)
 	{
 		if (ct == null) return;
-		container = ItemContainer.CreateInstance<ItemContainer>();
-		container.Item = ct.Item;
-		container.Amount = amount;
+		slot = ItemSlot.CreateInstance<ItemSlot>();
+		slot.ItemDetails = ct.ItemDetails;
+		slot.Amount = amount;
 
 		spawnTime = Time.time;
 	}
 
-	//Set this item to be the active weapon/consumable etc	
+	//Set this ItemDetails to be the active weapon/consumable etc	
 	public bool Holster(Inventory inv)
 	{
-		if (!container.Item.isEquipable) return false;
+		if (!slot.ItemDetails.isEquipable) return false;
 
 		isHolstering = true;
 		transform.parent = inv.transform;

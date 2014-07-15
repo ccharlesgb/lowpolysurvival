@@ -5,9 +5,9 @@ using System.Collections;
 ///		Container for items.
 /// </summary>
 [System.Serializable]
-public class InventoryItem
+public class ItemDetails
 {
-	public string itemName = "ItemName"; //Name of the item
+	public string itemName = "ItemName"; //Name of the ItemDetails
 	public GameObject itemObject = null; //Prefab pointing 
 	public Texture2D itemIcon = null;
 	public bool isStackable = false;

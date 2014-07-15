@@ -22,16 +22,12 @@ public class InventoryShower : MonoBehaviour
 
 		if (Input.GetKeyDown(ShowKey) && _invGUI.RenderGUI == false)
 		{
-		    InputState.AddMenuLevel(); //Tell the input state that theres a menu open (and cursor is visible)
-			Screen.lockCursor = true;
-			Screen.lockCursor = false;
-			_invGUI.RenderGUI = true;
+		    _invGUI.Popup();
+
 		}
 		else if (Input.GetKeyDown(ShowKey) && _invGUI.RenderGUI == true)
 		{
-            InputState.LowerMenuLevel(); //Tell the input state that we closed a menu.
-			Screen.lockCursor = true;
-			_invGUI.RenderGUI = false;
+		    _invGUI.Hide();
 		}
 	}
 }

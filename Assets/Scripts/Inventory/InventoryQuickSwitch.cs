@@ -23,9 +23,9 @@ public class InventoryQuickSwitch : MonoBehaviour
 	public float BoxPadding = 5;
 	public float BoxSize = 50;
 
-	private ItemContainer[] _items;
+	private ItemSlot[] _items;
 	private int _activeSlot = 1;
-	private ItemContainer _activeItem;
+	private ItemSlot _activeItem;
 
 	// Use this for initialization
 	void Start()
@@ -50,7 +50,7 @@ public class InventoryQuickSwitch : MonoBehaviour
 			}
 		}
 
-		// Check if the item in the active slot was changed.
+		// Check if the ItemDetails in the active slot was changed.
 		if (_activeItem != _items[_activeSlot - 1])
 		{
 			SetActiveSlot(_activeSlot);
@@ -63,10 +63,10 @@ public class InventoryQuickSwitch : MonoBehaviour
 	{
 		_activeSlot = slot;
 
-		// Remove the existing item
+		// Remove the existing ItemDetails
 		_holsterHandler.SetActiveItem(null);
 
-		// Set the new item.
+		// Set the new ItemDetails.
 		_activeItem = _items[slot - 1];
 
 		if (_activeItem != null)
@@ -94,13 +94,13 @@ public class InventoryQuickSwitch : MonoBehaviour
 				GUI.Box(rect, "" + (x + 1), "NotActiveBox");
 			}
 
-			ItemContainer it = _items[x];
+			ItemSlot it = _items[x];
 
 			if (it != null)
 			{
-				GUI.DrawTexture(new Rect(rect.x + 5, rect.y + 20, BoxSize - 10, BoxSize - 10), it.Item.itemIcon);
+				GUI.DrawTexture(new Rect(rect.x + 5, rect.y + 20, BoxSize - 10, BoxSize - 10), it.ItemDetails.itemIcon);
                 // Draw the stack count.
-                if (it.Item.isStackable)
+                if (it.ItemDetails.isStackable)
                 {
                     GUI.Label(rect, "" + it.Amount, "Stacks");
                 }

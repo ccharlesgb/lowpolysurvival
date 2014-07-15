@@ -7,7 +7,7 @@ using System.Collections.Generic;
 /// </summary>
 public class ItemList : ScriptableObject
 {
-	public List<InventoryItem> itemList;
+	public List<ItemDetails> itemList;
 
     public List<string> GetItemNames()
     {
@@ -19,7 +19,7 @@ public class ItemList : ScriptableObject
         return nameList;
     }
 
-    public InventoryItem FindByName(string name)
+    public ItemDetails FindByName(string name)
 	{
 		for (int i=0; i < itemList.Count; i++)
 		{

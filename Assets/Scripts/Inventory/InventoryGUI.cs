@@ -5,7 +5,7 @@ using System.Collections.Generic;
 class InventoryNotification
 {
 	public float timeCreated;
-	public InventoryItem item;
+	public ItemDetails itemDetails;
 	public int amount;
 	static float lifeTime = 3.0f; //How long does it last?
 
@@ -26,9 +26,9 @@ class InventoryNotification
 		
 	}
 
-	public InventoryNotification(InventoryItem it, int amt)
+	public InventoryNotification(ItemDetails it, int amt)
 	{
-		item = it;
+		itemDetails = it;
 		amount = amt;
 		timeCreated = Time.time;
 		DeleteMe = false;
@@ -43,7 +43,7 @@ class InventoryNotification
 		float progress = (Time.time - timeCreated) / lifeTime;
 		float moveAmount = h / 0.5f;
 		Rect position = new Rect(w - sizeX, h - sizeY - (progress * moveAmount), sizeX, sizeY);
-		string message = "Added " + item.itemName + " x" + amount.ToString();
+		string message = "Added " + itemDetails.itemName + " x" + amount.ToString();
 
 		Color boxCol = GUI.color;
 		boxCol.a = 1.0f - progress;
@@ -63,7 +63,7 @@ class InventoryNotification
 /// </summary>
 public class InventoryGUI : MonoBehaviour
 {
-	// Size of the slot container
+	// Size of the slot slot
 	private const int SlotsX = 5;
 	private const int SlotsY = 5;
 	private readonly List<InventoryNotification> _notifications = new List<InventoryNotification>();
@@ -77,9 +77,8 @@ public class InventoryGUI : MonoBehaviour
 	public Inventory Inv;
 
 	public bool RenderGUI = false;
-	public Rect WindowSize;
 
-	private ItemContainer _draggedItem;
+	private ItemSlot _draggedItem;
 	private bool _isDraggingItem;
 
     public bool isLooting = false;
@@ -97,10 +96,23 @@ public class InventoryGUI : MonoBehaviour
 	    lootInventory = null;
 	}
 
+
+    public Rect GetWindowSize()
+    {
+        if (isLooting)
+        {
+            return new Rect(0, 0, 10 + (BoxSize + BoxPadding)*5*2, 50 + (BoxSize + BoxPadding)*5);
+        }
+        else
+        {
+            return new Rect(0, 0, 10 + (BoxSize + BoxPadding) * 5, 50 + (BoxSize + BoxPadding) * 5);
+        }
+    }
+
 	// Use this for initialization
 	private void Start()
 	{
-		WindowSize = new Rect(0, 0, 10 + (BoxSize + BoxPadding)*5, 50 + (BoxSize + BoxPadding)*5);
+
 	}
 
 	// Update is called once per frame
@@ -109,9 +121,9 @@ public class InventoryGUI : MonoBehaviour
 		var v = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
 
 		// Drop outside the window?
-		if (_isDraggingItem && Input.GetMouseButtonUp(0) && !WindowSize.Contains(v))
+		if (_isDraggingItem && Input.GetMouseButtonUp(0) && !GetWindowSize().Contains(v))
 		{
-			Inv.DropItem(_draggedItem.Item.itemName, _draggedItem.Amount);
+			Inv.DropItem(_draggedItem.ItemDetails.itemName, _draggedItem.Amount);
 			ResetDragging();
 		}
 	}
@@ -122,7 +134,7 @@ public class InventoryGUI : MonoBehaviour
 
 		if (RenderGUI)
 		{
-			GUI.Window(0, WindowSize, MyWindow, "Inventory");
+			GUI.Window(0, GetWindowSize(), MyWindow, "Inventory");
 		}
 		else if (_isDraggingItem)
 		{
@@ -144,8 +156,24 @@ public class InventoryGUI : MonoBehaviour
     {
         lootInventory = inv;
         isLooting = true;
-	    RenderGUI = true;
+	    
+        Popup();
         Debug.Log("LOOTING GUI");
+    }
+
+    public void Popup()
+    {
+        InputState.AddMenuLevel(); //Tell the input state that theres a menu open (and cursor is visible)
+        Screen.lockCursor = true;
+        Screen.lockCursor = false;
+        RenderGUI = true;
+    }
+
+    public void Hide()
+    {
+        InputState.LowerMenuLevel(); //Tell the input state that we closed a menu.
+        Screen.lockCursor = true;
+        RenderGUI = false;
     }
 
 	private void OnEnable()
@@ -160,7 +188,7 @@ public class InventoryGUI : MonoBehaviour
         Inv.OnLootBegin -= ShowLootGUI;
 	}
 
-	public void AddNotification(InventoryItem it, int amount)
+	public void AddNotification(ItemDetails it, int amount)
 	{
 		var not = new InventoryNotification(it, amount);
 		_notifications.Add(not);
@@ -176,7 +204,7 @@ public class InventoryGUI : MonoBehaviour
 		if (_isDraggingItem)
 		{
 			Graphics.DrawTexture(new Rect(Event.current.mousePosition.x, Event.current.mousePosition.y, BoxSize, BoxSize),
-				_draggedItem.Item.itemIcon);
+				_draggedItem.ItemDetails.itemIcon);
 		}
 	}
 
@@ -184,7 +212,7 @@ public class InventoryGUI : MonoBehaviour
 	{
 		var itemRect = new Rect(0, 65, BoxSize, BoxSize);
 
-		ItemContainer[] items = Inv.GetInventoryAsArray();
+		ItemSlot[] items = Inv.GetInventoryAsArray();
 
 		// Loop all slots, by x and y.
 		for (int y = 0; y < SlotsY; y++)
@@ -192,13 +220,13 @@ public class InventoryGUI : MonoBehaviour
 			for (int x = 0; x < SlotsX; x++)
 			{
 				int slot = x + y*SlotsX;
-				ItemContainer it = items[slot];
+				ItemSlot it = items[slot];
 
 				var rect = new Rect(5 + BoxPadding/2 + x*(BoxSize + BoxPadding), 45 + y*(BoxSize + BoxPadding), BoxSize, BoxSize);
 
 				GUI.Box(rect, "" + x + y);
 
-				// Draw the Item.
+				// Draw the ItemDetails.
 				if (it != null)
 				{
 					DrawItem(rect, it);
@@ -215,9 +243,9 @@ public class InventoryGUI : MonoBehaviour
 
     private void DrawLootList()
     {
-        var itemRect = new Rect(BoxSize, 65, BoxSize, BoxSize);
+        var itemRect = new Rect(0, 65, BoxSize, BoxSize);
 
-        ItemContainer[] items = lootInventory.GetInventoryAsArray();
+        ItemSlot[] items = lootInventory.GetInventoryAsArray();
 
         // Loop all slots, by x and y.
         for (int y = 0; y < SlotsY; y++)
@@ -225,16 +253,16 @@ public class InventoryGUI : MonoBehaviour
             for (int x = 0; x < SlotsX; x++)
             {
                 int slot = x + y * SlotsX;
-                ItemContainer it = items[slot];
+                ItemSlot it = items[slot];
 
-                var rect = new Rect(5 + BoxPadding / 2 + x * (BoxSize + BoxPadding), 45 + y * (BoxSize + BoxPadding), BoxSize, BoxSize);
+                var rect = new Rect(5 + BoxPadding / 2 + x * (BoxSize + BoxPadding) + (GetWindowSize().width / 2), 45 + y * (BoxSize + BoxPadding), BoxSize, BoxSize);
 
                 GUI.Box(rect, "" + x + y);
 
-                // Draw the Item.
+                // Draw the ItemDetails.
                 if (it != null)
                 {
-                    DrawItem(rect, it);
+                    DrawItem(rect, it, true); //Tell the function that this is a lootable ItemDetails
                 }
 
                 // Drop handling.
@@ -246,13 +274,13 @@ public class InventoryGUI : MonoBehaviour
         }
     }
 
-	private void DrawItem(Rect rect, ItemContainer it)
+	private void DrawItem(Rect rect, ItemSlot it, bool isLootInv = false)
 	{
 		Event e = Event.current;
 
 		if (rect.Contains(e.mousePosition))
 		{
-			DrawToolTip(rect, it.Item.itemName);
+			DrawToolTip(rect, it.ItemDetails.itemName);
 
 			// Left mouse button.
 			if (!_isDraggingItem && e.button == 0 && e.type == EventType.mouseDrag)
@@ -267,30 +295,30 @@ public class InventoryGUI : MonoBehaviour
 			return;
 		}
 
-		if (GUI.Button(rect, it.Item.itemIcon))
+		if (GUI.Button(rect, it.ItemDetails.itemIcon))
 		{
 			if (e.button == 0) //Left mouse
 			{
-				//Inv.HolsterItem(it);
+				Inv.TransferItem(it, it.Amount, lootInventory);
 			}
 			else if (Event.current.button == 1) //Right mouse
 			{
-				//inv.DropItem(it.item.itemName, 1);
+				//inv.DropItem(it.ItemDetails.itemName, 1);
 			}
 		}
 
 		// Draw the stack count.
-		if (it.Item.isStackable)
+		if (it.ItemDetails.isStackable)
 		{
 			GUI.Label(rect, "" + it.Amount, "Stacks");
 		}
 	}
 
 	/// <summary>
-	///     Set the currently dragged item.
+	///     Set the currently dragged ItemDetails.
 	/// </summary>
-	/// <param name="it">ItemContainer to drag.</param>
-	private void StartDragging(ItemContainer it)
+	/// <param name="it">ItemSlot to drag.</param>
+	private void StartDragging(ItemSlot it)
 	{
 		_isDraggingItem = true;
 		_draggedItem = it;
@@ -299,22 +327,22 @@ public class InventoryGUI : MonoBehaviour
 	/// <summary>
 	///     Drop handling.
 	/// </summary>
-	/// <param name="slot">Slot to drop the item into.</param>
-	/// <param name="it">Item already in the slot, null if empty.</param>
-	private void StopDragging(int slot, ItemContainer it)
+	/// <param name="slot">SlotID to drop the ItemDetails into.</param>
+	/// <param name="it">ItemDetails already in the slot, null if empty.</param>
+	private void StopDragging(int slot, ItemSlot it)
 	{
 		if (it != null)
 		{
 			// TODO: merge stacks?
 
-			// Switch item position.
-			int newSlot = it.Slot;
-			it.Slot = _draggedItem.Slot;
-			_draggedItem.Slot = newSlot;
+			// Switch ItemDetails position.
+			int newSlot = it.SlotID;
+			it.SlotID = _draggedItem.SlotID;
+			_draggedItem.SlotID = newSlot;
 		}
 		else
 		{
-			_draggedItem.Slot = slot;
+			_draggedItem.SlotID = slot;
 		}
 		ResetDragging();
 	}
