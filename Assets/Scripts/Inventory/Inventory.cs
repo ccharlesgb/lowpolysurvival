@@ -9,7 +9,7 @@ public class Inventory : MonoBehaviour
 {
     public List<ItemSlot> containerList = new List<ItemSlot>();
 
-    public bool CanPickup = false; //Does this inventory support picking up items?
+    public bool IsPickup = false; //Does this inventory support picking up items?
     public float PickupDelay = 0.5f;
 
     private ItemList _masterList; //Singleton instance of the main list
@@ -22,17 +22,23 @@ public class Inventory : MonoBehaviour
 
 
     #region Events
+
     public delegate void ItemAddedHandler(ItemSlot item, int amount);
+
     public event ItemAddedHandler OnItemAdded;
 
     public delegate void ItemRemovedHandler(ItemSlot item, int amount);
+
     public event ItemRemovedHandler OnItemRemoved;
 
     public delegate void ItemTransferHandler(ItemSlot item, int amount);
+
     public event ItemTransferHandler OnTransferItem;
 
     public delegate void LootHandler(Inventory lootInv);
+
     public event LootHandler OnLootBegin;
+
     #endregion
 
     public int InventoryMaxSize; //MAX number of slots this inventory can hold
@@ -45,7 +51,7 @@ public class Inventory : MonoBehaviour
 
     //Begin Implementation
 
-    void Awake()
+    private void Awake()
     {
         Items = new ItemSlot[InventoryMaxSize];
         _masterList = MasterList.Instance.itemList;
@@ -80,7 +86,8 @@ public class Inventory : MonoBehaviour
             }
             else if (item.isStackable) //Its not empty but we are stackable
             {
-                if (curSlot.ItemDetails == item && curSlot.Amount < item.stackSize) //We found a slot that has a stack of our item in it!
+                if (curSlot.ItemDetails == item && curSlot.Amount < item.stackSize)
+                    //We found a slot that has a stack of our item in it!
                 {
                     totalSpace += item.stackSize - curSlot.Amount;
                 }
@@ -105,7 +112,8 @@ public class Inventory : MonoBehaviour
             }
             else if (item.isStackable) //Its not empty but we are stackable
             {
-                if (curSlot.ItemDetails == item && curSlot.Amount < item.stackSize) //We found a slot that has a stack of our item in it!
+                if (curSlot.ItemDetails == item && curSlot.Amount < item.stackSize)
+                    //We found a slot that has a stack of our item in it!
                 {
                     return i;
                 }
@@ -127,13 +135,28 @@ public class Inventory : MonoBehaviour
                 return; //We cant add this much 'item'
 
             int amountLeftAdd = amount;
+            Debug.Log("ADDING " + amount + " " + item.itemName);
             //Loop through adding to slots with space until we've added enough
             while (amountLeftAdd > 0)
             {
                 int slotSpace = FindFirstSlotWithSpace(item);
-                int amountCanAdd = item.stackSize - Items[slotSpace].Amount;
-                Items[slotSpace].Amount += amountCanAdd;
-                amountLeftAdd -= amountCanAdd;
+                Debug.Log(slotSpace + " slotspace");
+                Debug.Log(Items[slotSpace]);
+
+                if (Items[slotSpace] == null) //Empty slot
+                {
+                    var newSlot = ScriptableObject.CreateInstance<ItemSlot>();
+                    newSlot.ItemDetails = item;
+                    newSlot.Amount = ClampItemAmount(amount, item);
+                    amountLeftAdd -= newSlot.Amount;
+                    Items[slotSpace] = newSlot;
+                }
+                else
+                {
+                    int amountCanAdd = item.stackSize - Items[slotSpace].Amount;
+                    Items[slotSpace].Amount += amountCanAdd;
+                    amountLeftAdd -= amountCanAdd;
+                }
             }
         }
         else //Dont need to check we have enough space as we are just doing a flat out slot replace
@@ -201,6 +224,7 @@ public class Inventory : MonoBehaviour
     {
         Items[slot] = null;
     }
+
     // Remove amount from a specific slot.
     public void RemoveItem(int slot, int amount)
     {
@@ -212,11 +236,13 @@ public class Inventory : MonoBehaviour
             RemoveItem(slot);
         }
     }
+
     public void RemoveItem(string name, int amount)
     {
         ItemDetails itemDetails = _masterList.FindByName(name);
         RemoveItem(itemDetails, amount);
     }
+
     // Remove amount of a specific ItemDetails type.
     public void RemoveItem(ItemDetails item, int amount)
     {
@@ -293,6 +319,7 @@ public class Inventory : MonoBehaviour
     {
         return null;
     }
+
     public void DropAllItems()
     {
         foreach (ItemSlot slot in Items)
@@ -301,13 +328,38 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    //We dont nevessarily need this. Can probably be in a PlayerPickup component
-    public void PickupItem(ItemBehaviour itemBehave)
+    //MIGHT HAVE TO MOVE THIS
+    //Handles ItemDetails picking up from the collider trigger
+    private void OnTriggerStay(Collider other)
     {
-
+        if (!IsPickup) return;
+        ItemBehaviour behav = other.gameObject.GetComponent<ItemBehaviour>();
+        if (behav != null)
+        {
+            PickupItem(behav);
+        }
     }
 
-    //public SendNotification() // is this needed? should prob belong to AddItem
+    private bool CanPickup(ItemBehaviour itemBehave)
+    {
+        if (itemBehave.spawnTime + PickupDelay > Time.time)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    public void PickupItem(ItemBehaviour itemBehave)
+    {
+        if (!CanPickup(itemBehave)) return;
+
+        AddItem(itemBehave.slot.ItemDetails, itemBehave.slot.Amount);
+        Destroy(itemBehave.gameObject);
+    }
+
+}
+
+//public SendNotification() // is this needed? should prob belong to AddItem
 
 
     //Looting
@@ -498,5 +550,3 @@ public class Inventory : MonoBehaviour
 }
 */
 
-
-}
