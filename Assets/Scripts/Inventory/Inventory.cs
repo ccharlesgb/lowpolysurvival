@@ -148,6 +148,7 @@ public class Inventory : MonoBehaviour
                     var newSlot = ScriptableObject.CreateInstance<ItemSlot>();
                     newSlot.ItemDetails = item;
                     newSlot.Amount = ClampItemAmount(amount, item);
+                    newSlot.SlotID = slotSpace;
                     amountLeftAdd -= newSlot.Amount;
                     Items[slotSpace] = newSlot;
                 }
@@ -170,6 +171,7 @@ public class Inventory : MonoBehaviour
             var newSlot = ScriptableObject.CreateInstance<ItemSlot>();
             newSlot.ItemDetails = item;
             newSlot.Amount = ClampItemAmount(amount, item);
+            newSlot.SlotID = slot;
             //TODO: should this add N slots worth to ensure we always add 'amount' of things?
             Items[slot] = newSlot;
         }
@@ -185,6 +187,18 @@ public class Inventory : MonoBehaviour
             return;
         }
         AddItem(itemDetails, amount, slot);
+    }
+
+    public void MoveToSlot(ItemSlot slot, int newSlotID)
+    {
+        if (Items[slot.SlotID] != slot) //Sanity check (IT SHOULD!)
+        {
+            Debug.LogWarning("SlotIDS seem to be out of sync!");
+            return;
+        }
+        Items[newSlotID] = slot; //Swap them over
+        Items[slot.SlotID] = null; //Remove old reference
+        Items[newSlotID].SlotID = newSlotID; //Update ID
     }
 
     //Takes an ItemDetails from another inventory. IS THIS THE BEST NAME?

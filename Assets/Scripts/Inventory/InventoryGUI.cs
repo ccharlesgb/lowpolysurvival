@@ -64,8 +64,8 @@ class InventoryNotification
 public class InventoryGUI : MonoBehaviour
 {
 	// Size of the slot slot
-	private const int SlotsX = 5;
-	private const int SlotsY = 5;
+	private int SlotsX = 5;
+	private int SlotsY = 5;
 	private readonly List<InventoryNotification> _notifications = new List<InventoryNotification>();
 	
 	public float BoxAreaPadding = 5;
@@ -87,6 +87,7 @@ public class InventoryGUI : MonoBehaviour
 	private void Awake()
 	{
 		Inv = GetComponent<Inventory>();
+        //TODO: CHange size of grid?
 		if (Inv == null)
 		{
 			Debug.Log("Need inventory object to have GUI");
@@ -268,7 +269,7 @@ public class InventoryGUI : MonoBehaviour
                 // Drop handling.
                 if (_isDraggingItem && Event.current.type == EventType.mouseUp && rect.Contains(Event.current.mousePosition))
                 {
-                    StopDragging(slot, it);
+                    //StopDragging(slot, it);
                 }
             }
         }
@@ -299,7 +300,7 @@ public class InventoryGUI : MonoBehaviour
 		{
 			if (e.button == 0) //Left mouse
 			{
-				Inv.TransferItem(it.ItemDetails, it.Amount, lootInventory);
+				//Inv.TransferItem(it.ItemDetails, it.Amount, lootInventory);
 			}
 			else if (Event.current.button == 1) //Right mouse
 			{
@@ -342,7 +343,7 @@ public class InventoryGUI : MonoBehaviour
 		}
 		else
 		{
-			_draggedItem.SlotID = slot;
+            Inv.MoveToSlot(_draggedItem, slot);
 		}
 		ResetDragging();
 	}
