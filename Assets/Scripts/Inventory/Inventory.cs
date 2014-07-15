@@ -191,13 +191,15 @@ public class Inventory : MonoBehaviour
 
     public void SwapSlots(ItemSlot first, ItemSlot second)
     {
-        //Swap the ID
-        int temp = first.SlotID;
-        first.SlotID = second.SlotID;
-        second.SlotID = temp;
+		// Store the old positions.
+	    int oldFirstSlotID = first.SlotID;
+	    int oldSecoundSlotID = second.SlotID;
 
-        Items[first.SlotID] = second;
-        Items[second.SlotID] = first;
+		first.SlotID = oldSecoundSlotID;
+		second.SlotID = oldFirstSlotID;
+
+		Items[oldFirstSlotID] = second;
+		Items[oldSecoundSlotID] = first;
     }
 
     //Takes an ItemDetails from another inventory. IS THIS THE BEST NAME?
