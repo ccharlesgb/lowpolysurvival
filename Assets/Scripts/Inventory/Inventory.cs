@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using System.Collections;
@@ -304,10 +303,14 @@ public class Inventory : MonoBehaviour
 
     public ItemSlot GetSlot(ItemDetails item)
     {
-        return Items.FirstOrDefault(i => item.Equals(i.ItemDetails));
+	    foreach (ItemSlot i in Items)
+	    {
+		    if (item.Equals(i.ItemDetails)) return i;
+	    }
+	    return null;
     }
 
-    public List<ItemSlot> GetSlots(string name) //Multiple slots? Return first? al
+	public List<ItemSlot> GetSlots(string name) //Multiple slots? Return first? al
     {
         ItemDetails itemDetails = _masterList.FindByName(name);
         return GetSlots(itemDetails);
@@ -318,7 +321,7 @@ public class Inventory : MonoBehaviour
         Debug.Log(item + "GETITEM");
         Debug.Log(Items + " GETLIST");
         List<ItemSlot> list = new List<ItemSlot>();
-        for (int i = 0; i < Items.Count(); i++)
+        for (int i = 0; i < Items.Length; i++)
         {
             if (Items[i] != null && Items[i].ItemDetails == item)
             {
