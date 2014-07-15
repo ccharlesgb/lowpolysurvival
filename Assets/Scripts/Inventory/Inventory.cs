@@ -79,22 +79,16 @@ public class Inventory : MonoBehaviour
 
             if (curSlot == null) //The slot is empty
             {
-                if (item.isStackable)
-                    totalSpace += item.stackSize; //We can add a whole stack!
-                else
-                    totalSpace += 1;
+				// Clamp on item stacksize.
+	            totalSpace += ClampItemAmount(item.stackSize, item);
             }
             else if (item.isStackable) //Its not empty but we are stackable
             {
-                if (curSlot.ItemDetails == item && curSlot.Amount < item.stackSize)
+                if (curSlot.ItemDetails.Equals(item) && curSlot.Amount < item.stackSize)
                     //We found a slot that has a stack of our item in it!
                 {
                     totalSpace += item.stackSize - curSlot.Amount;
                 }
-            }
-            else //Its not empty and we are NOT stackable
-            {
-                totalSpace += 1; //Can only add one
             }
         }
 
