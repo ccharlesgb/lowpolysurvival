@@ -174,8 +174,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   containerList: []
-  pickupDelay: .5
-  masterList: {fileID: 0}
+  IsPickup: 0
+  PickupDelay: .5
+  Items: []
+  InventoryMaxSize: 1
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
