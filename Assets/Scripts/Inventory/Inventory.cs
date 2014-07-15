@@ -15,14 +15,36 @@ public class Inventory : MonoBehaviour
 	public delegate void ItemRemovedHandler(ItemContainer container, int amount);
 	public event ItemRemovedHandler OnItemRemoved;
 
+    public delegate void LootHandler(Inventory lootInv);
+    public event LootHandler OnLootBegin;
+
 	public List<ItemContainer> containerList = new List<ItemContainer>();
 
-	public bool canPickup = false;
+	public bool canPickup = false; //Does this inventory support picking up items?
 	public float pickupDelay = 0.5f;
 
-	public ItemList masterList;
-	// Use this for initialization
-	void Start ()
+	public ItemList masterList; //Singleton instance of the main list
+
+    private bool isLooting = false;
+    private Inventory lootInventory = null;
+
+    //Start looting a specific inventory
+    public void BeginLooting(Inventory inv)
+    {
+        Debug.Log("BEGIN LOOTING " + inv);
+        lootInventory = inv;
+        isLooting = true;
+        if (OnLootBegin == null) return; //WRONG: Always null?
+        OnLootBegin(inv);
+    }
+
+    public void StopLooting()
+    {
+        lootInventory = null;
+        isLooting = false;
+    }
+
+	void Awake()
 	{
 		masterList = MasterList.Instance.itemList;
 	}

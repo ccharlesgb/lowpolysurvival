@@ -54,6 +54,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fencePrefab: {fileID: 100000, guid: f877e69d2dd4da542b8befe6a8ee6add, type: 2}
+  ghostColor: {r: 1, g: 1, b: 1, a: .5}
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -36,7 +36,15 @@ public class FencePlacer : MonoBehaviour, IHolster
 
     public Vector3 GetSpawnPos()
     {
-        return transform.position + transform.forward * 10.0f;
+        Ray ray = new Ray(transform.position + transform.forward * 5.0f, Vector3.down);
+
+        RaycastHit hit;
+        Physics.Raycast(ray, out hit, 10.0f, 1 << 8);
+        if (hit.collider != null)
+        {
+            return hit.point;
+        }
+        return Vector3.zero;
     }
 
     public void PrimaryFire(Inventory inv)
@@ -67,9 +75,12 @@ public class FencePlacer : MonoBehaviour, IHolster
 
     void Update()
     {
-        ghostPrefab.transform.position = GetSpawnPos();
-        Quaternion newRot = new Quaternion();
-        newRot.SetLookRotation(transform.forward);
-        ghostPrefab.transform.rotation = newRot;
+        if (ghostPrefab != null)
+        {
+            ghostPrefab.transform.position = GetSpawnPos();
+            Quaternion newRot = new Quaternion();
+            newRot.SetLookRotation(transform.forward);
+            ghostPrefab.transform.rotation = newRot;
+        }
     }
 }

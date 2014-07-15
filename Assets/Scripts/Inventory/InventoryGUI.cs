@@ -7,8 +7,11 @@ class InventoryNotification
 	public float timeCreated;
 	public InventoryItem item;
 	public int amount;
-	static float lifeTime = 3.0f;
+	static float lifeTime = 3.0f; //How long does it last?
 
+
+    //Flag for the main GUI to check if this notification should go
+    //Maybe should use events?
 	private bool deleteMe;
 	public bool DeleteMe
 	{
@@ -79,6 +82,9 @@ public class InventoryGUI : MonoBehaviour
 	private ItemContainer _draggedItem;
 	private bool _isDraggingItem;
 
+    public bool isLooting = false;
+    public Inventory lootInventory = null;
+
 	private void Awake()
 	{
 		Inv = GetComponent<Inventory>();
@@ -87,6 +93,8 @@ public class InventoryGUI : MonoBehaviour
 			Debug.Log("Need inventory object to have GUI");
 		}
 		RenderGUI = false;
+	    isLooting = false;
+	    lootInventory = null;
 	}
 
 	// Use this for initialization
@@ -132,14 +140,22 @@ public class InventoryGUI : MonoBehaviour
 		}
 	}
 
+    public void ShowLootGUI(Inventory inv)
+    {
+        lootInventory = inv;
+        isLooting = true;
+    }
+
 	private void OnEnable()
 	{
 		Inv.OnItemAdded += AddNotification;
+	    Inv.OnLootBegin += ShowLootGUI;
 	}
 
 	private void OnDisable()
 	{
 		Inv.OnItemAdded -= AddNotification;
+        Inv.OnLootBegin -= ShowLootGUI;
 	}
 
 	public void AddNotification(InventoryItem it, int amount)
@@ -151,6 +167,9 @@ public class InventoryGUI : MonoBehaviour
 	private void MyWindow(int id)
 	{
 		DrawItemList();
+
+	    if (isLooting)
+	        DrawLootList();
 
 		if (_isDraggingItem)
 		{
@@ -191,6 +210,39 @@ public class InventoryGUI : MonoBehaviour
 			}
 		}
 	}
+
+    private void DrawLootList()
+    {
+        var itemRect = new Rect(BoxSize, 65, BoxSize, BoxSize);
+
+        ItemContainer[] items = lootInventory.GetInventoryAsArray();
+
+        // Loop all slots, by x and y.
+        for (int y = 0; y < SlotsY; y++)
+        {
+            for (int x = 0; x < SlotsX; x++)
+            {
+                int slot = x + y * SlotsX;
+                ItemContainer it = items[slot];
+
+                var rect = new Rect(5 + BoxPadding / 2 + x * (BoxSize + BoxPadding), 45 + y * (BoxSize + BoxPadding), BoxSize, BoxSize);
+
+                GUI.Box(rect, "" + x + y);
+
+                // Draw the Item.
+                if (it != null)
+                {
+                    DrawItem(rect, it);
+                }
+
+                // Drop handling.
+                if (_isDraggingItem && Event.current.type == EventType.mouseUp && rect.Contains(Event.current.mousePosition))
+                {
+                    StopDragging(slot, it);
+                }
+            }
+        }
+    }
 
 	private void DrawItem(Rect rect, ItemContainer it)
 	{

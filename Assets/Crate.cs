@@ -3,6 +3,12 @@ using System.Collections;
 
 public class Crate : MonoBehaviour, IUseable
 {
+    void Start()
+    {
+        GetComponent<Inventory>().AddItem("Wood", 45);
+
+    }
+
     public void OnHoverStart()
     {
         GetComponent<MeshRenderer>().material.color = Color.red;
@@ -15,6 +21,8 @@ public class Crate : MonoBehaviour, IUseable
 
     public void OnUse(GameObject user)
     {
-        Debug.Log("YOU USED ME!");
+        Inventory useInv = user.GetComponent<Inventory>();
+        Inventory mInv = GetComponent<Inventory>();
+        useInv.BeginLooting(mInv);
     }
 }
