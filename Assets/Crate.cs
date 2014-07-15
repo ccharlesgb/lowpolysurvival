@@ -3,10 +3,14 @@ using System.Collections;
 
 public class Crate : MonoBehaviour, IUseable
 {
+
+	private Inventory _inventory ;
+
     void Start()
     {
-        GetComponent<Inventory>().AddItem("Wood", 45);
+	    _inventory = GetComponent<Inventory>();
 
+        _inventory.AddItem("Wood", 45);
     }
 
     public void OnHoverStart()
@@ -21,8 +25,14 @@ public class Crate : MonoBehaviour, IUseable
 
     public void OnUse(GameObject user)
     {
-        Inventory useInv = user.GetComponent<Inventory>();
-        Inventory mInv = GetComponent<Inventory>();
-        useInv.BeginLooting(mInv);
+	    Transform userInventoryTransform = user.transform.FindChild("Inventory");
+	    if (userInventoryTransform == null) return;
+
+	    GameObject userInventory = userInventoryTransform.gameObject;
+        Inventory userInventoryComponent = userInventory.GetComponent<Inventory>();
+
+	    if (userInventoryComponent == null) return;
+
+        userInventoryComponent.BeginLooting(_inventory);
     }
 }

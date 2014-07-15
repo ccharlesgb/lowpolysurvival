@@ -22,6 +22,13 @@ Material:
           m_Offset: {x: 0, y: 0}
       data:
         first:
+          name: _WhiteTex
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
           name: _FrontTex
         second:
           m_Texture: {fileID: 2800000, guid: ca109b3224495d94da74cfd55e7be3cc, type: 3}
@@ -62,13 +69,6 @@ Material:
           m_Texture: {fileID: 2800000, guid: ca109b3224495d94da74cfd55e7be3cc, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
-      data:
-        first:
-          name: _WhiteTex
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
     m_Floats:
       data:
         first:
@@ -89,17 +89,17 @@ Material:
         second: {r: 0, g: 0, b: 0, a: 1}
       data:
         first:
-          name: _Color1
-        second: {r: 1, g: .641379356, b: 0, a: 1}
-      data:
-        first:
-          name: _Color2
-        second: {r: .784775078, g: .926240742, b: .952941179, a: 1}
-      data:
-        first:
           name: _TopColor
         second: {r: .276539773, g: .845545948, b: .952941179, a: 1}
       data:
         first:
           name: _BottomColor
         second: {r: 1, g: 1, b: 1, a: 1}
+      data:
+        first:
+          name: _Color1
+        second: {r: 1, g: .641379356, b: 0, a: 1}
+      data:
+        first:
+          name: _Color2
+        second: {r: .784775078, g: .926240742, b: .952941179, a: 1}
