@@ -332,10 +332,17 @@ public class InventoryGUI : MonoBehaviour
 	/// <param name="it">ItemDetails already in the slot, null if empty.</param>
 	private void StopDragging(int slot, ItemSlot it)
 	{
-		if (it != null)
+		if (it != null) //Is the slot we are dragging into occupied?
 		{
-			// TODO: merge stacks?
-            Inv.SwapSlots(_draggedItem, it);
+            //If the item is the same and its stackable maybe we can merge them
+		    if (it.ItemDetails == _draggedItem.ItemDetails && it.ItemDetails.isStackable)
+		    {
+		        Inv.AddItem(it.ItemDetails, _draggedItem.Amount, slot);
+
+		    }
+            else
+			    // TODO: merge stacks?
+                Inv.SwapSlots(_draggedItem, it);
 		}
 		else
 		{

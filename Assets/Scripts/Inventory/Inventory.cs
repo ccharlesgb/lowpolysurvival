@@ -143,8 +143,8 @@ public class Inventory : MonoBehaviour
                 else
                 {
                     int amountCanAdd = item.stackSize - Items[slotSpace].Amount;
-                    Items[slotSpace].Amount += amountCanAdd;
-                    amountLeftAdd -= amountCanAdd;
+                    Items[slotSpace].Amount += Mathf.Min(amountCanAdd, amount);
+                    amountLeftAdd -= Mathf.Min(amountCanAdd, amount);
                 }
             }
         }
@@ -214,8 +214,9 @@ public class Inventory : MonoBehaviour
             return;
         }
         //Take from the other inventory!
+        Debug.Log(other + " OTHER");
+        Debug.Log(item + " ITEM");
         other.RemoveItem(item, amount);
-
         //Add to ours!
         AddItem(item, amount);
 
@@ -262,7 +263,6 @@ public class Inventory : MonoBehaviour
     public void RemoveItem(ItemDetails item, int amount)
     {
         if (GetTotalAmount(item) < amount) return; //NOT ENOUGH
-
         List<ItemSlot> itemSlots = GetSlots(item);
         foreach (ItemSlot i in itemSlots)
         {
@@ -315,7 +315,17 @@ public class Inventory : MonoBehaviour
 
     public List<ItemSlot> GetSlots(ItemDetails item)
     {
-        return Items.Where(i => item.Equals(i.ItemDetails)).ToList();
+        Debug.Log(item + "GETITEM");
+        Debug.Log(Items + " GETLIST");
+        List<ItemSlot> list = new List<ItemSlot>();
+        for (int i = 0; i < Items.Count(); i++)
+        {
+            if (Items[i] != null && Items[i].ItemDetails == item)
+            {
+                list.Add(Items[i]);
+            }
+        }
+        return list;
     }
 
     public ItemSlot[] GetAllSlots() //Dump all slots to an array
