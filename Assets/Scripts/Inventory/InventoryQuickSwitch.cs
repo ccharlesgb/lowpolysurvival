@@ -40,7 +40,7 @@ public class InventoryQuickSwitch : MonoBehaviour
 		_boxSize.x = (Screen.width - _boxSize.width)/2;
 		_boxSize.y = Screen.height - (_boxSize.height + 5);
 
-		_items = Inv.GetInventoryAsArray();
+		_items = Inv.GetAllSlots();
 
 		for (int i = 1; i <= 5; i++)
 		{

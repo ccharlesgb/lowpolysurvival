@@ -123,7 +123,7 @@ public class InventoryGUI : MonoBehaviour
 		// Drop outside the window?
 		if (_isDraggingItem && Input.GetMouseButtonUp(0) && !GetWindowSize().Contains(v))
 		{
-			Inv.DropItem(_draggedItem.ItemDetails.itemName, _draggedItem.Amount);
+			Inv.DropItem(_draggedItem.SlotID, _draggedItem.Amount);
 			ResetDragging();
 		}
 	}
@@ -188,9 +188,9 @@ public class InventoryGUI : MonoBehaviour
         Inv.OnLootBegin -= ShowLootGUI;
 	}
 
-	public void AddNotification(ItemDetails it, int amount)
+	public void AddNotification(ItemSlot slot, int amount)
 	{
-		var not = new InventoryNotification(it, amount);
+		var not = new InventoryNotification(slot.ItemDetails, amount);
 		_notifications.Add(not);
 	}
 
@@ -212,7 +212,7 @@ public class InventoryGUI : MonoBehaviour
 	{
 		var itemRect = new Rect(0, 65, BoxSize, BoxSize);
 
-		ItemSlot[] items = Inv.GetInventoryAsArray();
+		ItemSlot[] items = Inv.GetAllSlots();
 
 		// Loop all slots, by x and y.
 		for (int y = 0; y < SlotsY; y++)
@@ -245,7 +245,7 @@ public class InventoryGUI : MonoBehaviour
     {
         var itemRect = new Rect(0, 65, BoxSize, BoxSize);
 
-        ItemSlot[] items = lootInventory.GetInventoryAsArray();
+        ItemSlot[] items = lootInventory.GetAllSlots();
 
         // Loop all slots, by x and y.
         for (int y = 0; y < SlotsY; y++)
@@ -299,7 +299,7 @@ public class InventoryGUI : MonoBehaviour
 		{
 			if (e.button == 0) //Left mouse
 			{
-				Inv.TransferItem(it, it.Amount, lootInventory);
+				Inv.TransferItem(it.ItemDetails, it.Amount, lootInventory);
 			}
 			else if (Event.current.button == 1) //Right mouse
 			{
