@@ -74,7 +74,7 @@ public class InventoryRegen : MonoBehaviour
 
 		foreach (KeyValuePair<string, RegenInfo> pair in itemDic)
 		{
-			ItemSlot slot = inventory.GetContainer(pair.Key);
+			ItemSlot slot = inventory.GetSlot(pair.Key);
 			if (slot != null)
 			{
 				if (slot.Amount >= pair.Value.max)

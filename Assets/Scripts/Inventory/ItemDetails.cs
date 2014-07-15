@@ -14,4 +14,10 @@ public class ItemDetails
 	public int stackSize = 1;
 
 	public bool isEquipable = true;
+
+	public override bool Equals(object obj)
+	{
+		ItemDetails other = (ItemDetails) obj;
+		return itemName == other.itemName;
+	}
 }
