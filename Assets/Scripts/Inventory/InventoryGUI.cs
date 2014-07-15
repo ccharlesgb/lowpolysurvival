@@ -335,11 +335,7 @@ public class InventoryGUI : MonoBehaviour
 		if (it != null)
 		{
 			// TODO: merge stacks?
-
-			// Switch ItemDetails position.
-			int newSlot = it.SlotID;
-			it.SlotID = _draggedItem.SlotID;
-			_draggedItem.SlotID = newSlot;
+            Inv.SwapSlots(_draggedItem, it);
 		}
 		else
 		{
