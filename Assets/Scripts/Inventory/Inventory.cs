@@ -201,6 +201,17 @@ public class Inventory : MonoBehaviour
         Items[newSlotID].SlotID = newSlotID; //Update ID
     }
 
+    public void SwapSlots(ItemSlot first, ItemSlot second)
+    {
+        //Swap the ID
+        int temp = first.SlotID;
+        first.SlotID = second.SlotID;
+        second.SlotID = temp;
+
+        Items[first.SlotID] = second;
+        Items[second.SlotID] = first;
+    }
+
     //Takes an ItemDetails from another inventory. IS THIS THE BEST NAME?
     //Takes an 'amount' of an 'item' from the 'other' inventory
     public void TransferItem(ItemDetails item, int amount, Inventory other)
