@@ -53,7 +53,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ebca3ef5e8266040add09b421819bda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fencePrefab: {fileID: 100000, guid: f877e69d2dd4da542b8befe6a8ee6add, type: 2}
+  fencePrefab: {fileID: 100000, guid: 75614771073ea8443bda98266b9093b9, type: 2}
   ghostColor: {r: 1, g: 1, b: 1, a: .5}
 --- !u!114 &11400002
 MonoBehaviour:

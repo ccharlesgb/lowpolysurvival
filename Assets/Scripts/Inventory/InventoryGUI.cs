@@ -144,6 +144,7 @@ public class InventoryGUI : MonoBehaviour
     {
         lootInventory = inv;
         isLooting = true;
+        Debug.Log("LOOTING GUI");
     }
 
 	private void OnEnable()
