@@ -333,12 +333,6 @@ public class Inventory : MonoBehaviour
         return Items;
     }
 
-    //Returns -1 if nothing found
-    private int FindFirstEmptySlot() //You can get the 'int' from the slotID
-    {
-        return Array.IndexOf(Items, null);
-    }
-
     //Spawns ItemDetails in the world
     public ItemSlot DropItem(int slot, int amount)
     {
