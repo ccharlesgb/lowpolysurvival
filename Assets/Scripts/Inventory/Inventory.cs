@@ -340,9 +340,31 @@ public class Inventory : MonoBehaviour
     }
 
     //Spawns ItemDetails in the world
-    public ItemSlot DropItem(int slot, int amount)
+    public GameObject DropItem(int slotID, int amount)
     {
-        return null;
+        ItemSlot slot = Items[slotID];
+
+        if (slot == null) return null;
+        if (slot.Amount < amount) return null;
+
+		if (OnItemRemoved != null)
+		{
+			OnItemRemoved(slot, amount);
+		}
+
+		GameObject itemFab = Instantiate (slot.ItemDetails.itemObject, transform.position, Quaternion.identity) as GameObject;
+
+		itemFab.GetComponent<ItemBehaviour>().Init(slot, amount);
+
+		slot.Amount -= amount;
+
+		//We've run out of this ItemDetails
+		if (slot.Amount <= 0)
+		{
+			RemoveItem(slotID);
+		}
+
+        return itemFab;
     }
 
     public void DropAllItems()
