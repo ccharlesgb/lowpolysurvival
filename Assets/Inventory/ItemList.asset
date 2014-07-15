@@ -16,18 +16,18 @@ MonoBehaviour:
     itemObject: {fileID: 100000, guid: 7c7289cf94a8ac34499897da8f5d9950, type: 2}
     itemIcon: {fileID: 2800000, guid: a86b9575488481f42ab3225170c350ca, type: 3}
     isStackable: 1
-    stackSize: 64
+    stackSize: 8
     isEquipable: 0
   - itemName: Stone
     itemObject: {fileID: 100000, guid: c71c774e8b80d7b4aa02c176f5e8e310, type: 2}
     itemIcon: {fileID: 2800000, guid: 038d0e1d049461346b67ce626ac272ac, type: 3}
     isStackable: 1
-    stackSize: 64
+    stackSize: 8
     isEquipable: 0
   - itemName: Axe
     itemObject: {fileID: 100004, guid: 86247f0508c2db74ab43daa192b7ac99, type: 2}
     itemIcon: {fileID: 2800000, guid: 0ce3b4b06a9d6ec46ab6a7baf5fbae2b, type: 3}
-    isStackable: 1
+    isStackable: 0
     stackSize: 1
     isEquipable: 1
   - itemName: Fence

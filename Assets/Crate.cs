@@ -10,7 +10,7 @@ public class Crate : MonoBehaviour, IUseable
     {
 	    _inventory = GetComponent<Inventory>();
 
-        _inventory.AddItem("Wood", 45);
+        _inventory.AddItem("Wood", 20);
     }
 
     public void OnHoverStart()
