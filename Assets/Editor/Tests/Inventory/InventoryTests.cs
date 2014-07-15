@@ -95,12 +95,14 @@ public class InventoryTests : UnityUnitTest
 		Assert.AreEqual(1, _inventory.FindFirstSlotWithSpace(itemDetails), "Should return 1 when slot 0 and 3 is taken");
 
 		// Full
-		_inventory.Items[1] = new ItemSlot() { ItemDetails = itemDetails, SlotID = 0, Amount = 1 };
+		_inventory.Items[1] = new ItemSlot() { ItemDetails = itemDetails, SlotID = 1, Amount = 1 };
 		_inventory.Items[2] = new ItemSlot() { ItemDetails = itemDetails, SlotID = 3, Amount = 1 };
-		_inventory.Items[4] = new ItemSlot() { ItemDetails = itemDetails, SlotID = 0, Amount = 1 };
+		_inventory.Items[4] = new ItemSlot() { ItemDetails = itemDetails, SlotID = 4, Amount = 1 };
 
 		Assert.AreEqual(-1, _inventory.FindFirstSlotWithSpace(itemDetails), "Should return -1 when inventory has no free space");
 	}
+
+
 
 
 

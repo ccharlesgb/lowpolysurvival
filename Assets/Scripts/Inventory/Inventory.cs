@@ -24,19 +24,15 @@ public class Inventory : MonoBehaviour
     #region Events
 
     public delegate void ItemAddedHandler(ItemSlot item, int amount);
-
     public event ItemAddedHandler OnItemAdded;
 
     public delegate void ItemRemovedHandler(ItemSlot item, int amount);
-
     public event ItemRemovedHandler OnItemRemoved;
 
     public delegate void ItemTransferHandler(ItemSlot item, int amount);
-
     public event ItemTransferHandler OnTransferItem;
 
     public delegate void LootHandler(Inventory lootInv);
-
     public event LootHandler OnLootBegin;
 
     #endregion
