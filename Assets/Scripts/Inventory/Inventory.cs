@@ -7,193 +7,193 @@ using System.Collections.Generic;
 
 public class Inventory : MonoBehaviour
 {
-    public List<ItemSlot> containerList = new List<ItemSlot>();
+	public int InventoryMaxSize; //MAX number of slots this inventory can hold
 
-    public bool IsPickup = false; //Does this inventory support picking up items?
-    public float PickupDelay = 0.5f;
+	public bool IsPickup = false; //Does this inventory support picking up items?
+	public float PickupDelay = 0.5f;
 
-    private ItemList _masterList; //Singleton instance of the main list
+	private ItemList _masterList; //Singleton instance of the main list
 
-    private bool _isLooting = false;
-    private Inventory _lootInventory = null;
+	private bool _isLooting = false;
+	private Inventory _lootInventory = null;
 
-    //public List<ItemSlot> containerList = new List<ItemSlot>();
-    public ItemSlot[] Items;
+	//public List<ItemSlot> containerList = new List<ItemSlot>();
+	public ItemSlot[] Items;
 
+	#region Events
 
-    #region Events
+	public delegate void ItemAddedHandler(ItemSlot item, int amount);
 
-    public delegate void ItemAddedHandler(ItemSlot item, int amount);
-    public event ItemAddedHandler OnItemAdded;
+	public event ItemAddedHandler OnItemAdded;
 
-    public delegate void ItemRemovedHandler(ItemSlot item, int amount);
-    public event ItemRemovedHandler OnItemRemoved;
+	public delegate void ItemRemovedHandler(ItemSlot item, int amount);
 
-    public delegate void ItemTransferHandler(ItemSlot item, int amount);
-    public event ItemTransferHandler OnTransferItem;
+	public event ItemRemovedHandler OnItemRemoved;
 
-    public delegate void LootHandler(Inventory lootInv);
-    public event LootHandler OnLootBegin;
+	public delegate void ItemTransferHandler(ItemSlot item, int amount);
 
-    #endregion
+	public event ItemTransferHandler OnTransferItem;
 
-    public int InventoryMaxSize; //MAX number of slots this inventory can hold
+	public delegate void LootHandler(Inventory lootInv);
 
-    [Flags]
-    public enum InventoryOptions
-    {
+	public event LootHandler OnLootBegin;
 
-    }
+	#endregion
 
-    //Begin Implementation
+	[Flags]
+	public enum InventoryOptions
+	{
+	}
 
-    private void Awake()
-    {
-        Items = new ItemSlot[InventoryMaxSize];
-        _masterList = MasterList.Instance.itemList;
-    }
+	//Begin Implementation
 
-    //Returns the correct item amount (Stops stacksize getting too high
-    public int ClampItemAmount(int amount, ItemDetails item)
-    {
-        if (!item.isStackable && amount > 1)
-            amount = 1;
+	private void Awake()
+	{
+		Items = new ItemSlot[InventoryMaxSize];
+		_masterList = MasterList.Instance.itemList;
+	}
 
-        if (item.isStackable && amount > item.stackSize)
-            amount = item.stackSize;
+	//Returns the correct item amount (Stops stacksize getting too high
+	public int ClampItemAmount(int amount, ItemDetails item)
+	{
+		if (!item.isStackable && amount > 1)
+			amount = 1;
 
-        return amount;
-    }
+		if (item.isStackable && amount > item.stackSize)
+			amount = item.stackSize;
 
-    //Get the total amount of space left in the inventory
-    public int GetSpaceForItem(ItemDetails item)
-    {
-        int totalSpace = 0;
-        for (int i = 0; i < InventoryMaxSize; i++)
-        {
-            ItemSlot curSlot = Items[i];
+		return amount;
+	}
 
-            if (curSlot == null) //The slot is empty
-            {
+	//Get the total amount of space left in the inventory
+	public int GetSpaceForItem(ItemDetails item)
+	{
+		int totalSpace = 0;
+		for (int i = 0; i < InventoryMaxSize; i++)
+		{
+			ItemSlot curSlot = Items[i];
+
+			if (curSlot == null) //The slot is empty
+			{
 				// Clamp on item stacksize.
-	            totalSpace += ClampItemAmount(item.stackSize, item);
-            }
-            else if (item.isStackable) //Its not empty but we are stackable
-            {
-                if (curSlot.ItemDetails.Equals(item) && curSlot.Amount < item.stackSize)
-                    //We found a slot that has a stack of our item in it!
-                {
-                    totalSpace += item.stackSize - curSlot.Amount;
-                }
-            }
-        }
+				totalSpace += ClampItemAmount(item.stackSize, item);
+			}
+			else if (item.isStackable) //Its not empty but we are stackable
+			{
+				if (curSlot.ItemDetails.Equals(item) && curSlot.Amount < item.stackSize)
+					//We found a slot that has a stack of our item in it!
+				{
+					totalSpace += item.stackSize - curSlot.Amount;
+				}
+			}
+		}
 
-        return totalSpace;
-    }
+		return totalSpace;
+	}
 
-    public int FindFirstSlotWithSpace(ItemDetails item)
-    {
-        for (int i = 0; i < InventoryMaxSize; i++)
-        {
-            ItemSlot curSlot = Items[i];
-            
+	public int FindFirstSlotWithSpace(ItemDetails item)
+	{
+		for (int i = 0; i < InventoryMaxSize; i++)
+		{
+			ItemSlot curSlot = Items[i];
+
 			if (curSlot == null) // The slot is empty
-            {
-                return i; // This is an empty slot
-            }
-            
+			{
+				return i; // This is an empty slot
+			}
+
 			if (item.isStackable) // It's not empty but we are stackable
-            {
-                if (curSlot.ItemDetails == item && curSlot.Amount < item.stackSize)
-                    // We found a slot that has a stack of our item in it!
-                {
-                    return i;
-                }
-            }
-        }
-        return -1; // Couldnt find a slot with space for this item
-    }
+			{
+				if (curSlot.ItemDetails == item && curSlot.Amount < item.stackSize)
+					// We found a slot that has a stack of our item in it!
+				{
+					return i;
+				}
+			}
+		}
+		return -1; // Couldnt find a slot with space for this item
+	}
 
-    //Adds an ItemDetails from "Thin air" (Doesnt take from anything else)
-    public void AddItem(ItemDetails item, int amount, int slot = -1)
-    {
-        if (amount <= 0) return; //Use Remove item for this!
+	//Adds an ItemDetails from "Thin air" (Doesnt take from anything else)
+	public void AddItem(ItemDetails item, int amount, int slot = -1)
+	{
+		if (amount <= 0) return; //Use Remove item for this!
 
-        if (slot == -1)
-        {
-            if (GetSpaceForItem(item) < amount) //Inventory doesnt have enough space!
-                return; //We cant add this much 'item'
+		if (slot == -1)
+		{
+			if (GetSpaceForItem(item) < amount) //Inventory doesnt have enough space!
+				return; //We cant add this much 'item'
 
-            int amountLeftAdd = amount;
-            Debug.Log("ADDING " + amount + " " + item.itemName);
-            //Loop through adding to slots with space until we've added enough
-            while (amountLeftAdd > 0)
-            {
-                int slotSpace = FindFirstSlotWithSpace(item);
+			int amountLeftAdd = amount;
+			Debug.Log("ADDING " + amount + " " + item.itemName);
+			//Loop through adding to slots with space until we've added enough
+			while (amountLeftAdd > 0)
+			{
+				int slotSpace = FindFirstSlotWithSpace(item);
 
-                if (Items[slotSpace] == null) //Empty slot
-                {
-                    var newSlot = ScriptableObject.CreateInstance<ItemSlot>();
-                    newSlot.ItemDetails = item;
-                    newSlot.Amount = ClampItemAmount(amount, item);
-                    newSlot.SlotID = slotSpace;
-                    amountLeftAdd -= newSlot.Amount;
-                    Items[slotSpace] = newSlot;
-                }
-                else
-                {
-                    int amountCanAdd = item.stackSize - Items[slotSpace].Amount;
-                    Items[slotSpace].Amount += Mathf.Min(amountCanAdd, amount);
-                    amountLeftAdd -= Mathf.Min(amountCanAdd, amount);
-                }
-            }
-        }
-        else //Dont need to check we have enough space as we are just doing a flat out slot replace
-        {
-            if (Items[slot] != null)
-            {
-                Debug.LogWarning("Overriding existing slot. Are you sure you meant to do this?");
-                Destroy(Items[slot]); //Dont leak memory
-            }
-            //Do I actually need to make a new instance
-            var newSlot = ScriptableObject.CreateInstance<ItemSlot>();
-            newSlot.ItemDetails = item;
-            newSlot.Amount = ClampItemAmount(amount, item);
-            newSlot.SlotID = slot;
-            //TODO: should this add N slots worth to ensure we always add 'amount' of things?
-            Items[slot] = newSlot;
-        }
-    }
+				if (Items[slotSpace] == null) //Empty slot
+				{
+					var newSlot = ScriptableObject.CreateInstance<ItemSlot>();
+					newSlot.ItemDetails = item;
+					newSlot.Amount = ClampItemAmount(amount, item);
+					newSlot.SlotID = slotSpace;
+					amountLeftAdd -= newSlot.Amount;
+					Items[slotSpace] = newSlot;
+				}
+				else
+				{
+					int amountCanAdd = item.stackSize - Items[slotSpace].Amount;
+					Items[slotSpace].Amount += Mathf.Min(amountCanAdd, amount);
+					amountLeftAdd -= Mathf.Min(amountCanAdd, amount);
+				}
+			}
+		}
+		else //Dont need to check we have enough space as we are just doing a flat out slot replace
+		{
+			if (Items[slot] != null)
+			{
+				Debug.LogWarning("Overriding existing slot. Are you sure you meant to do this?");
+				Destroy(Items[slot]); //Dont leak memory
+			}
+			//Do I actually need to make a new instance
+			var newSlot = ScriptableObject.CreateInstance<ItemSlot>();
+			newSlot.ItemDetails = item;
+			newSlot.Amount = ClampItemAmount(amount, item);
+			newSlot.SlotID = slot;
+			//TODO: should this add N slots worth to ensure we always add 'amount' of things?
+			Items[slot] = newSlot;
+		}
+	}
 
-    //Overload for adding via item name (SLOWER)
-    public void AddItem(string name, int amount, int slot = -1)
-    {
-        ItemDetails itemDetails = _masterList.FindByName(name);
-        if (itemDetails == null)
-        {
-            Debug.Log("ERROR: Tried to add null item " + name);
-            return;
-        }
-        AddItem(itemDetails, amount, slot);
-    }
+	//Overload for adding via item name (SLOWER)
+	public void AddItem(string name, int amount, int slot = -1)
+	{
+		ItemDetails itemDetails = _masterList.FindByName(name);
+		if (itemDetails == null)
+		{
+			Debug.Log("ERROR: Tried to add null item " + name);
+			return;
+		}
+		AddItem(itemDetails, amount, slot);
+	}
 
-    public void MoveToSlot(ItemSlot slot, int newSlotID)
-    {
-        if (Items[slot.SlotID] != slot) //Sanity check (IT SHOULD!)
-        {
-            Debug.LogWarning("SlotIDS seem to be out of sync!");
-            return;
-        }
-        Items[newSlotID] = slot; //Swap them over
-        Items[slot.SlotID] = null; //Remove old reference
-        Items[newSlotID].SlotID = newSlotID; //Update ID
-    }
+	public void MoveToSlot(ItemSlot slot, int newSlotID)
+	{
+		if (Items[slot.SlotID] != slot) //Sanity check (IT SHOULD!)
+		{
+			Debug.LogWarning("SlotIDS seem to be out of sync!");
+			return;
+		}
+		Items[newSlotID] = slot; //Swap them over
+		Items[slot.SlotID] = null; //Remove old reference
+		Items[newSlotID].SlotID = newSlotID; //Update ID
+	}
 
-    public void SwapSlots(ItemSlot first, ItemSlot second)
-    {
+	public void SwapSlots(ItemSlot first, ItemSlot second)
+	{
 		// Store the old positions.
-	    int oldFirstSlotID = first.SlotID;
-	    int oldSecoundSlotID = second.SlotID;
+		int oldFirstSlotID = first.SlotID;
+		int oldSecoundSlotID = second.SlotID;
 
 		first.SlotID = oldSecoundSlotID;
 		second.SlotID = oldFirstSlotID;

@@ -120,13 +120,7 @@ public class InventoryTests : UnityUnitTest
 	}
 	#endregion
 
-	/* TODO: Add Test.
-	[Test]
-	public void AddItem()
-	{
-
-	}
-	*/
+	// public void AddItem();
 
 	[Test]
 	public void MoveToSlot()
@@ -158,6 +152,31 @@ public class InventoryTests : UnityUnitTest
 		Assert.AreEqual(itemSlot2, _inventory.Items[2]);
 		Assert.AreEqual(2, itemSlot2.SlotID);
 	}
+
+	// public void TransferItem();
+	
+	[Test]
+	public void GetTotalAmount()
+	{
+		Assert.AreEqual(0, _inventory.GetTotalAmount(_stackableItemDetails), "Should return 0 if inventory is empty.");
+		_inventory.Items[0] = new ItemSlot() { ItemDetails = _stackableItemDetails, SlotID = 0, Amount = 5 };
+		_inventory.Items[1] = new ItemSlot() { ItemDetails = _stackableItemDetails, SlotID = 1, Amount = 2 };
+		_inventory.Items[3] = new ItemSlot() { ItemDetails = _stackableItemDetails, SlotID = 3, Amount = 3 };
+
+		Assert.AreEqual(10, _inventory.GetTotalAmount(_stackableItemDetails), "Should return 10, if we have items with stackSize, 5, 2, 3");
+	}
+
+	[Test]
+	public void RemoveItem()
+	{
+		Assert.AreEqual(null, _inventory.Items[0]);
+
+		_inventory.Items[0] = new ItemSlot() { ItemDetails = _stackableItemDetails, SlotID = 0, Amount = 5 };
+		_inventory.RemoveItem(0);
+
+		Assert.AreEqual(null, _inventory.Items[0]);
+	}
+
 
 
 
