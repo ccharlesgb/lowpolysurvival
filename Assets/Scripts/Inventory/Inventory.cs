@@ -100,24 +100,22 @@ public class Inventory : MonoBehaviour
         for (int i = 0; i < InventoryMaxSize; i++)
         {
             ItemSlot curSlot = Items[i];
-            if (curSlot == null) //The slot is empty
+            
+			if (curSlot == null) // The slot is empty
             {
-                return i; //This is an empty slot
+                return i; // This is an empty slot
             }
-            else if (item.isStackable) //Its not empty but we are stackable
+            
+			if (item.isStackable) // It's not empty but we are stackable
             {
                 if (curSlot.ItemDetails == item && curSlot.Amount < item.stackSize)
-                    //We found a slot that has a stack of our item in it!
+                    // We found a slot that has a stack of our item in it!
                 {
                     return i;
                 }
             }
-            else //Its not empty and we are NOT stackable
-            {
-                return i;
-            }
         }
-        return -1; //Couldnt find a slot with space for this item
+        return -1; // Couldnt find a slot with space for this item
     }
 
     //Adds an ItemDetails from "Thin air" (Doesnt take from anything else)
@@ -377,195 +375,3 @@ public class Inventory : MonoBehaviour
     }
 
 }
-
-//public SendNotification() // is this needed? should prob belong to AddItem
-
-
-    //Looting
-
-
-    //OLD INVENTORY
-    /*
-    //Start looting a specific inventory
-    public void BeginLooting(Inventory inv)
-    {
-        Debug.Log("BEGIN LOOTING " + inv);
-        lootInventory = inv;
-        isLooting = true;
-        if (OnLootBegin == null) return; //WRONG: Always null?
-        OnLootBegin(inv);
-    }
-
-    public void StopLooting()
-    {
-        lootInventory = null;
-        isLooting = false;
-    }
-
-	public ItemSlot[] GetInventoryAsArray()
-	{
-		var array = new ItemSlot[NbrSlots];
-		foreach (ItemSlot container in containerList)
-		{
-			array[container.SlotID] = container;
-		}
-		return array;
-	}
-
-
-	public void AddItem(string name, int amount, int slotID = -1)
-	{
-		ItemDetails ItemDetails = masterList.FindByName (name);
-		if (ItemDetails == null || ItemDetails.itemObject == null) return; //Not a valid ItemDetails
-
-		ItemSlot slot = GetContainer (name);
-
-		if (slot == null)
-		{
-			if (slotID == -1)
-			{
-				slotID = FindFirstEmptySlot();
-			}
-
-			slot = ScriptableObject.CreateInstance<ItemSlot>();
-			slot.ItemDetails = ItemDetails;
-			slot.Amount = amount;
-			slot.SlotID = slotID;
-			containerList.Add (slot);
-		}
-		else
-		{
-			slot.Amount += amount;
-		}
-		SendNotification(slot, amount);
-	}
-
-	private int FindFirstEmptySlot()
-	{
-		int slot = 0;
-		for (int i = 0; i < NbrSlots; i++)
-		{
-			bool found = containerList.Any(container => container != null && container.SlotID == i);
-
-		    if (!found)
-			{
-				slot = i;
-				break;
-			}
-		}
-			
-		return slot;
-	}
-
-	public bool HasItem(string name)
-	{
-	    return containerList.Any(t => t.ItemDetails.itemName == name);
-	}
-
-    //Searches for the slot with this name
-	public ItemSlot GetContainer(string name)
-	{
-	    return containerList.FirstOrDefault(t => t.ItemDetails.itemName == name);
-	}
-
-	public void SendNotification(ItemSlot it, int amount)
-	{
-		if (OnItemAdded == null) return;
-
-		OnItemAdded(it.ItemDetails, amount);
-	}
-
-    //Give to our inventory and take from the other
-	public void TransferItem(ItemSlot other, int amount, Inventory otherInv)
-	{
-		if (other == null) return;
-
-		//Does the other inventory have enough of this ItemDetails to give it to us?
-		if (other.Amount < amount) return; //More validation needed here
-
-		AddItem (other.ItemDetails.itemName, amount);
-		otherInv.UseItem(other.ItemDetails.itemName, amount);
-	}
-
-	public void DropItem(string name, int amount)
-	{
-		ItemSlot slot = GetContainer (name);
-		if (slot == null) return;
-		if (slot.Amount < amount) return;
-
-		if (OnItemRemoved != null)
-		{
-			OnItemRemoved(slot, amount);
-		}
-
-		GameObject itemFab = Instantiate (slot.ItemDetails.itemObject, transform.position, Quaternion.identity) as GameObject;
-
-		itemFab.GetComponent<ItemBehaviour>().Init(slot, amount);
-
-		slot.Amount -= amount;
-
-		//We've run out of this ItemDetails
-		if (slot.Amount <= 0)
-		{
-			RemoveItem(slot);
-		}
-	}
-
-    //Similar to Drop ItemDetails but the ItemDetails doesnt get spawned it just gets 'used up'
-    public void UseItem(string name, int amount)
-    {
-        Debug.Log("USing up " + name + amount);
-        ItemSlot slot = GetContainer(name);
-        if (slot == null) return;
-        Debug.Log("Not null");
-        if (slot.Amount < amount) return;
-        Debug.Log("Not enough");
-        if (OnItemRemoved != null)
-        {
-            OnItemRemoved(slot, amount);
-        }
-
-        slot.Amount -= amount;
-
-        //We've run out of this ItemDetails
-        if (slot.Amount <= 0)
-        {
-            RemoveItem(slot);
-        }
-
-    }
-	public void RemoveItem(ItemSlot ct)
-	{
-		containerList.Remove (ct);
-	}
-	
-    //Handles ItemDetails picking up from the collider trigger
-	void OnTriggerStay(Collider other)
-	{
-		if (!canPickup) return;
-		ItemBehaviour behav = other.gameObject.GetComponent<ItemBehaviour>();
-		if (behav != null)
-		{
-			PickupItem(behav);
-		}
-	}
-
-	bool CanPickup(ItemBehaviour itemBehave)
-	{
-		if (itemBehave.spawnTime + pickupDelay > Time.time)
-		{
-			return false;
-		}
-		return true;
-	}
-
-	public void PickupItem(ItemBehaviour itemBehave)
-	{
-		if (!CanPickup (itemBehave)) return;
-
-		AddItem (itemBehave.slot.ItemDetails.itemName, itemBehave.slot.Amount);
-		Destroy(itemBehave.gameObject);
-	}
-}
-*/
-
