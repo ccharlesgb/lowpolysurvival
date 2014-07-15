@@ -27,7 +27,7 @@ MonoBehaviour:
   - itemName: Axe
     itemObject: {fileID: 100004, guid: 86247f0508c2db74ab43daa192b7ac99, type: 2}
     itemIcon: {fileID: 2800000, guid: 0ce3b4b06a9d6ec46ab6a7baf5fbae2b, type: 3}
-    isStackable: 0
+    isStackable: 1
     stackSize: 1
     isEquipable: 1
   - itemName: Fence

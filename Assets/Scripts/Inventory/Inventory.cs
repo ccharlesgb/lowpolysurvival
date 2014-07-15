@@ -129,6 +129,8 @@ public class Inventory : MonoBehaviour
     //Adds an ItemDetails from "Thin air" (Doesnt take from anything else)
     public void AddItem(ItemDetails item, int amount, int slot = -1)
     {
+        if (amount <= 0) return; //Use Remove item for this!
+
         if (slot == -1)
         {
             if (GetSpaceForItem(item) < amount) //Inventory doesnt have enough space!
@@ -140,8 +142,6 @@ public class Inventory : MonoBehaviour
             while (amountLeftAdd > 0)
             {
                 int slotSpace = FindFirstSlotWithSpace(item);
-                Debug.Log(slotSpace + " slotspace");
-                Debug.Log(Items[slotSpace]);
 
                 if (Items[slotSpace] == null) //Empty slot
                 {
@@ -333,7 +333,7 @@ public class Inventory : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         if (!IsPickup) return;
-        ItemBehaviour behav = other.gameObject.GetComponent<ItemBehaviour>();
+        var behav = other.gameObject.GetComponent<ItemBehaviour>();
         if (behav != null)
         {
             PickupItem(behav);
@@ -352,7 +352,7 @@ public class Inventory : MonoBehaviour
     public void PickupItem(ItemBehaviour itemBehave)
     {
         if (!CanPickup(itemBehave)) return;
-
+        Debug.Log("PICKUP " + itemBehave.slot.ItemDetails.itemName + " " + itemBehave.slot.Amount);
         AddItem(itemBehave.slot.ItemDetails, itemBehave.slot.Amount);
         Destroy(itemBehave.gameObject);
     }
