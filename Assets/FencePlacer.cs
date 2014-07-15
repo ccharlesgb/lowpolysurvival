@@ -62,7 +62,7 @@ public class FencePlacer : MonoBehaviour, IHolster
         fence.transform.rotation = newRot;
 
         //Use up a fence in the inventory
-        inv.UseItem(GetComponent<ItemBehaviour>().slot.ItemDetails.itemName, 1);
+        inv.RemoveItem(GetComponent<ItemBehaviour>().slot.ItemDetails, 1);
 
         nextPrimaryFire = Time.time + 0.5f;
     }

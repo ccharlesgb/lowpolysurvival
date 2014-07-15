@@ -85,7 +85,7 @@ public class Inventory : MonoBehaviour
         RemoveItem(itemDetails, amount);
     }
     // Remove amount of a specific ItemDetails type.
-    public void RemoveItem(ItemSlot item, int amount)
+    public void RemoveItem(ItemDetails item, int amount)
     {
         
     }
