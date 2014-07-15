@@ -50,7 +50,6 @@ class InventoryHolsterHandler : MonoBehaviour
 			return;
 		}
 
-		if (!it.Item.isEquipable) return;
 
 		if (ActiveItem != null) //Do we already have a gameobject that is present?
 		{
@@ -58,6 +57,9 @@ class InventoryHolsterHandler : MonoBehaviour
 			Destroy(ActiveItem);
 			ActiveItem = null;
 		}
+
+        if (!it.Item.isEquipable) return;
+
 		//Spawn the new gameobject
 		GameObject itemFab = Instantiate(it.Item.itemObject, transform.position, Quaternion.identity) as GameObject;
 		itemFab.GetComponent<ItemBehaviour>().Init(it, 1);
