@@ -4,46 +4,43 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
-	public int InventoryMaxSize; //MAX number of slots this inventory can hold
-
-	public bool IsPickup = false; //Does this inventory support picking up items?
-	public float PickupDelay = 0.5f;
-
-	private ItemList _masterList; //Singleton instance of the main list
-
-	private bool _isLooting = false;
-	private Inventory _lootInventory = null;
-
-	//public List<ItemSlot> containerList = new List<ItemSlot>();
-	public ItemSlot[] Items;
-
-	#region Events
-
-	public delegate void ItemAddedHandler(ItemSlot item, int amount);
-
-	public event ItemAddedHandler OnItemAdded;
-
-	public delegate void ItemRemovedHandler(ItemSlot item, int amount);
-
-	public event ItemRemovedHandler OnItemRemoved;
-
-	public delegate void ItemTransferHandler(ItemSlot item, int amount);
-
-	public event ItemTransferHandler OnTransferItem;
-
-	public delegate void LootHandler(Inventory lootInv);
-
-	public event LootHandler OnLootBegin;
-
-	#endregion
-
 	[Flags]
 	public enum InventoryOptions
 	{
 	}
+
+	public int InventoryMaxSize; //MAX number of slots this inventory can hold
+
+	public List<ItemSlot> containerList = new List<ItemSlot>();
+	public ItemSlot[] Items;
+
+	public bool IsPickup = false; //Does this inventory support picking up items?
+	public float PickupDelay = 0.5f;
+
+	private bool _isLooting = false;
+	private Inventory _lootInventory = null;
+	private ItemList _masterList; //Singleton instance of the main list
+	
+
+	#region Events
+
+	public delegate void ItemAddedHandler(ItemSlot item, int amount);
+	public delegate void ItemRemovedHandler(ItemSlot item, int amount);
+	public delegate void ItemTransferHandler(ItemSlot item, int amount);
+	public delegate void LootHandler(Inventory lootInv);
+
+	public event ItemAddedHandler OnItemAdded;
+	public event ItemRemovedHandler OnItemRemoved;
+	public event ItemTransferHandler OnTransferItem;
+	public event LootHandler OnLootBegin;
+
+	#endregion
+
+	//public List<ItemSlot> containerList = new List<ItemSlot>();
 
 	//Begin Implementation
 
@@ -396,12 +393,11 @@ public class Inventory : MonoBehaviour
         return true;
     }
 
-    public void PickupItem(ItemBehaviour itemBehave)
-    {
-        if (!CanPickup(itemBehave)) return;
-        Debug.Log("PICKUP " + itemBehave.slot.ItemDetails.itemName + " " + itemBehave.slot.Amount);
-        AddItem(itemBehave.slot.ItemDetails, itemBehave.slot.Amount);
-        Destroy(itemBehave.gameObject);
-    }
-
+	public void PickupItem(ItemBehaviour itemBehave)
+	{
+		if (!CanPickup(itemBehave)) return;
+		Debug.Log("PICKUP " + itemBehave.slot.ItemDetails.itemName + " " + itemBehave.slot.Amount);
+		AddItem(itemBehave.slot.ItemDetails, itemBehave.slot.Amount);
+		Destroy(itemBehave.gameObject);
+	}
 }
