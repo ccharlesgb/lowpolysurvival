@@ -7,29 +7,27 @@ using System.Collections.Generic;
 
 public class Inventory : MonoBehaviour
 {
-    public static int NbrSlots = 25;
-
     public List<ItemSlot> containerList = new List<ItemSlot>();
 
-    public bool canPickup = false; //Does this inventory support picking up items?
-    public float pickupDelay = 0.5f;
+    public bool CanPickup = false; //Does this inventory support picking up items?
+    public float PickupDelay = 0.5f;
 
-    private ItemList masterList; //Singleton instance of the main list
+    private ItemList _masterList; //Singleton instance of the main list
 
-    private bool isLooting = false;
-    private Inventory lootInventory = null;
+    private bool _isLooting = false;
+    private Inventory _lootInventory = null;
 
     //public List<ItemSlot> containerList = new List<ItemSlot>();
     public ItemSlot[] Items;
 
-      
+
     #region Events
     public delegate void ItemAddedHandler(ItemSlot item, int amount);
     public event ItemAddedHandler OnItemAdded;
-  
+
     public delegate void ItemRemovedHandler(ItemSlot item, int amount);
-    public event ItemRemovedHandler OnRemoveItem;
-  
+    public event ItemRemovedHandler OnItemRemoved;
+
     public delegate void ItemTransferHandler(ItemSlot item, int amount);
     public event ItemTransferHandler OnTransferItem;
 
@@ -38,28 +36,126 @@ public class Inventory : MonoBehaviour
     #endregion
 
     public int InventoryMaxSize; //MAX number of slots this inventory can hold
-  
+
     [Flags]
-    public enum InventoryOptions {
-    
+    public enum InventoryOptions
+    {
+
     }
 
     //Begin Implementation
 
     void Awake()
     {
-        masterList = MasterList.Instance.itemList;
+        Items = new ItemSlot[InventoryMaxSize];
+        _masterList = MasterList.Instance.itemList;
     }
- 
+
+    //Returns the correct item amount (Stops stacksize getting too high
+    public int ClampItemAmount(int amount, ItemDetails item)
+    {
+        if (!item.isStackable && amount > 1)
+            amount = 1;
+
+        if (item.isStackable && amount > item.stackSize)
+            amount = item.stackSize;
+
+        return amount;
+    }
+
+    //Get the total amount of space left in the inventory
+    public int GetSpaceForItem(ItemDetails item)
+    {
+        int totalSpace = 0;
+        for (int i = 0; i < InventoryMaxSize; i++)
+        {
+            ItemSlot curSlot = Items[i];
+
+            if (curSlot == null) //The slot is empty
+            {
+                if (item.isStackable)
+                    totalSpace += item.stackSize; //We can add a whole stack!
+                else
+                    totalSpace += 1;
+            }
+            else if (item.isStackable) //Its not empty but we are stackable
+            {
+                if (curSlot.ItemDetails == item && curSlot.Amount < item.stackSize) //We found a slot that has a stack of our item in it!
+                {
+                    totalSpace += item.stackSize - curSlot.Amount;
+                }
+            }
+            else //Its not empty and we are NOT stackable
+            {
+                totalSpace += 1; //Can only add one
+            }
+        }
+
+        return totalSpace;
+    }
+
+    public int FindFirstSlotWithSpace(ItemDetails item)
+    {
+        for (int i = 0; i < InventoryMaxSize; i++)
+        {
+            ItemSlot curSlot = Items[i];
+            if (curSlot == null) //The slot is empty
+            {
+                return i; //This is an empty slot
+            }
+            else if (item.isStackable) //Its not empty but we are stackable
+            {
+                if (curSlot.ItemDetails == item && curSlot.Amount < item.stackSize) //We found a slot that has a stack of our item in it!
+                {
+                    return i;
+                }
+            }
+            else //Its not empty and we are NOT stackable
+            {
+                return i;
+            }
+        }
+        return -1; //Couldnt find a slot with space for this item
+    }
+
     //Adds an ItemDetails from "Thin air" (Doesnt take from anything else)
     public void AddItem(ItemDetails item, int amount, int slot = -1)
     {
-        
+        if (slot == -1)
+        {
+            if (GetSpaceForItem(item) < amount) //Inventory doesnt have enough space!
+                return; //We cant add this much 'item'
+
+            int amountLeftAdd = amount;
+            //Loop through adding to slots with space until we've added enough
+            while (amountLeftAdd > 0)
+            {
+                int slotSpace = FindFirstSlotWithSpace(item);
+                int amountCanAdd = item.stackSize - Items[slotSpace].Amount;
+                Items[slotSpace].Amount += amountCanAdd;
+                amountLeftAdd -= amountCanAdd;
+            }
+        }
+        else //Dont need to check we have enough space as we are just doing a flat out slot replace
+        {
+            if (Items[slot] != null)
+            {
+                Debug.LogWarning("Overriding existing slot. Are you sure you meant to do this?");
+                Destroy(Items[slot]); //Dont leak memory
+            }
+            //Do I actually need to make a new instance
+            var newSlot = ScriptableObject.CreateInstance<ItemSlot>();
+            newSlot.ItemDetails = item;
+            newSlot.Amount = ClampItemAmount(amount, item);
+            //TODO: should this add N slots worth to ensure we always add 'amount' of things?
+            Items[slot] = newSlot;
+        }
     }
 
+    //Overload for adding via item name (SLOWER)
     public void AddItem(string name, int amount, int slot = -1)
     {
-        ItemDetails itemDetails = masterList.FindByName(name);
+        ItemDetails itemDetails = _masterList.FindByName(name);
         if (itemDetails == null)
         {
             Debug.Log("ERROR: Tried to add null item " + name);
@@ -67,86 +163,148 @@ public class Inventory : MonoBehaviour
         }
         AddItem(itemDetails, amount, slot);
     }
-  
+
     //Takes an ItemDetails from another inventory. IS THIS THE BEST NAME?
-    public void TransferItem()
+    //Takes an 'amount' of an 'item' from the 'other' inventory
+    public void TransferItem(ItemDetails item, int amount, Inventory other)
     {
-        
+        if (item == null) return;
+
+        if (other.GetTotalAmount(item) < amount)
+        {
+            Debug.LogWarning("Other inventory has insusfficient " + item.itemName + " to transfer");
+            return;
+        }
+        //Take from the other inventory!
+        other.RemoveItem(item, amount);
+
+        //Add to ours!
+        AddItem(item, amount);
+
+        //TODO: THE EVENTS!
     }
-  
+
+    public int GetTotalAmount(ItemDetails item)
+    {
+        int total = 0;
+        for (int i = 0; i < InventoryMaxSize; i++)
+        {
+            if (Items[i] != null && Items[i].ItemDetails == item)
+            {
+                total += Items[i].Amount;
+            }
+        }
+        return total;
+    }
+
+    public void RemoveItem(int slot)
+    {
+        Items[slot] = null;
+    }
     // Remove amount from a specific slot.
     public void RemoveItem(int slot, int amount)
     {
-        
+        ItemSlot item = Items[slot];
+        item.Amount -= amount;
+
+        if (item.Amount <= 0)
+        {
+            RemoveItem(slot);
+        }
     }
     public void RemoveItem(string name, int amount)
     {
-        ItemDetails itemDetails = masterList.FindByName(name);
+        ItemDetails itemDetails = _masterList.FindByName(name);
         RemoveItem(itemDetails, amount);
     }
     // Remove amount of a specific ItemDetails type.
     public void RemoveItem(ItemDetails item, int amount)
     {
-        
+        if (GetTotalAmount(item) < amount) return; //NOT ENOUGH
+
+        List<ItemSlot> itemSlots = GetSlots(item);
+        foreach (ItemSlot i in itemSlots)
+        {
+            // We can remove all from this stack.
+            if (i.Amount > amount)
+            {
+                RemoveItem(i.SlotID, amount);
+                break;
+            }
+
+            // Remove what we can from this stack, and continue to next.
+            amount -= i.Amount;
+            RemoveItem(i.SlotID, i.Amount);
+
+        }
     }
-  
+
     //Searches through each slot and removes ALL of this type (might be useful?)
-    public void RemoveAll(ItemSlot item)
+    public void RemoveAll(ItemDetails item)
     {
-        
+        List<ItemSlot> itemSlots = GetSlots(item);
+        foreach (ItemSlot i in itemSlots)
+        {
+            Items[i.SlotID] = null;
+        }
     }
-  
+
     //USE LINQ? (Its meant to be slower but is this important?)
     public ItemSlot GetSlot(int slot)
     {
-        
+        return Items[slot];
     }
 
     public ItemSlot GetSlot(string name) //Return first (unity convention)
     {
-        
+        ItemDetails itemDetails = _masterList.FindByName(name);
+        return GetSlot(itemDetails);
     }
 
-    public ItemSlot GetSlot(ItemSlot item)
+    public ItemSlot GetSlot(ItemDetails item)
     {
-        
+        return Items.FirstOrDefault(i => item.Equals(i.ItemDetails));
     }
 
-    public ItemSlot[] GetSlots(string name) //Multiple slots? Return first? al
+    public List<ItemSlot> GetSlots(string name) //Multiple slots? Return first? al
     {
-        
+        ItemDetails itemDetails = _masterList.FindByName(name);
+        return GetSlots(itemDetails);
     }
 
-    public ItemSlot[] GetSlots(ItemSlot item)
+    public List<ItemSlot> GetSlots(ItemDetails item)
     {
-        
+        return Items.Where(i => item.Equals(i.ItemDetails)).ToList();
     }
 
     public ItemSlot[] GetAllSlots() //Dump all slots to an array
     {
-        
+        return Items;
     }
-  
-    //
-    private ItemSlot FindFirstEmptySlot() //You can get the 'int' from the slotID
+
+    //Returns -1 if nothing found
+    private int FindFirstEmptySlot() //You can get the 'int' from the slotID
     {
-        
+        return Array.IndexOf(Items, null);
     }
 
     //Spawns ItemDetails in the world
     public ItemSlot DropItem(int slot, int amount)
     {
-        
+        return null;
     }
-    public void DropAllItems() 
+    public void DropAllItems()
     {
-    // Loop all items and call drop.
+        foreach (ItemSlot slot in Items)
+        {
+            DropItem(slot.SlotID, slot.Amount);
+        }
     }
- 
+
     //We dont nevessarily need this. Can probably be in a PlayerPickup component
     public void PickupItem(ItemBehaviour itemBehave)
     {
-        
+
     }
 
     //public SendNotification() // is this needed? should prob belong to AddItem

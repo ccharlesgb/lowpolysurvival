@@ -123,7 +123,7 @@ public class InventoryGUI : MonoBehaviour
 		// Drop outside the window?
 		if (_isDraggingItem && Input.GetMouseButtonUp(0) && !GetWindowSize().Contains(v))
 		{
-			Inv.DropItem(_draggedItem.ItemDetails.itemName, _draggedItem.Amount);
+			Inv.DropItem(_draggedItem, _draggedItem.Amount);
 			ResetDragging();
 		}
 	}
