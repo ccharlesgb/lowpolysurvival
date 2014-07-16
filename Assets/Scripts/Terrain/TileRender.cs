@@ -145,6 +145,7 @@ public class TileRender : MonoBehaviour
 	//Returns the shader parameter to decide which part of the control texture this tile should use
 	Vector4 CalculateSplatUV()
 	{
+        /*
 		//Pos Param is the chunk of the control UV that this particular tile should use
 		Point splatCoords = Map.Instance().WorldToFieldIndex(transform.position, Map.Instance().splatField);
 		Point splatCoordsTile = Map.Instance().WorldToFieldIndex(TileRender.GetTileBounds(), Map.Instance ().splatField);
@@ -157,7 +158,8 @@ public class TileRender : MonoBehaviour
 		posParam.z = splatCoordsTile.y / ((float)Map.Instance().splatField.Height) / Map.Instance ().terrainSettings.tileSideLength;
 		posParam.z = posParam.z * Map.Instance ().terrainSettings.tileTextureScale;
 
-		return posParam;
+		return posParam;*/
+	    return Vector4.zero;
 	}
 
 	public void CreateMesh()
@@ -187,7 +189,7 @@ public class TileRender : MonoBehaviour
 		}
 
 		Material mat = new Material(_meshRenderer.sharedMaterial);
-		mat.SetTexture ("_Control",Map.Instance().splatField.GetTexture()); //Delete?
+		//mat.SetTexture ("_Control",Map.Instance().splatField.GetTexture()); //Delete?
 		
 		
 		mat.SetVector("_Position", CalculateSplatUV());
