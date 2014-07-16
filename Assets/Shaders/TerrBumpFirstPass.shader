@@ -28,16 +28,16 @@ SubShader {
 		"RenderType" = "Opaque"
 	}
 CGPROGRAM
-//#pragma surface surf Lambert
-#pragma surface surf BlinnPhong vertex:vert
+#pragma surface surf Lambert
+//#pragma surface surf BlinnPhong vertex:vert
 //#pragma surface surf SimpleLambert
 #pragma target 3.0
 
-void vert (inout appdata_full v)
-{
-	v.tangent.xyz = cross(v.normal, float3(0,0,1));
-	v.tangent.w = -1;
-}
+//void vert (inout appdata_full v)
+//{
+//	v.tangent.xyz = cross(v.normal, float3(0,0,1));
+//	v.tangent.w = -1;
+//}
 
 //half4 LightingSimpleLambert (SurfaceOutput s, half3 lightDir, half atten) {
        //   half NdotL = dot (s.Normal, lightDir);
@@ -94,7 +94,7 @@ ENDCG
 }
 
 //Dependency "AddPassShader" = "Hidden/Nature/Terrain/Bumped Specular AddPass"
-Dependency "BaseMapShader" = "Specular"
+//Dependency "BaseMapShader" = "Specular"
 
-Fallback "Diffuse"
+//Fallback "Diffuse"
 }

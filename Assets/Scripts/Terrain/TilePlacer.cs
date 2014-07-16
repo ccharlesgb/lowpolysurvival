@@ -125,7 +125,8 @@ public class TilePlacer : MonoBehaviour {
     }
 
     public void PlaceTerrain()
-	{
+    {
+        return;
 		ClearTerrain ();
 		int terrainSize = Map.Instance ().terrainSettings.tileArraySideLength;
 		for (int x=0; x < terrainSize; x++)
@@ -139,7 +140,7 @@ public class TilePlacer : MonoBehaviour {
 				tile.GetComponent<TileRender>().CreateMesh();
 				tile.transform.parent = transform.Find ("Tiles");
 				tiles.Add (tile);
-
+                
 				//yield return null;
 			}
 		}

@@ -160,7 +160,7 @@ public struct IntCoord : IEquatable<IntCoord>
 	}
 }
 
-class MathTools
+public class MathTools
 {
 	public static float RoundNearest(float val, float nearest)
 	{

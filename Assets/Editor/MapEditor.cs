@@ -6,20 +6,31 @@ using UnityEditor;
 [CustomEditor(typeof(Map))]
 public class MapEditor : Editor
 {
+    private Texture2D heightMap;
+    private Texture2D splatMap;
+
     private bool paintingTexture = false;
     private bool paintingHeight = false;
 
     private Map.BrushSettings brushSettings = new Map.BrushSettings();
     private Map.BrushSettings brushSettingsHeight = new Map.BrushSettings();
 
+    private Map map;
+
     public override void OnInspectorGUI()
     {
         DrawDefaultInspector();
 
-        Map map = (Map) target;
+        map = (Map) target;
+
+        if (GUILayout.Button("Build Terrain Mesh"))
+        {
+            BuildTerrainMesh();
+        }
+
         if (GUILayout.Button("Create Blank Heightmap"))
         {
-            map.ResetHeightMap();
+            //
         }
         if (GUILayout.Button("Load Heightmap Texture"))
         {
@@ -27,13 +38,8 @@ public class MapEditor : Editor
             if (absPath.StartsWith(Application.dataPath))
             {
                 string relPath = absPath.Substring(Application.dataPath.Length - "Assets".Length);
-                map.LoadHeightMap(relPath);
+                //map.LoadHeightMap(relPath);
             }
-        }
-
-        if (GUILayout.Button("Recalculate Splats"))
-        {
-            map.CalculateSplatsFromHeights();
         }
 
         //Paint texture GUI
@@ -142,5 +148,104 @@ public class MapEditor : Editor
             terrainPos.y = 0.0f;
             map.PaintHeight(terrainPos, brushSettingsHeight);
         }
+    }
+
+    public void BuildTerrainMesh()
+    {
+        TerrainSettings terrSettings = map.terrainSettings;
+        SplatSettings splatSettings = map.splatSettings;
+
+        splatSettings.control = GenerateSplatTexture();
+
+        //Spawn the tiles
+        int terrainSize = Map.Instance().terrainSettings.tileArraySideLength;
+        for (int x = 0; x < terrainSize; x++)
+        {
+            for (int z = 0; z < terrainSize; z++)
+            {
+                //Spawn a new tile object
+                GameObject tile = new GameObject {name = "Tile"};
+                tile.AddComponent<MeshFilter>();
+                tile.AddComponent<MeshRenderer>();
+                tile.AddComponent<MeshCollider>();
+
+                Vector3 tilePos = MathTools.ScalarMultiply(new Vector3(x, 0, z), TileRender.GetTileBounds());
+                tile.transform.position = tilePos;
+                tile.transform.parent = map.transform;
+
+                tile.GetComponent<MeshFilter>().sharedMesh = TileMeshBuilder.GenerateMesh(tilePos);
+                tile.GetComponent<MeshRenderer>().sharedMaterial = TileMeshBuilder.CreateMaterial(tilePos, splatSettings);
+                tile.GetComponent<MeshCollider>().sharedMesh = tile.GetComponent<MeshFilter>().sharedMesh;
+
+                Undo.RegisterCreatedObjectUndo(tile, "Created Tiles");
+
+                TileMeshBuilder.ClearMesh(); //IMPORTANT TO DELETE STATIC VARIABLES
+            }
+        }
+    }
+
+    public Vector2 GetSlopeAt(int x, int y, int gap)
+    {
+        float valAtPos = map.heightTexture.GetPixel(x, y).grayscale;
+        Vector2 gradient = new Vector2();
+
+        if (x >= map.heightTexture.width - gap - 2 || y >= map.heightTexture.height - gap - 2)
+        {
+            return gradient;
+        }
+
+        gradient.x = map.heightTexture.GetPixel(x + gap, y).grayscale - valAtPos;
+        gradient.y = map.heightTexture.GetPixel(x, y + gap).grayscale - valAtPos;
+        return gradient;
+    }
+
+    private void CalculateSlopes(FloatField output, int subSamples)
+    {
+        int pixelCount = map.heightTexture.width*map.heightTexture.width;
+
+        Vector2 gradient = new Vector2();
+        output.Create(map.heightTexture.height, map.heightTexture.width);
+        float maxGrad = 0.0f;
+        for (int x = 0; x < map.heightTexture.width; x++)
+        {
+            for (int y = 0; y < map.heightTexture.width; y++)
+            {
+                gradient = GetSlopeAt(x, y, subSamples);
+                float grad = gradient.magnitude;
+
+                if (grad > maxGrad)
+                    maxGrad = grad;
+
+                output.SetValue(x, y, grad);
+            }
+        }
+        //Normalize the gradient map
+        if (maxGrad != 0.0f)
+        {
+            for (int i = 0; i < pixelCount; i++)
+            {
+                output.SetValue(i, output.GetValue(i) / maxGrad);
+            }
+        }
+    }
+
+    public Texture2D GenerateSplatTexture()
+    {
+        var gradientMag = ScriptableObject.CreateInstance<FloatField>();
+        CalculateSlopes(gradientMag, map.splatSettings.splatSubSamples);
+
+        Texture2D splat = new Texture2D(map.heightTexture.width, map.heightTexture.height);
+        for (int x = 0; x < map.heightTexture.width; x++)
+        {
+            for (int y = 0; y < map.heightTexture.width; y++)
+            {
+                Color col = map.splatSettings.GetSplatChannelValue(gradientMag.GetValue(x,y));
+                col.a = 1.0f;
+                splat.SetPixel(x, y, col);
+            }
+        }
+        splat.Apply();
+        DestroyImmediate(gradientMag);
+        return splat;
     }
 }

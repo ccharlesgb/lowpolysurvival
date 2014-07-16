@@ -6,8 +6,11 @@ using System.Collections;
 
 [ExecuteInEditMode]
 [AddComponentMenu("Terrain/Map")]
-public class Map : MonoBehaviour 
+public class Map : MonoBehaviour
 {
+    public Texture2D splatTexture;
+    public Texture2D heightTexture;
+
 	public static Map instance;
 
 	public static Map Instance()
@@ -50,7 +53,6 @@ public class Map : MonoBehaviour
     //Called by the editor paints a certain amount of the splat channel to the map
     public void PaintSplat(Vector3 pos, BrushSettings settings)
     {
-
         Point splatCoord = WorldToFieldIndex(pos, splatField);
 
         int brushSize = (int)settings.size;
@@ -84,7 +86,6 @@ public class Map : MonoBehaviour
     //Called by the editor paints the vertex heights
     public void PaintHeight(Vector3 pos, BrushSettings settings)
     {
-
         Point heightCoord = WorldToFieldIndex(pos, heightField);
 
         int brushSize = (int)settings.size;
@@ -184,43 +185,5 @@ public class Map : MonoBehaviour
 			val = Mathf.Round(val / nearest) * nearest;
 		}
 		return val * heightScale;
-	}
-
-    public void ResetHeightMap()
-    {
-        heightField.Create(1024, 1024, 0.5f);
-        CalculateSplatsFromHeights();
-    }
-
-    public void LoadHeightMap(string relpath)
-    {
-        Texture2D heightMap = AssetDatabase.LoadAssetAtPath(relpath, typeof(Texture2D)) as Texture2D;
-        if (heightMap == null)
-        {
-            Debug.Log("Couldn't load texture!");
-            return;
-        }
-
-        heightField.CreateFromTexture(heightMap);
-        CalculateSplatsFromHeights();
-    }
-
-    public void CalculateSplatsFromHeights()
-    {
-        var gradientMag = ScriptableObject.CreateInstance<FloatField>();
-        heightField.CalculateGradient(gradientMag, splatSettings.splatSubSamples);
-        splatField.Create(heightField.Height, heightField.Width, Vector3.zero);
-        for (int i = 0; i < gradientMag.Size; i++)
-        {
-            splatField.SetValue(i, splatSettings.GetSplatChannelValue(gradientMag.GetValue(i)));
-        }
-        splatField.UpdatePreview();
-
-        DestroyImmediate(gradientMag);
-    }
-
-    public void UpdateFloatFields()
-	{
-		
 	}
 }
