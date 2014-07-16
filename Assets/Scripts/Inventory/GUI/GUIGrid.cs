@@ -28,7 +28,8 @@ class GUIGrid : IGUIElement
 		// Check how many rows we have.
 		Rows = (int)Math.Ceiling((decimal)(size / Columns));
 
-		GUIPosition lastPosition = GetSlotPosition(Rows*Columns + Columns-1);
+		// Get the position of 
+		GUIPosition lastPosition = GetSlotPosition(Rows*Columns - 1);
 		lastPosition.x += OuterBoxSize();
 		lastPosition.y += OuterBoxSize();
 
