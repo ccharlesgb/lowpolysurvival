@@ -68,6 +68,6 @@ internal class InventoryGUI : MonoBehaviour
 	{
 		var size = _inventoryGrid.GetSize();
 
-		return new Rect(5, 5, size.width + 15, size.height);
+		return new Rect(5, 5, size.width + 15, size.height + 45);
 	}
 }

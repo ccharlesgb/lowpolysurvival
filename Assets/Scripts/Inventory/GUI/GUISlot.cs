@@ -39,13 +39,37 @@ class GUISlot : IGUIElement
 	{
 		if (_itemSlot != null)
 		{
+			Event e = Event.current;
+
+			if (_rect.Contains(e.mousePosition))
+			{
+				DrawToolTip(_rect, _itemSlot.ItemDetails.itemName);
+			}
+
 			GUI.Button(_rect, _itemSlot.ItemDetails.itemIcon);
+
+			// Draw the stack count.
+			if (_itemSlot.ItemDetails.isStackable)
+			{
+				GUI.Label(_rect, "" + _itemSlot.Amount, "Stacks");
+			}
 		}
 		else
 		{
 			GUI.Box(_rect, ""+_slotID);
 		}
 		
+	}
+
+	private void DrawToolTip(Rect itemRect, string toolTipText)
+	{
+		float x = itemRect.x;
+		float y = itemRect.y - 15;
+
+		Rect rect = new Rect(_rect.x, _rect.y - 25, _rect.width, 25);
+
+		GUI.Box(rect, toolTipText);
+		//GUI.Label(rect, toolTipText, "ToolTip");
 	}
 
 	public Rect GetSize()
