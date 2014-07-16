@@ -53,16 +53,18 @@ public class TileMeshBuilder
     //Returns the shader parameter to decide which part of the control texture this tile should use
     private static Vector4 CalculateSplatUV(Vector3 position)
     {
+        int splatSize = Map.Instance().heightTexture.width;
+
         //Pos Param is the chunk of the control UV that this particular tile should use
-        Point splatCoords = Map.Instance().WorldToFieldIndex(position, Map.Instance().splatField);
-        Point splatCoordsTile = Map.Instance().WorldToFieldIndex(TileRender.GetTileBounds(), Map.Instance().splatField);
+        Point splatCoords = Map.Instance().WorldToTextureCoords(position, splatSize);
+        Point splatCoordsTile = Map.Instance().WorldToTextureCoords(TileRender.GetTileBounds(), splatSize);
 
         //Adjust the control UV
         Vector4 posParam = new Vector4();
-        posParam.w = splatCoords.x / (float)Map.Instance().splatField.Width;
-        posParam.x = splatCoords.y / (float)Map.Instance().splatField.Height;
-        posParam.y = splatCoordsTile.x / ((float)Map.Instance().splatField.Width); // UV Scale parameters
-        posParam.z = splatCoordsTile.y / ((float)Map.Instance().splatField.Height) / Map.Instance().terrainSettings.tileSideLength;
+        posParam.w = splatCoords.x/(float) splatSize;
+        posParam.x = splatCoords.y/(float) splatSize;
+        posParam.y = splatCoordsTile.x / ((float)splatSize); // UV Scale parameters
+        posParam.z = splatCoordsTile.y / ((float)splatSize) / Map.Instance().terrainSettings.tileSideLength;
         posParam.z = posParam.z * Map.Instance().terrainSettings.tileTextureScale;
 
         return posParam;

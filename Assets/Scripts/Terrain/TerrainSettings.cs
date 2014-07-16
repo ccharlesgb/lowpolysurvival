@@ -3,6 +3,7 @@ using System.Collections;
 
 public class TerrainSettings : MonoBehaviour
 {
+    public float heightScale = 64.0f;
 	public float tileSquareSize = 2.0f;
 	public int tileSideLength = 32;
 	public int tileArraySideLength = 16;

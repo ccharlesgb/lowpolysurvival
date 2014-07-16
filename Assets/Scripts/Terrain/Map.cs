@@ -31,21 +31,14 @@ public class Map : MonoBehaviour
 		splatSettings = GetComponent<SplatSettings>();
 		terrainSettings = GetComponent<TerrainSettings>();
 	}
-
-	public float discreteCount;
-	public float heightScale;
-
-	//public Texture2D heightTexture;
 	
-	public FloatField heightField;
-	public VectorField splatField;
 	public SplatSettings splatSettings;
 	public TerrainSettings terrainSettings;
 
     [System.Serializable]
     public class BrushSettings
     {
-        public float size;
+        public int size;
         public float opacity;
         public int paintChannel;
     }
@@ -53,6 +46,7 @@ public class Map : MonoBehaviour
     //Called by the editor paints a certain amount of the splat channel to the map
     public void PaintSplat(Vector3 pos, BrushSettings settings)
     {
+        /*
         Point splatCoord = WorldToFieldIndex(pos, splatField);
 
         int brushSize = (int)settings.size;
@@ -80,12 +74,13 @@ public class Map : MonoBehaviour
         }
 
         Rect box = new Rect(splatCoord.x - brushSize, splatCoord.y - brushSize, brushSize * 2, brushSize * 2);
-        splatField.UpdatePreviewAt(box);
+        splatField.UpdatePreviewAt(box);*/
     }
 
     //Called by the editor paints the vertex heights
     public void PaintHeight(Vector3 pos, BrushSettings settings)
     {
+        /*
         Point heightCoord = WorldToFieldIndex(pos, heightField);
 
         int brushSize = (int)settings.size;
@@ -129,61 +124,36 @@ public class Map : MonoBehaviour
 
         tile = placer.GetTileAt(pos + new Vector3(-brushSizeWorld, 0, +brushSizeWorld));
         tile.CreateMesh();
+         * */
     }
 
-    public Point WorldToFieldIndex(Vector3 pos, VectorField field)
-	{
-		Vector3 mapBounds = TileRender.GetTileBounds () * terrainSettings.tileArraySideLength;
-		Rect mapRect = new Rect();
-		mapRect.center = Vector3.zero;
-		mapRect.Set(-mapBounds.x / 2.0f, -mapBounds.z / 2.0f, mapBounds.x, mapBounds.z);
-		
-		//Transform theses coordinates into a fraction of the total map
-		//Then multiply by heightmap dimensions to get the corresponding pixel
-		float x_f = (pos.x / mapRect.width) * (field.Width - 1);
-		float y_f = (pos.z / mapRect.height) * (field.Height - 1);
-		if (x_f < 0 || x_f > field.Width || y_f < 0 || y_f > field.Height)
-		{
-			Debug.Log("Height coords out of bounds x : " + x_f + " y : " + y_f);
-		}
-		int x = Mathf.FloorToInt (x_f);
-		int y = Mathf.FloorToInt (y_f);
-		
-		return new Point(x,y);
-	}
-	public Point WorldToFieldIndex(Vector3 pos, FloatField field)
-	{
-		Vector3 mapBounds = TileRender.GetTileBounds () * terrainSettings.tileArraySideLength;
-		Rect mapRect = new Rect();
-		mapRect.center = Vector3.zero;
-		mapRect.Set(-mapBounds.x / 2.0f, -mapBounds.z / 2.0f, mapBounds.x, mapBounds.z);
-		
-		//Transform theses coordinates into a fraction of the total map
-		//Then multiply by heightmap dimensions to get the corresponding pixel
-		float x_f = (pos.x / mapRect.width) * (field.Width - 1);
-		float y_f = (pos.z / mapRect.height) * (field.Height - 1);
-		if (x_f < 0 || x_f > field.Width || y_f < 0 || y_f > field.Height)
-		{
-			Debug.Log("Height coords out of bounds x : " + x_f + " y : " + y_f);
-		}
-		int x = Mathf.FloorToInt (x_f);
-		int y = Mathf.FloorToInt (y_f);
+    public Point WorldToTextureCoords(Vector3 pos, float textureSize)
+    {
+        Vector3 mapBounds = TileRender.GetTileBounds() * terrainSettings.tileArraySideLength;
+        Rect mapRect = new Rect();
+        mapRect.center = Vector3.zero;
+        mapRect.Set(-mapBounds.x / 2.0f, -mapBounds.z / 2.0f, mapBounds.x, mapBounds.z);
 
-		return new Point(x,y);
-	}
+        //Transform theses coordinates into a fraction of the total map
+        //Then multiply by heightmap dimensions to get the corresponding pixel
+        float x_f = (pos.x / mapRect.width) * (textureSize - 1);
+        float y_f = (pos.z / mapRect.height) * (textureSize - 1);
+        if (x_f < 0 || x_f > textureSize || y_f < 0 || y_f > textureSize)
+        {
+            Debug.Log("Height coords out of bounds x : " + x_f + " y : " + y_f);
+        }
+        int x = Mathf.FloorToInt(x_f);
+        int y = Mathf.FloorToInt(y_f);
+
+        return new Point(x, y);
+    }
 
 	public float GetTerrainHeight(Vector3 pos)
 	{
-		Point heightPoint = WorldToFieldIndex (pos, heightField);
+		Point heightPoint = WorldToTextureCoords(pos, heightTexture.width);
 
-		float val = heightField.GetValue(heightPoint.x, heightPoint.y);
+		float val = heightTexture.GetPixel(heightPoint.x, heightPoint.y).grayscale;
 		
-		//Discretize the height (More blocky)
-		if (discreteCount > 0.0f)
-		{
-			float nearest = 1/discreteCount;
-			val = Mathf.Round(val / nearest) * nearest;
-		}
-		return val * heightScale;
+	    return val*terrainSettings.heightScale;
 	}
 }

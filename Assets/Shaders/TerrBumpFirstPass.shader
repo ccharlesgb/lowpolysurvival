@@ -9,12 +9,6 @@ Properties {
 	_Splat1 ("Layer 1 (G)", 2D) = "white" {}
 	_Splat0 ("Layer 0 (R)", 2D) = "white" {}
 	
-	//Normal maps
-	[HideInInspector] _Normal3 ("Normal 3 (A)", 2D) = "bump" {}
-	[HideInInspector] _Normal2 ("Normal 2 (B)", 2D) = "bump" {}
-	[HideInInspector] _Normal1 ("Normal 1 (G)", 2D) = "bump" {}
-	[HideInInspector] _Normal0 ("Normal 0 (R)", 2D) = "bump" {}
-	
 	// used in fallback on old cards & base map
 	_MainTex ("BaseMap (RGB)", 2D) = "white" {}
 	_Color ("Main Color", Color) = (1,1,1,1)
@@ -32,12 +26,6 @@ CGPROGRAM
 //#pragma surface surf BlinnPhong vertex:vert
 //#pragma surface surf SimpleLambert
 #pragma target 3.0
-
-//void vert (inout appdata_full v)
-//{
-//	v.tangent.xyz = cross(v.normal, float3(0,0,1));
-//	v.tangent.w = -1;
-//}
 
 //half4 LightingSimpleLambert (SurfaceOutput s, half3 lightDir, half atten) {
        //   half NdotL = dot (s.Normal, lightDir);
@@ -73,18 +61,10 @@ void surf (Input IN, inout SurfaceOutput o) {
 	//col += splat_control.a * tex2D (_Splat3, IN.uv_Splat3);
 	o.Albedo = col.rgb;
 
-	fixed4 nrm;
-	nrm  = splat_control.r * tex2D (_Normal0, IN.uv_Splat0);
-	nrm += splat_control.g * tex2D (_Normal1, IN.uv_Splat1);
-	nrm += splat_control.b * tex2D (_Normal2, IN.uv_Splat2);
-	nrm += splat_control.a * tex2D (_Normal3, IN.uv_Splat3);
 	// Sum of our four splat weights might not sum up to 1, in
 	// case of more than 4 total splat maps. Need to lerp towards
 	// "flat normal" in that case.
 	fixed splatSum = dot(splat_control, fixed4(1,1,1,1));
-	fixed4 flatNormal = fixed4(0.5,0.5,1,0.5); // this is "flat normal" in both DXT5nm and xyz*2-1 cases
-	nrm = lerp(flatNormal, nrm, splatSum);
-	o.Normal = UnpackNormal(nrm);
 
 	o.Gloss = col.a * splatSum;
 	o.Specular = _Shininess;
@@ -94,7 +74,7 @@ ENDCG
 }
 
 //Dependency "AddPassShader" = "Hidden/Nature/Terrain/Bumped Specular AddPass"
-//Dependency "BaseMapShader" = "Specular"
+Dependency "BaseMapShader" = "Specular"
 
-//Fallback "Diffuse"
+Fallback "Diffuse"
 }

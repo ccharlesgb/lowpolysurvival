@@ -50,7 +50,7 @@ public class VegetationSpawner : MonoBehaviour
 	public void SpawnVeg()
 	{
 		ClearVeg ();
-		map.heightField.CalculateGradient(vegField,2);
+		//map.heightField.CalculateGradient(vegField,2);
 		//Size of the terrain in world units
 		int gridSize = (int)(map.terrainSettings.tileArraySideLength * map.terrainSettings.tileSideLength * map.terrainSettings.tileSquareSize);
 
@@ -62,7 +62,7 @@ public class VegetationSpawner : MonoBehaviour
 				Vector3 treePos = new Vector3(x,0,z);
 				bool shouldSpawn = true;
 				//Get the steepness of the world here
-				Point fieldPoint = map.WorldToFieldIndex(treePos, vegField);
+				Point fieldPoint = map.WorldToTextureCoords(treePos, vegField.Height);
 				float steepness = vegField.GetValue (vegField.CoordToIndex (fieldPoint.x, fieldPoint.y));
 
 				//Dont spawn on hills
