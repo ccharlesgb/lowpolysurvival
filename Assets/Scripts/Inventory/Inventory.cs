@@ -15,6 +15,7 @@ public class InventoryLoadout
 
 public class Inventory : MonoBehaviour
 {
+    //[HideInInspector]
     public InventoryLoadout InitialLoadout;
 
 	public enum InventoryOptions
@@ -22,6 +23,7 @@ public class Inventory : MonoBehaviour
 	}
 
 	public int InventoryMaxSize; //MAX number of slots this inventory can hold
+    //[HideInInspector]
 	public ItemSlot[] Items;
 
 	public bool IsPickup = false; //Does this inventory support picking up items?
@@ -111,7 +113,7 @@ public class Inventory : MonoBehaviour
 
 			if (item.isStackable) // It's not empty but we are stackable
 			{
-				if (curSlot.ItemDetails == item && curSlot.Amount < item.stackSize)
+				if (curSlot.ItemDetails.Equals(item) && curSlot.Amount < item.stackSize)
 					// We found a slot that has a stack of our item in it!
 				{
 					return i;
@@ -120,6 +122,34 @@ public class Inventory : MonoBehaviour
 		}
 		return -1; // Couldnt find a slot with space for this item
 	}
+
+    public int FindBestSlotWithSpace(ItemDetails item)
+    {
+        int firstEmpty = -1;
+        for (int i = 0; i < InventoryMaxSize; i++)
+        {
+            ItemSlot curSlot = Items[i];
+
+            if (curSlot == null) // The slot is empty
+            {
+                if (item.isStackable && firstEmpty == -1) //We might find a free stack later on
+                {
+                    firstEmpty = i;
+                }
+                else
+                    return i; // This is an empty slot
+            }
+            else if (item.isStackable) // It's not empty but we are stackable
+            {
+                if (curSlot.ItemDetails.Equals(item) && curSlot.Amount < item.stackSize)
+                // We found a slot that has a stack of our item in it!
+                {
+                    return i;
+                }
+            }
+        }
+        return firstEmpty; // Couldnt find a slot with space for this item
+    }
 
 	//Adds an ItemDetails from "Thin air" (Doesnt take from anything else)
 	public void AddItem(ItemDetails item, int amount, int slot = -1)
@@ -130,14 +160,12 @@ public class Inventory : MonoBehaviour
 		{
 			if (GetSpaceForItem(item) < amount) //Inventory doesnt have enough space!
 				return; //We cant add this much 'item'
-
 			int amountLeftAdd = amount;
 			Debug.Log("ADDING " + amount + " " + item.itemName);
 			//Loop through adding to slots with space until we've added enough
 			while (amountLeftAdd > 0)
 			{
-				int slotSpace = FindFirstSlotWithSpace(item);
-
+				int slotSpace = FindBestSlotWithSpace(item);
 				if (Items[slotSpace] == null) //Empty slot
 				{
 					var newSlot = ScriptableObject.CreateInstance<ItemSlot>();
@@ -311,7 +339,12 @@ public class Inventory : MonoBehaviour
 
     public ItemSlot GetSlot(ItemDetails item)
     {
-        return Items.FirstOrDefault(i => item.Equals(i.ItemDetails));
+        for (int i = 0; i < Items.Count(); i++)
+        {
+            if (Items[i].ItemDetails.Equals(item))
+                return Items[i];
+        }
+        return null;
     }
 
     public List<ItemSlot> GetSlots(string name) //Multiple slots? Return first? al
@@ -322,8 +355,6 @@ public class Inventory : MonoBehaviour
 
     public List<ItemSlot> GetSlots(ItemDetails item)
     {
-        Debug.Log(item + "GETITEM");
-        Debug.Log(Items + " GETLIST");
         List<ItemSlot> list = new List<ItemSlot>();
         for (int i = 0; i < Items.Count(); i++)
         {

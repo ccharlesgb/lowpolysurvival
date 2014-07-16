@@ -69,9 +69,11 @@ public class Axe : MonoBehaviour, IHolster
 				{
 					ItemSlot itemHarvest = inv.GetSlot("Wood");
 					if (itemHarvest != null)
-					{
+                    {
+ 
 						if (itemHarvest.Amount > 1)
 						{
+						    Debug.Log("TRANSFER " + itemHarvest.ItemDetails.itemName + itemHarvest.Amount);
 							ownerInv.TransferItem (itemHarvest.ItemDetails, 1, inv);
 						}
 					}

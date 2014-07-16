@@ -50,7 +50,11 @@ public class InventoryEditor : Editor
             GUILayout.EndHorizontal();
         }
 
-
+        if (GUI.changed)
+        {
+            EditorUtility.SetDirty(inv);
+            //EditorUtility.SetDirty(inv.InitialLoadout);
+        }
 
         DrawDefaultInspector();
 
