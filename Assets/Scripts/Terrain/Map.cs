@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -8,6 +9,8 @@ using System.Collections;
 [AddComponentMenu("Terrain/Map")]
 public class Map : MonoBehaviour
 {
+    public List<GameObject> tileList = new List<GameObject>(); 
+
     public Texture2D splatTexture;
     public Texture2D heightTexture;
 
@@ -35,96 +38,10 @@ public class Map : MonoBehaviour
 	public SplatSettings splatSettings;
 	public TerrainSettings terrainSettings;
 
-    [System.Serializable]
-    public class BrushSettings
+    public void ClearTerrain()
     {
-        public int size;
-        public float opacity;
-        public int paintChannel;
-    }
-
-    //Called by the editor paints a certain amount of the splat channel to the map
-    public void PaintSplat(Vector3 pos, BrushSettings settings)
-    {
-        /*
-        Point splatCoord = WorldToFieldIndex(pos, splatField);
-
-        int brushSize = (int)settings.size;
-        float brushOpacity = settings.opacity;
-        float brushWidth = brushSize / 2.0f;
-        for (int x = -brushSize; x < brushSize; x++)
-        {
-            for (int y = -brushSize; y < brushSize; y++)
-            {
-                Vector3 originalVal = splatField.GetValue(splatCoord.x + x, splatCoord.y + y);
-
-                float brushStrength = MathTools.Gaussian2D(new Vector2(x, y), brushOpacity, Vector2.zero,
-                    new Vector2(brushWidth, brushWidth));
-
-                Vector3 addVal = new Vector3(-brushStrength, -brushStrength, -brushStrength);
-                //Debug.Log("Brush Strength " + brushStrength);
-                addVal[settings.paintChannel - 1] += brushStrength * 2;
-                originalVal += addVal;
-                originalVal.x = Mathf.Clamp(originalVal.x, 0.0f, 1.0f);
-                originalVal.y = Mathf.Clamp(originalVal.y, 0.0f, 1.0f);
-                originalVal.z = Mathf.Clamp(originalVal.z, 0.0f, 1.0f);
-
-                splatField.SetValue(splatCoord.x + x, splatCoord.y + y, originalVal);
-            }
-        }
-
-        Rect box = new Rect(splatCoord.x - brushSize, splatCoord.y - brushSize, brushSize * 2, brushSize * 2);
-        splatField.UpdatePreviewAt(box);*/
-    }
-
-    //Called by the editor paints the vertex heights
-    public void PaintHeight(Vector3 pos, BrushSettings settings)
-    {
-        /*
-        Point heightCoord = WorldToFieldIndex(pos, heightField);
-
-        int brushSize = (int)settings.size;
-        float brushOpacity = settings.opacity;
-        float brushWidth = brushSize / 2.0f;
-        
-
-
-        for (int x = -brushSize; x < brushSize; x++)
-        {
-            for (int y = -brushSize; y < brushSize; y++)
-            {
-                float originalVal = heightField.GetValue(heightCoord.x + x, heightCoord.y + y);
-
-                //2D gaussian can be used to model a 'soft' paint brush
-                float brushStrength = MathTools.Gaussian2D(new Vector2(x, y), brushOpacity, Vector2.zero,
-                    new Vector2(brushWidth, brushWidth));
-
-                originalVal += brushStrength;
-                originalVal = Mathf.Clamp(originalVal, 0.0f, 1.0f);
-
-                heightField.SetValue(heightCoord.x + x, heightCoord.y + y, originalVal);
-            }
-        }
-
-        Rect box = new Rect(heightCoord.x - brushSize, heightCoord.y - brushSize, brushSize * 2, brushSize * 2);
-        heightField.UpdatePreviewAt(box);
-
-        TilePlacer placer = GetComponent<TilePlacer>();
-
-        float brushSizeWorld = terrainSettings.tileSquareSize * 2.0f;
-
-        TileRender tile = placer.GetTileAt(pos + new Vector3(-brushSizeWorld, 0, -brushSizeWorld));
-        tile.CreateMesh();
-
-        tile = placer.GetTileAt(pos + new Vector3(+brushSizeWorld, 0, -brushSizeWorld));
-        tile.CreateMesh();
-
-        tile = placer.GetTileAt(pos + new Vector3(+brushSizeWorld, 0, +brushSizeWorld));
-        tile.CreateMesh();
-
-        tile = placer.GetTileAt(pos + new Vector3(-brushSizeWorld, 0, +brushSizeWorld));
-        tile.CreateMesh();
-         * */
+        foreach (GameObject tile in tileList)
+            DestroyImmediate(tile);
     }
 
     public Point WorldToTextureCoords(Vector3 pos, float textureSize)
