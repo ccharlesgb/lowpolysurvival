@@ -19,13 +19,13 @@ public class InventoryShower : MonoBehaviour
 	{
 		// Terminate if we have no InventoryGUI.
 		if (_invGUI == null) return;
-
-		if (Input.GetKeyDown(ShowKey) && _invGUI.RenderGUI == false)
+		
+		if (Input.GetKeyDown(ShowKey) && _invGUI.RenderGUI() == false)
 		{
 		    _invGUI.Popup();
 
 		}
-		else if (Input.GetKeyDown(ShowKey) && _invGUI.RenderGUI == true)
+		else if (Input.GetKeyDown(ShowKey) && _invGUI.RenderGUI() == true)
 		{
 		    _invGUI.Hide();
 		}

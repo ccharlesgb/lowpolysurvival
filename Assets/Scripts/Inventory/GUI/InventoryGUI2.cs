@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+/*
 class InventoryNotification
 {
 	public float timeCreated;
@@ -368,3 +369,4 @@ public class InventoryGUI : MonoBehaviour
 		GUI.Label(new Rect(x, y, BoxSize + BoxPadding, 60), toolTipText, "ToolTip");
 	}
 }
+*/
