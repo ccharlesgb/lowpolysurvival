@@ -6,16 +6,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//The initial items in the inventory
+[System.Serializable]
+public class InventoryLoadout
+{
+    public List<ItemSlot> initalSlots;
+}
+
 public class Inventory : MonoBehaviour
 {
-	[Flags]
+    public InventoryLoadout InitialLoadout;
+
 	public enum InventoryOptions
 	{
 	}
 
 	public int InventoryMaxSize; //MAX number of slots this inventory can hold
-
-	public List<ItemSlot> containerList = new List<ItemSlot>();
 	public ItemSlot[] Items;
 
 	public bool IsPickup = false; //Does this inventory support picking up items?
@@ -47,6 +53,10 @@ public class Inventory : MonoBehaviour
 	private void Awake()
 	{
 		Items = new ItemSlot[InventoryMaxSize];
+	    foreach (ItemSlot slot in InitialLoadout.initalSlots)
+	    {
+	        AddItem(slot.ItemDetails, slot.Amount);
+	    }
 		_masterList = MasterList.Instance.itemList;
 	}
 
@@ -396,7 +406,6 @@ public class Inventory : MonoBehaviour
 	public void PickupItem(ItemBehaviour itemBehave)
 	{
 		if (!CanPickup(itemBehave)) return;
-		Debug.Log("PICKUP " + itemBehave.slot.ItemDetails.itemName + " " + itemBehave.slot.Amount);
 		AddItem(itemBehave.slot.ItemDetails, itemBehave.slot.Amount);
 		Destroy(itemBehave.gameObject);
 	}

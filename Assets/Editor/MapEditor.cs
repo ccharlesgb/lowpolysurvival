@@ -3,7 +3,6 @@ using UnityEngine;
 using System.Collections;
 using UnityEditor;
 
-
 [CustomEditor(typeof(Map))]
 public class MapEditor : Editor
 {
