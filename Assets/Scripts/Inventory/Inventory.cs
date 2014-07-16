@@ -10,12 +10,14 @@ using UnityEngine;
 [System.Serializable]
 public class InventoryLoadout
 {
+    [SerializeField]
     public List<ItemSlot> initalSlots;
 }
 
 public class Inventory : MonoBehaviour
 {
     //[HideInInspector]
+    [SerializeField]
     public InventoryLoadout InitialLoadout;
 
 	public enum InventoryOptions
