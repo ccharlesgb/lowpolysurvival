@@ -1,26 +1,39 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SocialPlatforms;
 
 [ExecuteInEditMode]
 
-public class VegetationSpawner : MonoBehaviour 
+[System.Serializable]
+public class VegetationDetails
 {
-	FloatField vegField;
+    public AnimationCurve densityAgainstSlope;
+    public AnimationCurve densityAgainstHeight;
+
+    public float spawnChance;
+    public float trunkInset;
+
+    public GameObject treePrefab;
+}
+
+public class VegetationSpawner : MonoBehaviour
+{
+    [Range(0,2500)]
+    public int maxProps = 2000;
+
+	Texture2D vegField;
 	Map map;
 
+    public float globalSpawnChance;
+
+    public float gridPadding;
 	public int gridSpacing;
+    public float positionNoise;
 
-	public float minDensity;
-	public float positionNoise;
-	public float spawnChance;
-	public float maxSteepness;
-	public float minHeight;
-	public float trunkInset;
+    public List<VegetationDetails> vegDetails = new List<VegetationDetails>();
 
-	public GameObject treePrefab;
-
-	[HideInInspector]
+    [HideInInspector]
 	public List<GameObject> objects;
 
 	void Awake()
@@ -34,8 +47,6 @@ public class VegetationSpawner : MonoBehaviour
 	void OnEnable()
 	{
 		map = Map.Instance();
-	    if (vegField == null)
-	        vegField = ScriptableObject.CreateInstance<FloatField>();
 	}
 
 	public void ClearVeg()
@@ -49,51 +60,91 @@ public class VegetationSpawner : MonoBehaviour
 	}
 	public void SpawnVeg()
 	{
+        map = Map.Instance();
 		ClearVeg ();
-		//map.heightField.CalculateGradient(vegField,2);
+	    vegField = map.gradTexture;
+	    TextureTools.GetDerivativeMap(vegField, 8);
 		//Size of the terrain in world units
 		int gridSize = (int)(map.terrainSettings.tileArraySideLength * map.terrainSettings.tileSideLength * map.terrainSettings.tileSquareSize);
 
 		//Loop through the grid of possible spawn locations
-		for (int x=0; x < gridSize; x+=gridSpacing)
+	    float gridBuffer = positionNoise + gridPadding;
+
+        for (float x = gridBuffer; x < gridSize; x += gridSpacing - gridBuffer)
 		{
-			for (int z=0; z < gridSize; z+=gridSpacing)
-			{
+            for (float z = gridBuffer; z < gridSize; z += gridSpacing - gridBuffer)
+            {
+                if (objects.Count >= maxProps)
+                {
+                    Debug.Log("Vegetation Spawner: Reached prop limit early!");
+                    goto BREAK;
+                }
+
+
 				Vector3 treePos = new Vector3(x,0,z);
-				bool shouldSpawn = true;
-				//Get the steepness of the world here
-				Point fieldPoint = map.WorldToTextureCoords(treePos, vegField.Height);
-				float steepness = vegField.GetValue (vegField.CoordToIndex (fieldPoint.x, fieldPoint.y));
+                Vector3 offset = new Vector3(Random.Range(-positionNoise, positionNoise), 0, Random.Range(-positionNoise, positionNoise));
+			    treePos += offset;
+			    bool shouldSpawn;
 
-				//Dont spawn on hills
-				shouldSpawn = steepness < maxSteepness;
-			
+                //Get the height of the world here
+                float mapHeight = map.GetTerrainHeight(treePos);
+                //Get the steepness of the world here
+                Point fieldPoint = map.WorldToTextureCoords(treePos, vegField.height);
+                float steepness = vegField.GetPixel(fieldPoint.x, fieldPoint.y).r;
 
-				//Randomize a bit
-				shouldSpawn = shouldSpawn && (Random.Range(0.0f,1.0f/spawnChance) <= 1.0f);
+                float[] spawnChances = new float[vegDetails.Count];
+			    float totalChance = 0.0f;
+			    for(int i=0; i < vegDetails.Count; i++)
+			    {
+                    float density = vegDetails[i].densityAgainstSlope.Evaluate(steepness);
+                    density *= vegDetails[i].densityAgainstHeight.Evaluate(mapHeight / map.terrainSettings.heightScale);
+                    density *= vegDetails[i].spawnChance;
 
-				if (shouldSpawn)
-				{
-					float height = map.GetTerrainHeight (treePos);
+			        spawnChances[i] = density;
+			        totalChance += density;
+			    }
+                //Renormalise the chance
+                for (int i = 0; i < vegDetails.Count; i++)
+                {
+                    spawnChances[i] /= totalChance;
+                }
 
-					//Don't spawn underwater
-					shouldSpawn = height > minHeight;
-					if (!shouldSpawn) continue;
-
-					treePos.y = height - trunkInset;
-					//Randomize a bit (Disguise the grid)
-					Vector3 offset = new Vector3(Random.Range (-positionNoise, positionNoise), 0, Random.Range (-positionNoise,positionNoise));
-					//Create the game object
-					GameObject prop = Instantiate (treePrefab, treePos + offset, Quaternion.identity) as GameObject;
-					prop.transform.parent = transform;
-					prop.hideFlags = HideFlags.NotEditable | HideFlags.HideInHierarchy;
-					objects.Add (prop);
-				}
+			    float randomFloat = Random.Range(0.0f, 1.0f);
+			    float cumulativeChance = 0.0f;
+			    int indexToSpawn = -1;
+                for (int i = 0; i < vegDetails.Count; i++)
+                {
+                    if (randomFloat > cumulativeChance && randomFloat <= cumulativeChance + spawnChances[i])
+                    {
+                        indexToSpawn = i;
+                        break;
+                    }
+                    cumulativeChance += spawnChances[i];
+                }
+			    if (indexToSpawn != -1 && (Random.Range(0.0f, 1.0f/globalSpawnChance) <= 1.0f)) 
+			    {
+			        treePos.y = mapHeight;
+			        SpawnProp(treePos, vegDetails[indexToSpawn]);
+			    }
 			}
 		}
-
+	    BREAK:
 		Debug.Log ("Veg Spawner: Spawned " + objects.Count + " props");
 	}
+
+    void SpawnProp(Vector3 pos, VegetationDetails details)
+    {
+        pos.y -= details.trunkInset;
+        //Randomize a bit (Disguise the grid)
+        //Create the game object
+        GameObject prop = Instantiate(details.treePrefab, pos, Quaternion.identity) as GameObject;
+        if (prop != null)
+        {
+            prop.transform.parent = transform;
+            prop.hideFlags = HideFlags.HideInHierarchy;
+            objects.Add(prop);
+        }
+    }
 
 	// Update is called once per frame
 	void Update () 

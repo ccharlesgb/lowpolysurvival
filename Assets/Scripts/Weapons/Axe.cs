@@ -73,7 +73,7 @@ public class Axe : MonoBehaviour, IHolster
  
 						if (itemHarvest.Amount > 1)
 						{
-						    Debug.Log("TRANSFER " + itemHarvest.ItemDetails.itemName + itemHarvest.Amount);
+						    Debug.Log("TRANSFER " + itemHarvest.ItemDetails.itemName + " " + itemHarvest.Amount);
 							ownerInv.TransferItem (itemHarvest.ItemDetails, 1, inv);
 						}
 					}

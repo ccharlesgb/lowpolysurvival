@@ -15,7 +15,7 @@ public class SplatSettings : MonoBehaviour
 	public float mat1_amp;
     [Range(0.0f, 1.0f)]
 	public float mat1_pos;
-    [Range(0.0f, 1.0f)]
+    [Range(0.0f, 0.1f)]
 	public float mat1_width;
 	//Material 2 parameters
     public Texture2D mat2;
@@ -23,7 +23,7 @@ public class SplatSettings : MonoBehaviour
 	public float mat2_amp;
     [Range(0.0f, 1.0f)]
 	public float mat2_pos;
-    [Range(0.0f, 1.0f)]
+    [Range(0.0f, 0.1f)]
 	public float mat2_width;
 	//Material 3 parameters
     public Texture2D mat3;
@@ -31,7 +31,7 @@ public class SplatSettings : MonoBehaviour
 	public float mat3_amp;
     [Range(0.0f, 1.0f)]
 	public float mat3_pos;
-    [Range(0.0f, 1.0f)]
+    [Range(0.0f, 0.1f)]
 	public float mat3_width;
 	//Material 4 parameters
 	//public float mat4_amp;

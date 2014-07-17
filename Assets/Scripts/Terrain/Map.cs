@@ -11,7 +11,7 @@ public class Map : MonoBehaviour
 {
     public List<GameObject> tileList = new List<GameObject>(); 
 
-    public Texture2D splatTexture;
+    public Texture2D gradTexture;
     public Texture2D heightTexture;
 
 	public static Map instance;

@@ -38,26 +38,31 @@ public class TextureTools
             for (int y = 0; y < tex.width; y++)
             {
                 gradient = GetSlopeAt(tex, x, y, subSamples);
-                float grad = gradient.sqrMagnitude;
-
+                float grad = gradient.magnitude;
                 if (grad > maxGrad)
                     maxGrad = grad;
 
                 output.SetPixel(x, y, new Color(grad, grad, grad, 1.0f));
             }
         }
+        //Debug.Log(maxGrad);
         //Normalize the gradient map
+        Color col = new Color();
         if (maxGrad != 0.0f)
         {
             for (int x = 0; x < tex.width; x++)
             {
                 for (int y = 0; y < tex.width; y++)
                 {
-                    output.SetPixel(x, y, output.GetPixel(x,y)/maxGrad);
+                    col = output.GetPixel(x, y);
+                    col.r /= maxGrad;
+                    col.g /= maxGrad;
+                    col.b /= maxGrad;
+                    output.SetPixel(x, y, col);
                 }
             }
         }
-
+        output.Apply();
         return output;
     }
 }

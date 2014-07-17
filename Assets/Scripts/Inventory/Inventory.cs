@@ -18,7 +18,7 @@ public class Inventory : MonoBehaviour
 {
     //[HideInInspector]
     [SerializeField]
-    public InventoryLoadout InitialLoadout;
+    public InventoryLoadout InitialLoadout = new InventoryLoadout();
 
 	public enum InventoryOptions
 	{
@@ -163,7 +163,7 @@ public class Inventory : MonoBehaviour
 			if (GetSpaceForItem(item) < amount) //Inventory doesnt have enough space!
 				return; //We cant add this much 'item'
 			int amountLeftAdd = amount;
-			Debug.Log("ADDING " + amount + " " + item.itemName);
+			//Debug.Log("ADDING " + amount + " " + item.itemName);
 			//Loop through adding to slots with space until we've added enough
 			while (amountLeftAdd > 0)
 			{
@@ -343,8 +343,9 @@ public class Inventory : MonoBehaviour
     {
         for (int i = 0; i < Items.Count(); i++)
         {
-            if (Items[i].ItemDetails.Equals(item))
-                return Items[i];
+            if (Items[i] != null)
+                if (Items[i].ItemDetails.Equals(item))
+                    return Items[i];
         }
         return null;
     }

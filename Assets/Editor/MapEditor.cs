@@ -75,7 +75,7 @@ public class MapEditor : Editor
 
             GUI.enabled = paintingTexture;
             brushSettings.paintChannel = EditorGUILayout.IntSlider("Splat Channel", brushSettings.paintChannel, 1, 3);
-            brushSettings.opacity = EditorGUILayout.Slider("Brush Opacity", brushSettings.opacity, 0.0f, 1.0f);
+            brushSettings.opacity = EditorGUILayout.Slider("Brush Opacity", brushSettings.opacity, 0.0f, 0.1f);
             brushSettings.size = EditorGUILayout.IntSlider("Brush Size", brushSettings.size, 1, 100);
             GUI.enabled = true;
         }
@@ -209,7 +209,7 @@ public class MapEditor : Editor
     public void GenerateSplatTexture(Texture2D splat)
     {
         Texture2D gradMags = TextureTools.GetDerivativeMap(map.heightTexture, map.splatSettings.splatSubSamples);
-
+        map.gradTexture = gradMags;
         for (int x = 0; x < map.heightTexture.width; x++)
         {
             for (int y = 0; y < map.heightTexture.width; y++)
