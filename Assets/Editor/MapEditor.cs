@@ -5,22 +5,6 @@ using UnityEngine;
 using System.Collections;
 using UnityEditor;
 
-[System.Serializable]
-public class BrushSettings
-{
-    public int size;
-    public float opacity;
-    public int paintChannel;
-
-    public brushMode Mode;
-    public enum brushMode
-    {
-        Raise,
-        Smooth
-    };
-}
-
-
 [CustomEditor(typeof(Map))]
 public class MapEditor : Editor
 {
@@ -135,11 +119,22 @@ public class MapEditor : Editor
         {
             if (Camera.current != null)
             {
-                if (paintingTexture)
-                    PaintSplats(Event.current);
-                if (paintingHeight)
-                    PaintHeight(Event.current);
-                Event.current.Use();
+                //Hack. Mouse is flipped for some reason
+                Vector2 mousePos = Event.current.mousePosition;
+                mousePos.y *= -1.0f;
+                mousePos.y += (float)Screen.height;
+
+                Ray ray = Camera.current.ScreenPointToRay(mousePos);
+                RaycastHit hit = new RaycastHit();
+                if (Physics.Raycast(ray, out hit))
+                {
+                    if (hit.collider.gameObject.layer != LayerMask.NameToLayer("Terrain")) return;
+                    if (paintingTexture)
+                        TerrainPainter.PaintSplats(map, hit, brushSettings);
+                    if (paintingHeight)
+                        TerrainPainter.PaintHeight(map, hit, brushSettingsHeight);
+                    Event.current.Use();
+                }
             }
             else
             {
@@ -148,129 +143,6 @@ public class MapEditor : Editor
         }
     }
 
-    void PaintSplats(Event mouseEvent)
-    {
-        Map map = (Map)target;
-        //Hack. Mouse is flipped for some reason
-        Vector2 mousePos = mouseEvent.mousePosition;
-        mousePos.y *= -1.0f;
-        mousePos.y += (float) Screen.height;
-
-        Ray ray = Camera.current.ScreenPointToRay(mousePos);
-        RaycastHit hit = new RaycastHit();
-        if (Physics.Raycast(ray, out hit))
-        {
-            Vector3 terrainPos = hit.point;
-            terrainPos.y = 0.0f;
-
-            Point splatCoord = map.WorldToTextureCoords(terrainPos, map.splatSettings.control.width);
-
-            float brushWidth = brushSettings.size / 2.0f;
-            for (int x = -brushSettings.size; x < brushSettings.size; x++)
-            {
-                for (int y = -brushSettings.size; y < brushSettings.size; y++)
-                {
-                    Color originalVal = map.splatSettings.control.GetPixel(splatCoord.x + x, splatCoord.y + y);
-
-                    float brushStrength = MathTools.Gaussian2D(new Vector2(x, y), brushSettings.opacity, Vector2.zero,
-                    new Vector2(brushWidth, brushWidth));
-
-                    Color addVal = new Color(-brushStrength, -brushStrength, -brushStrength);
-                    //Debug.Log("Brush Strength " + brushStrength);
-                    addVal[brushSettings.paintChannel - 1] += brushStrength*2;
-                    originalVal += addVal;
-                    originalVal.r = Mathf.Clamp(originalVal.r, 0.0f, 1.0f);
-                    originalVal.g = Mathf.Clamp(originalVal.g, 0.0f, 1.0f);
-                    originalVal.b = Mathf.Clamp(originalVal.b, 0.0f, 1.0f);
-                    map.splatSettings.control.SetPixel(splatCoord.x + x, splatCoord.y + y, originalVal);
-                }
-            }
-
-            map.splatSettings.control.Apply();
-        }
-    }
-
-    void PaintHeight(Event mouseEvent)
-    {
-        Map map = (Map)target;
-        //Hack. Mouse is flipped for some reason
-        Vector2 mousePos = mouseEvent.mousePosition;
-        mousePos.y *= -1.0f;
-        mousePos.y += (float) Screen.height;
-
-        Ray ray = Camera.current.ScreenPointToRay(mousePos);
-        RaycastHit hit = new RaycastHit();
-        if (Physics.Raycast(ray, out hit))
-        {
-            if (hit.collider.gameObject.layer != LayerMask.NameToLayer("Terrain")) return;
-            Texture2D heightMap = map.heightTexture;
-            Vector3 terrainPos = hit.point;
-            terrainPos.y = 0.0f;
-            Point heightCoord = map.WorldToTextureCoords(terrainPos, heightMap.width);
-
-            float averageHeight = 0.0f;
-            for (int x = -brushSettingsHeight.size; x < brushSettingsHeight.size; x++)
-            {
-                for (int y = -brushSettingsHeight.size; y < brushSettingsHeight.size; y++)
-                {
-                    averageHeight += heightMap.GetPixel(heightCoord.x + x, heightCoord.y + y).r;
-                }
-            }
-            averageHeight /= (float)brushSettingsHeight.size*(float)brushSettingsHeight.size*4.0f;
-
-            int brushSize = brushSettingsHeight.size;
-            float brushOpacity = brushSettingsHeight.opacity;
-            float brushWidth = brushSize / 2.0f;
-
-            for (int x = -brushSize; x < brushSize; x++)
-            {
-                for (int y = -brushSize; y < brushSize; y++)
-                {
-                    float originalVal = heightMap.GetPixel(heightCoord.x + x, heightCoord.y + y).r;
-
-                    //2D gaussian can be used to model a 'soft' paint brush
-                    float brushStrength = MathTools.Gaussian2D(new Vector2(x, y), brushOpacity, Vector2.zero,
-                        new Vector2(brushWidth, brushWidth));
-                    if (brushSettingsHeight.Mode == BrushSettings.brushMode.Raise)
-                    {
-                        originalVal += brushStrength;
-                        originalVal = Mathf.Clamp(originalVal, 0.0f, 1.0f);
-                    }
-                    else
-                    {
-                        originalVal = originalVal - (originalVal - averageHeight)*brushStrength;
-                    }
-
-                    heightMap.SetPixel(heightCoord.x + x, heightCoord.y + y, new Color(originalVal,originalVal,originalVal));
-                }
-            }
-
-            heightMap.Apply();
-
-            GameObject hitTile = hit.collider.gameObject;
-            Mesh newMesh = TileMeshBuilder.GenerateMesh(hitTile.transform.position);
-            hitTile.GetComponent<MeshFilter>().sharedMesh = newMesh;
-            hitTile.GetComponent<MeshCollider>().sharedMesh = newMesh;
-
-            TileMeshBuilder.ClearMesh();
-            /*
-            TilePlacer placer = GetComponent<TilePlacer>();
-
-            float brushSizeWorld = terrainSettings.tileSquareSize * 2.0f;
-
-            TileRender tile = placer.GetTileAt(pos + new Vector3(-brushSizeWorld, 0, -brushSizeWorld));
-            tile.CreateMesh();
-
-            tile = placer.GetTileAt(pos + new Vector3(+brushSizeWorld, 0, -brushSizeWorld));
-            tile.CreateMesh();
-
-            tile = placer.GetTileAt(pos + new Vector3(+brushSizeWorld, 0, +brushSizeWorld));
-            tile.CreateMesh();
-
-            tile = placer.GetTileAt(pos + new Vector3(-brushSizeWorld, 0, +brushSizeWorld));
-            tile.CreateMesh();*/
-        }
-    }
 
     public void ClearTerrainMesh()
     {
@@ -336,7 +208,6 @@ public class MapEditor : Editor
 
     public void GenerateSplatTexture(Texture2D splat)
     {
-        var gradientMag = ScriptableObject.CreateInstance<FloatField>();
         Texture2D gradMags = TextureTools.GetDerivativeMap(map.heightTexture, map.splatSettings.splatSubSamples);
 
         for (int x = 0; x < map.heightTexture.width; x++)
@@ -349,6 +220,5 @@ public class MapEditor : Editor
             }
         }
         splat.Apply();
-        DestroyImmediate(gradientMag);
     }
 }

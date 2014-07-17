@@ -2,7 +2,7 @@
 using System.Collections;
 
 [System.Serializable]
-public class SplatSettings
+public class SplatSettings : MonoBehaviour
 {
     public Texture2D control;
 
@@ -11,18 +11,27 @@ public class SplatSettings
 
 	//Material 1 parameters
     public Texture2D mat1;
+    [Range(0.0f,1.0f)]
 	public float mat1_amp;
+    [Range(0.0f, 1.0f)]
 	public float mat1_pos;
+    [Range(0.0f, 1.0f)]
 	public float mat1_width;
 	//Material 2 parameters
     public Texture2D mat2;
+    [Range(0.0f, 1.0f)]
 	public float mat2_amp;
+    [Range(0.0f, 1.0f)]
 	public float mat2_pos;
+    [Range(0.0f, 1.0f)]
 	public float mat2_width;
 	//Material 3 parameters
     public Texture2D mat3;
+    [Range(0.0f, 1.0f)]
 	public float mat3_amp;
+    [Range(0.0f, 1.0f)]
 	public float mat3_pos;
+    [Range(0.0f, 1.0f)]
 	public float mat3_width;
 	//Material 4 parameters
 	//public float mat4_amp;
