@@ -33,6 +33,6 @@ public class Crate : MonoBehaviour, IUseable
 
 	    if (userInventoryComponent == null) return;
 
-        //userInventoryComponent.BeginLooting(_inventory);
+        userInventoryComponent.BeginLooting(_inventory);
     }
 }

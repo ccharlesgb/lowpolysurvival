@@ -7,9 +7,11 @@ internal class InventoryGUI : MonoBehaviour, IGUIElement
 
 	private List<IGUIElement> _elements;
 	private Inventory _inventory;
+    private Inventory _lootInv;
 
 	private bool _renderGUI;
 	private GUIGrid _inventoryGrid;
+    private GUIGrid _inventoryGridLoot;
 
 	private void Awake()
 	{
@@ -18,7 +20,21 @@ internal class InventoryGUI : MonoBehaviour, IGUIElement
 
 		_inventoryGrid = new GUIGrid(this, new GUIPosition(5, 30), _inventory);
 		_elements.Add(_inventoryGrid);
+
+	    _inventory.OnLootBegin += OnLootBegin;
 	}
+
+    public void OnLootBegin(Inventory other)
+    {
+        if (_lootInv != null && _lootInv == other) return; //Same inventory!
+        _lootInv = other;
+        Debug.Log("Start Looting");
+
+        _inventoryGridLoot = new GUIGrid(this, new GUIPosition((int)_inventoryGrid.GetWindowSize().width + 5, 30), other);
+        _elements.Add(_inventoryGridLoot);
+
+        Popup();
+    }
 
 	public void Update()
 	{
@@ -79,6 +95,9 @@ internal class InventoryGUI : MonoBehaviour, IGUIElement
 
 	public void Hide()
 	{
+	    _lootInv = null; //Clear looting info
+	    _elements.Remove(_inventoryGridLoot);
+	    _inventoryGridLoot = null;
 		InputState.LowerMenuLevel(); //Tell the input state that we closed a menu.
 		Screen.lockCursor = true;
 		_renderGUI = false;
@@ -88,7 +107,12 @@ internal class InventoryGUI : MonoBehaviour, IGUIElement
 	{
 		var size = _inventoryGrid.GetWindowSize();
 
-		return new Rect(5, 5, size.width + 15, size.height + 45);
+        Rect windRect = new Rect(5, 5, size.width + 15, size.height + 45);
+	    if (_lootInv != null)
+	    {
+	        windRect.width *= 2;
+	    }
+	    return windRect;
 	}
 
 }

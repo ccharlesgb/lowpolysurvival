@@ -41,7 +41,7 @@ public class Inventory : MonoBehaviour
 	public delegate void ItemAddedHandler(ItemSlot item, int amount);
 	public delegate void ItemRemovedHandler(ItemSlot item, int amount);
 	public delegate void ItemTransferHandler(ItemSlot item, int amount);
-	public delegate void LootHandler(Inventory lootInv);
+	public delegate void LootHandler(Inventory otherInventory);
 
 	public event ItemAddedHandler OnItemAdded;
 	public event ItemRemovedHandler OnItemRemoved;
@@ -450,4 +450,10 @@ public class Inventory : MonoBehaviour
 		AddItem(itemBehave.slot.ItemDetails, itemBehave.slot.Amount);
 		Destroy(itemBehave.gameObject);
 	}
+
+    public void BeginLooting(Inventory other)
+    {
+        _lootInventory = other;
+        OnLootBegin(_lootInventory);
+    }
 }
