@@ -31,7 +31,9 @@ public class Map : MonoBehaviour
 
 	void OnEnable()
 	{
-		splatSettings = GetComponent<SplatSettings>();
+	    if (splatSettings == null)
+	        splatSettings = new SplatSettings();
+		//splatSettings = GetComponent<SplatSettings>();
 		terrainSettings = GetComponent<TerrainSettings>();
 	}
 	

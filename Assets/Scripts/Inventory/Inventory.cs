@@ -138,7 +138,7 @@ public class Inventory : MonoBehaviour
                 {
                     firstEmpty = i;
                 }
-                else
+                else if (!item.isStackable)
                     return i; // This is an empty slot
             }
             else if (item.isStackable) // It's not empty but we are stackable

@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SplatSettings : MonoBehaviour
+[System.Serializable]
+public class SplatSettings
 {
     public Texture2D control;
 
