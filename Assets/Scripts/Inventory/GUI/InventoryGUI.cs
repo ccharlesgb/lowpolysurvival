@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-internal class InventoryGUI : MonoBehaviour
+internal class InventoryGUI : MonoBehaviour, IGUIElement
 {
 	public GUISkin GUISkin;
 
@@ -20,12 +20,17 @@ internal class InventoryGUI : MonoBehaviour
 		_elements.Add(_inventoryGrid);
 	}
 
-	private void Update()
+	public void Update()
 	{
 		foreach (IGUIElement element in _elements)
 		{
 			element.Update();
 		}
+	}
+
+	public void Draw()
+	{
+		throw new System.NotImplementedException();
 	}
 
 	private void OnGUI()
@@ -66,8 +71,9 @@ internal class InventoryGUI : MonoBehaviour
 
 	public Rect GetWindowSize()
 	{
-		var size = _inventoryGrid.GetSize();
+		var size = _inventoryGrid.GetWindowSize();
 
 		return new Rect(5, 5, size.width + 15, size.height + 45);
 	}
+
 }

@@ -6,5 +6,5 @@ interface IGUIElement
 
 	void Draw();
 
-	Rect GetSize();
+	Rect GetWindowSize();
 }

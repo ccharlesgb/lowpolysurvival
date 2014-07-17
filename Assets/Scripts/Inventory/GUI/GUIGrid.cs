@@ -1,12 +1,9 @@
 ﻿using System;
 using UnityEngine;
 
-class GUIGrid : IGUIElement
+class GUIGrid : GUIElement
 {
-	private GUIPosition _position;
-
 	private Inventory _inventory;
-	private InventoryGUI _inventoryGUI;
 
 	private int _boxSize = 50;
 	private int _boxPadding = 5;
@@ -17,10 +14,9 @@ class GUIGrid : IGUIElement
 
 	private GUISlot[] _slots;
 
-	public GUIGrid(InventoryGUI inventoryGUI, GUIPosition position, Inventory inventory)
+	public GUIGrid(IGUIElement parentElement, GUIPosition position, Inventory inventory)
+		: base(parentElement, position)
 	{
-		_inventoryGUI = inventoryGUI;
-		_position = position;
 		_inventory = inventory;
 
 		var size = _inventory.InventoryMaxSize;
@@ -33,13 +29,14 @@ class GUIGrid : IGUIElement
 		lastPosition.x += OuterBoxSize();
 		lastPosition.y += OuterBoxSize();
 
-		_rect = new Rect(0, 0, lastPosition.x, lastPosition.y);
+		WindowRect = new Rect(0, 0, lastPosition.x, lastPosition.y);
 
 		// Create the slots.
 		_slots = new GUISlot[size];
 		for (int i = 0; i < size; i++)
 		{
 			_slots[i] = new GUISlot(this, GetSlotPosition(i),  inventory, i);
+			Elements.Add(_slots[i]);
 		}
 	}
 
@@ -59,28 +56,14 @@ class GUIGrid : IGUIElement
 		return _boxSize + _boxPadding;
 	}
 
-	public void Update()
+	public override void Update()
 	{
-		// Update position.
-		_rect.x = _inventoryGUI.GetWindowSize().x + _position.x;
-		_rect.y = _inventoryGUI.GetWindowSize().y + _position.y;
-
-		foreach (GUISlot slot in _slots)
-		{
-			slot.Update();
-		}
+		base.Update();
 	}
 
-	public void Draw()
+	public override void Draw()
 	{
-		foreach (GUISlot slot in _slots)
-		{
-			slot.Draw();
-		}
+		base.Draw();
 	}
 
-	public Rect GetSize()
-	{
-		return _rect;
-	}
 }
