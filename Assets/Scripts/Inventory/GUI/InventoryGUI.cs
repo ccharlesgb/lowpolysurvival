@@ -26,6 +26,15 @@ internal class InventoryGUI : MonoBehaviour, IGUIElement
 		{
 			element.Update();
 		}
+
+		var v = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
+
+		// Drop outside the window?
+		if (GUIDragHandler.IsActive && Input.GetMouseButtonUp(0) && !GetWindowSize().Contains(v))
+		{
+			GUIDragHandler.Inventory.DropItem(GUIDragHandler.Item.SlotID);
+			GUIDragHandler.ResetItem();
+		}
 	}
 
 	public void Draw()
@@ -46,6 +55,12 @@ internal class InventoryGUI : MonoBehaviour, IGUIElement
 		foreach (IGUIElement element in _elements)
 		{
 			element.Draw();
+		}
+
+		if (GUIDragHandler.IsActive)
+		{
+			Graphics.DrawTexture(new Rect(Event.current.mousePosition.x, Event.current.mousePosition.y, 50, 50),
+				GUIDragHandler.Item.ItemDetails.itemIcon);
 		}
 	}
 

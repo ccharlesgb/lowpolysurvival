@@ -30,13 +30,29 @@ class GUISlot : GUIElement
 	{
 		base.Draw();
 
-		if (_itemSlot != null)
-		{
-			Event e = Event.current;
+		Event e = Event.current;
 
+		if (GUIDragHandler.IsActive && e.type == EventType.mouseUp && WindowRect.Contains(e.mousePosition))
+		{
+			_inventory.TransferItem(GUIDragHandler.Item.ItemDetails, GUIDragHandler.Item.Amount, GUIDragHandler.Inventory);
+			GUIDragHandler.ResetItem();
+		}
+
+		// Don't draw if the item is being dragged. TODO: Draw a shadowed icon?
+		if (GUIDragHandler.IsActive && GUIDragHandler.Item.Equals(_itemSlot))
+		{
+			GUI.Box(WindowRect, "" + _slotID);
+		} 
+		else if (_itemSlot != null)
+		{
 			if (WindowRect.Contains(e.mousePosition))
 			{
 				DrawToolTip(WindowRect, _itemSlot.ItemDetails.itemName);
+
+				if (!GUIDragHandler.IsActive && e.button == 0 && e.type == EventType.mouseDrag)
+				{
+					GUIDragHandler.SetItem(_inventory, _itemSlot);
+				}
 			}
 
 			GUI.Button(WindowRect, _itemSlot.ItemDetails.itemIcon);

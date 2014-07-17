@@ -380,6 +380,13 @@ public class Inventory : MonoBehaviour
         return Array.IndexOf(Items, null);
     }
 
+	public GameObject DropItem(int slotID)
+	{
+		if (Items[slotID] == null) return null;
+
+		return DropItem(slotID, Items[slotID].Amount);
+	}
+
     //Spawns ItemDetails in the world
     public GameObject DropItem(int slotID, int amount)
     {
