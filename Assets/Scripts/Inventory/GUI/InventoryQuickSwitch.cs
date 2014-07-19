@@ -5,14 +5,14 @@ namespace LowPolySurvival.Inventory
 	/// <summary>
 	///		Inventory QuickSwitch, bar in the bottom of the page, shows the first items in the inventory.
 	/// </summary>
-	[RequireComponent (typeof (InventoryHolsterHandler))]
+	[RequireComponent (typeof (HolsterHandler))]
 	public class InventoryQuickSwitch : MonoBehaviour
 	{
 
 		// Inventory to connect to.
 		public Inventory Inv;
 
-		private InventoryHolsterHandler _holsterHandler;
+		private HolsterHandler _holsterHandler;
 
 		// GUI skin to use for inventory.
 		public GUISkin GUISkin;
@@ -30,7 +30,7 @@ namespace LowPolySurvival.Inventory
 		// Use this for initialization
 		void Start()
 		{
-			_holsterHandler = GetComponent<InventoryHolsterHandler>();
+			_holsterHandler = GetComponent<HolsterHandler>();
 		}
 
 		// Update is called once per frame

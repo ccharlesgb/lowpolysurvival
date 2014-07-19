@@ -3,7 +3,7 @@
 namespace LowPolySurvival.Inventory
 {
 	[RequireComponent(typeof(Inventory))]
-	class InventoryHolsterHandler : MonoBehaviour
+	class HolsterHandler : MonoBehaviour
 	{
 		private Inventory _inventory;
 		public GameObject ActiveItem;
