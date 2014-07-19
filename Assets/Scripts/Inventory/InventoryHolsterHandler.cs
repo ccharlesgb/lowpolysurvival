@@ -1,82 +1,85 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(Inventory))]
-class InventoryHolsterHandler : MonoBehaviour
+namespace LowPolySurvival.Inventory
 {
-	private Inventory _inventory;
-	public GameObject ActiveItem;
-
-	private void Start()
+	[RequireComponent(typeof(Inventory))]
+	class InventoryHolsterHandler : MonoBehaviour
 	{
+		private Inventory _inventory;
+		public GameObject ActiveItem;
+
+		private void Start()
+		{
 		
-	}
+		}
 
-	private void Update()
-	{
-		if (ActiveItem != null)
+		private void Update()
 		{
-			if (!Screen.lockCursor) return; //Dont fire when opening menu
-			if (Input.GetAxis("Fire1") == 1.0f)
+			if (ActiveItem != null)
 			{
-				ActiveItem.GetComponent<ItemBehaviour>().LeftClick(_inventory);
+				if (!Screen.lockCursor) return; //Dont fire when opening menu
+				if (Input.GetAxis("Fire1") == 1.0f)
+				{
+					ActiveItem.GetComponent<ItemBehaviour>().LeftClick(_inventory);
+				}
+				if (Input.GetAxis("Fire2") == 1.0f)
+				{
+					ActiveItem.GetComponent<ItemBehaviour>().RightClick(_inventory);
+				}
 			}
-			if (Input.GetAxis("Fire2") == 1.0f)
+		}
+
+		private void OnEnable()
+		{
+			_inventory = GetComponent<Inventory>();
+			_inventory.OnItemRemoved += RemoveCheck;
+		}
+
+		private void OnDisable()
+		{
+			_inventory.OnItemRemoved -= RemoveCheck;
+		}
+
+		public void SetActiveItem(ItemSlot it)
+		{
+			if (it == null && ActiveItem != null) //Unholster
 			{
-				ActiveItem.GetComponent<ItemBehaviour>().RightClick(_inventory);
+				Destroy(ActiveItem);
+				return;
 			}
+			if (it == null)
+			{
+				return;
+			}
+
+
+			if (ActiveItem != null) //Do we already have a gameobject that is present?
+			{
+				ActiveItem.GetComponent<ItemBehaviour>().UnHolster(_inventory);
+				Destroy(ActiveItem);
+				ActiveItem = null;
+			}
+
+			if (!it.ItemDetails.isEquipable) return;
+
+			//Spawn the new gameobject
+			GameObject itemFab = Instantiate(it.ItemDetails.itemObject, transform.position, Quaternion.identity) as GameObject;
+			itemFab.GetComponent<ItemBehaviour>().Init(it, 1);
+			itemFab.GetComponent<ItemBehaviour>().Holster(_inventory);
+			ActiveItem = itemFab;
 		}
-	}
 
-	private void OnEnable()
-	{
-		_inventory = GetComponent<Inventory>();
-		_inventory.OnItemRemoved += RemoveCheck;
-	}
-
-	private void OnDisable()
-	{
-		_inventory.OnItemRemoved -= RemoveCheck;
-	}
-
-	public void SetActiveItem(ItemSlot it)
-	{
-		if (it == null && ActiveItem != null) //Unholster
+		private void RemoveCheck(ItemSlot it, int amount)
 		{
-			Destroy(ActiveItem);
-			return;
-		}
-		if (it == null)
-		{
-			return;
-		}
-
-
-		if (ActiveItem != null) //Do we already have a gameobject that is present?
-		{
-            ActiveItem.GetComponent<ItemBehaviour>().UnHolster(_inventory);
-			Destroy(ActiveItem);
-			ActiveItem = null;
-		}
-
-        if (!it.ItemDetails.isEquipable) return;
-
-		//Spawn the new gameobject
-		GameObject itemFab = Instantiate(it.ItemDetails.itemObject, transform.position, Quaternion.identity) as GameObject;
-		itemFab.GetComponent<ItemBehaviour>().Init(it, 1);
-		itemFab.GetComponent<ItemBehaviour>().Holster(_inventory);
-		ActiveItem = itemFab;
-	}
-
-	private void RemoveCheck(ItemSlot it, int amount)
-	{
-		if (ActiveItem == null) return;
+			if (ActiveItem == null) return;
             
-		if (ActiveItem.GetComponent<ItemBehaviour>().slot.ItemDetails == it.ItemDetails && it.Amount == 0)
-		{
-            ActiveItem.GetComponent<ItemBehaviour>().UnHolster(_inventory);
-			Destroy(ActiveItem);
-			ActiveItem = null;
+			if (ActiveItem.GetComponent<ItemBehaviour>().slot.ItemDetails == it.ItemDetails && it.Amount == 0)
+			{
+				ActiveItem.GetComponent<ItemBehaviour>().UnHolster(_inventory);
+				Destroy(ActiveItem);
+				ActiveItem = null;
+			}
 		}
-	}
 
+	}
 }

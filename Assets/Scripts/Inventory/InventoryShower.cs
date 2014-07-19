@@ -1,33 +1,36 @@
 ﻿using UnityEngine;
 
-/// <summary>
-/// Sets the InventoryGUI to render when ShowKey is pressed.
-/// </summary>
-public class InventoryShower : MonoBehaviour
+namespace LowPolySurvival.Inventory
 {
-	public KeyCode ShowKey;
-	private InventoryGUI _invGUI;
-
-	// Use this for initialization
-	private void Start()
+	/// <summary>
+	/// Sets the InventoryGUI to render when ShowKey is pressed.
+	/// </summary>
+	public class InventoryShower : MonoBehaviour
 	{
-		_invGUI = GetComponent<InventoryGUI>();
-	}
+		public KeyCode ShowKey;
+		private InventoryGUI _invGUI;
 
-	// Update is called once per frame
-	private void Update()
-	{
-		// Terminate if we have no InventoryGUI.
-		if (_invGUI == null) return;
-		
-		if (Input.GetKeyDown(ShowKey) && _invGUI.RenderGUI() == false)
+		// Use this for initialization
+		private void Start()
 		{
-		    _invGUI.Popup();
-
+			_invGUI = GetComponent<InventoryGUI>();
 		}
-		else if (Input.GetKeyDown(ShowKey) && _invGUI.RenderGUI() == true)
+
+		// Update is called once per frame
+		private void Update()
 		{
-		    _invGUI.Hide();
+			// Terminate if we have no InventoryGUI.
+			if (_invGUI == null) return;
+		
+			if (Input.GetKeyDown(ShowKey) && _invGUI.RenderGUI() == false)
+			{
+				_invGUI.Popup();
+
+			}
+			else if (Input.GetKeyDown(ShowKey) && _invGUI.RenderGUI() == true)
+			{
+				_invGUI.Hide();
+			}
 		}
 	}
 }

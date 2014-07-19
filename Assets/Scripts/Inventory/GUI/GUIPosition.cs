@@ -1,10 +1,13 @@
-﻿public struct GUIPosition
+﻿namespace LowPolySurvival.Inventory
 {
-	public int x, y;
-
-	public GUIPosition(int x, int y)
+	public struct GUIPosition
 	{
-		this.x = x;
-		this.y = y;
+		public int x, y;
+
+		public GUIPosition(int x, int y)
+		{
+			this.x = x;
+			this.y = y;
+		}
 	}
 }

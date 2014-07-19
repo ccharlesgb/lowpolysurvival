@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
 
-interface IGUIElement
+namespace LowPolySurvival.Inventory
 {
-	void Update();
+	interface IGUIElement
+	{
+		void Update();
 
-	void Draw();
+		void Draw();
 
-	Rect GetWindowSize();
+		Rect GetWindowSize();
 
+	}
 }

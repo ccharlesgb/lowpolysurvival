@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using System.Collections;
 
-public class BlueprintList : ScriptableObject
+namespace LowPolySurvival.Inventory
 {
-    public List<Blueprint> blueprintList;
+	public class BlueprintList : ScriptableObject
+	{
+		public List<Blueprint> blueprintList;
+	}
 }

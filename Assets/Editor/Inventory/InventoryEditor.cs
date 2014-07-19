@@ -1,4 +1,5 @@
 ﻿using System;
+using LowPolySurvival.Inventory;
 using Castle.Core.Internal;
 using UnityEditorInternal;
 using UnityEngine;

@@ -1,49 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 
-class InventoryPickup : MonoBehaviour
+namespace LowPolySurvival.Inventory
 {
-
-	public Inventory Inventory;
-	public float PickupDelay = 0.5f;
-
-	void Awake()
+	class InventoryPickup : MonoBehaviour
 	{
-		// If Inventory is null, attempt to load it from components.
-		if (Inventory == null)
+
+		public Inventory Inventory;
+		public float PickupDelay = 0.5f;
+
+		void Awake()
 		{
-			Inventory = GetComponent<Inventory>();
+			// If Inventory is null, attempt to load it from components.
+			if (Inventory == null)
+			{
+				Inventory = GetComponent<Inventory>();
+			}
 		}
-	}
 
-	//MIGHT HAVE TO MOVE THIS
-	//Handles ItemDetails picking up from the collider trigger
-	private void OnTriggerStay(Collider other)
-	{
-		var behav = other.gameObject.GetComponent<ItemBehaviour>();
-		if (behav != null)
+		//MIGHT HAVE TO MOVE THIS
+		//Handles ItemDetails picking up from the collider trigger
+		private void OnTriggerStay(Collider other)
 		{
-			PickupItem(behav);
+			var behav = other.gameObject.GetComponent<ItemBehaviour>();
+			if (behav != null)
+			{
+				PickupItem(behav);
+			}
 		}
-	}
 
-	private bool CanPickup(ItemBehaviour itemBehave)
-	{
-		if (itemBehave.spawnTime + PickupDelay > Time.time)
+		private bool CanPickup(ItemBehaviour itemBehave)
 		{
-			return false;
+			if (itemBehave.spawnTime + PickupDelay > Time.time)
+			{
+				return false;
+			}
+			return true;
 		}
-		return true;
-	}
 
-	public void PickupItem(ItemBehaviour itemBehave)
-	{
-		if (!CanPickup(itemBehave)) return;
-		Inventory.AddItem(itemBehave.slot.ItemDetails, itemBehave.slot.Amount);
-		Destroy(itemBehave.gameObject);
-	}
+		public void PickupItem(ItemBehaviour itemBehave)
+		{
+			if (!CanPickup(itemBehave)) return;
+			Inventory.AddItem(itemBehave.slot.ItemDetails, itemBehave.slot.Amount);
+			Destroy(itemBehave.gameObject);
+		}
 
+	}
 }

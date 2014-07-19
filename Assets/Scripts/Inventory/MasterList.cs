@@ -1,11 +1,11 @@
-﻿using UnityEngine;
-using System.Collections;
-
-/// <summary>
-///		Singleton ItemList containing all the items in the game.
-/// </summary>
-public class MasterList : Singleton<MasterList>
+﻿namespace LowPolySurvival.Inventory
 {
-	public ItemList itemList;
+	/// <summary>
+	///		Singleton ItemList containing all the items in the game.
+	/// </summary>
+	public class MasterList : Singleton<MasterList>
+	{
+		public ItemList itemList;
 
+	}
 }

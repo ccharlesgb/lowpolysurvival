@@ -1,4 +1,5 @@
-﻿using NSubstitute;
+﻿using LowPolySurvival.Inventory;
+using NSubstitute;
 using NUnit.Framework;
 using UnityEngine;
 
