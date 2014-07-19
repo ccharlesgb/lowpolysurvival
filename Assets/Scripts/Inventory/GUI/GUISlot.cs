@@ -30,7 +30,7 @@ namespace LowPolySurvival.Inventory
 
 			Event e = Event.current;
 
-			if (GUIDragHandler.IsActive && e.type == EventType.mouseUp && WindowRect.Contains(e.mousePosition))
+			if (GUIDragHandler.IsActive && !Input.GetMouseButton(0) && WindowRect.Contains(e.mousePosition))
 			{
 				//_inventory.TransferItem(GUIDragHandler.Item.ItemDetails, GUIDragHandler.Item.Amount, GUIDragHandler.Inventory);
 				_inventory.TransferItem(GUIDragHandler.Item, GUIDragHandler.Inventory, _slotID);
