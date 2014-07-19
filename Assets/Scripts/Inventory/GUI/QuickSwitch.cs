@@ -6,7 +6,7 @@ namespace LowPolySurvival.Inventory
 	///		Inventory QuickSwitch, bar in the bottom of the page, shows the first items in the inventory.
 	/// </summary>
 	[RequireComponent (typeof (HolsterHandler))]
-	public class InventoryQuickSwitch : MonoBehaviour
+	public class QuickSwitch : MonoBehaviour
 	{
 
 		// Inventory to connect to.
