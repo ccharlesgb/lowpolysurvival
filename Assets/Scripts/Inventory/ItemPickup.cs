@@ -2,7 +2,7 @@
 
 namespace LowPolySurvival.Inventory
 {
-	class InventoryPickup : MonoBehaviour
+	class ItemPickup : MonoBehaviour
 	{
 
 		public Inventory Inventory;
