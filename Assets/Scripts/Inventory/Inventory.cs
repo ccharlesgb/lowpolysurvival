@@ -28,9 +28,6 @@ public class Inventory : MonoBehaviour
     //[HideInInspector]
 	public ItemSlot[] Items;
 
-	public bool IsPickup = false; //Does this inventory support picking up items?
-	public float PickupDelay = 0.5f;
-
 	private bool _isLooting = false;
 	private Inventory _lootInventory = null;
 	private ItemList _masterList; //Singleton instance of the main list
@@ -50,10 +47,9 @@ public class Inventory : MonoBehaviour
 
 	#endregion
 
-	//public List<ItemSlot> containerList = new List<ItemSlot>();
-
-	//Begin Implementation
-
+	/// <summary>
+	/// Initialize the inventory, creates the Items array and setups the initial layout.
+	/// </summary>
 	private void Awake()
 	{
 		Items = new ItemSlot[InventoryMaxSize];
@@ -64,7 +60,9 @@ public class Inventory : MonoBehaviour
 		_masterList = MasterList.Instance.itemList;
 	}
 
-	//Returns the correct item amount (Stops stacksize getting too high
+	/// <summary>
+	/// Helper function, clamps the Amount to the maximum the item allows.
+	/// </summary>
 	public int ClampItemAmount(int amount, ItemDetails item)
 	{
 		if (!item.isStackable && amount > 1)
@@ -450,34 +448,6 @@ public class Inventory : MonoBehaviour
             DropItem(slot.SlotID, slot.Amount);
         }
     }
-
-    //MIGHT HAVE TO MOVE THIS
-    //Handles ItemDetails picking up from the collider trigger
-    private void OnTriggerStay(Collider other)
-    {
-        if (!IsPickup) return;
-        var behav = other.gameObject.GetComponent<ItemBehaviour>();
-        if (behav != null)
-        {
-            PickupItem(behav);
-        }
-    }
-
-    private bool CanPickup(ItemBehaviour itemBehave)
-    {
-        if (itemBehave.spawnTime + PickupDelay > Time.time)
-        {
-            return false;
-        }
-        return true;
-    }
-
-	public void PickupItem(ItemBehaviour itemBehave)
-	{
-		if (!CanPickup(itemBehave)) return;
-		AddItem(itemBehave.slot.ItemDetails, itemBehave.slot.Amount);
-		Destroy(itemBehave.gameObject);
-	}
 
     public void BeginLooting(Inventory other)
     {
