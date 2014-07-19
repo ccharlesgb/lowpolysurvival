@@ -34,7 +34,8 @@ class GUISlot : GUIElement
 
 		if (GUIDragHandler.IsActive && e.type == EventType.mouseUp && WindowRect.Contains(e.mousePosition))
 		{
-			_inventory.TransferItem(GUIDragHandler.Item.ItemDetails, GUIDragHandler.Item.Amount, GUIDragHandler.Inventory);
+			//_inventory.TransferItem(GUIDragHandler.Item.ItemDetails, GUIDragHandler.Item.Amount, GUIDragHandler.Inventory);
+			_inventory.TransferItem(GUIDragHandler.Item, GUIDragHandler.Inventory, _slotID);
 			GUIDragHandler.ResetItem();
 		}
 

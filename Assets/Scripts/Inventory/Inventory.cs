@@ -260,6 +260,34 @@ public class Inventory : MonoBehaviour
         //TODO: THE EVENTS!
     }
 
+	/// <summary>
+	/// Transfers the itemslot from another inventory to this.
+	/// </summary>
+	/// <param name="itemSlot">The item to transfer.</param>
+	/// <param name="sourceInventory">The destination inventory.</param>
+	/// <param name="destinationSlotID">The destination slotID.</param>
+	public void TransferItem(ItemSlot itemSlot, Inventory sourceInventory, int destinationSlotID)
+	{
+		Debug.Log("Inventory: Transfering item: '" + itemSlot + "' from '" + sourceInventory + "' in slot '" + destinationSlotID + "'");
+
+		ItemSlot thisItemSlot = GetSlot(destinationSlotID);
+		if (thisItemSlot == null) // No item in the spot we want to move to.
+		{
+			// Remove the item from the source.
+			sourceInventory.Items[itemSlot.SlotID] = null;
+		}
+		else
+		{
+			// Move the this inventory item to source.
+			sourceInventory.Items[itemSlot.SlotID] = thisItemSlot;
+			thisItemSlot.SlotID = itemSlot.SlotID;
+		}
+
+		// Add the item in the other inventory.
+		Items[destinationSlotID] = itemSlot;
+		Items[destinationSlotID].SlotID = destinationSlotID;
+	}
+
     public int GetTotalAmount(ItemDetails item)
     {
         int total = 0;
