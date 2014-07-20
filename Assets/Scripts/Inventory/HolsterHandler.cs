@@ -64,6 +64,9 @@ namespace LowPolySurvival.Inventory
 
 			//Spawn the new gameobject
 			GameObject itemFab = Instantiate(it.ItemDetails.itemObject, transform.position, Quaternion.identity) as GameObject;
+            //Make it face the same way we are
+            itemFab.transform.parent = transform;
+            itemFab.transform.localRotation = Quaternion.identity;
 			itemFab.GetComponent<ItemBehaviour>().Init(it, 1);
 			itemFab.GetComponent<ItemBehaviour>().Holster(_inventory);
 			ActiveItem = itemFab;

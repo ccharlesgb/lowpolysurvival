@@ -66,7 +66,7 @@ public class Axe : MonoBehaviour, IHolster
 				if (distance > hitRange)
 					return;
 				Inventory inv = obj.GetComponent<Inventory>();
-				if (inv != null) //It has an inventory we can harvest!
+                if (inv != null && (inv.Flags & Inventory.InventoryFlags.IsMineable) == Inventory.InventoryFlags.IsMineable) //It has an inventory we can harvest!
 				{
 					ItemSlot itemHarvest = inv.GetSlot("Wood");
 					if (itemHarvest != null)

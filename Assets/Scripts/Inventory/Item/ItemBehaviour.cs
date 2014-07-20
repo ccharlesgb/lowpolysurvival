@@ -34,6 +34,7 @@ namespace LowPolySurvival.Inventory
 			}
 		}
 
+        //Set up the item slot details
 		public void Init(ItemSlot ct, int amount)
 		{
 			if (ct == null) return;
@@ -50,8 +51,6 @@ namespace LowPolySurvival.Inventory
 			if (!slot.ItemDetails.isEquipable) return false;
 
 			isHolstering = true;
-			transform.parent = inv.transform;
-			transform.rotation = Quaternion.identity; //NOT WORKING?
 			gameObject.GetInterface<IHolster>().OnHolster(inv);
 
 			return true;

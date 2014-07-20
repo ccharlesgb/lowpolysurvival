@@ -222,6 +222,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   InitialLoadout:
     initalSlots: []
+  Flags: 2
   InventoryMaxSize: 1
   Items: []
 --- !u!114 &11400008

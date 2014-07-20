@@ -21,9 +21,15 @@ namespace LowPolySurvival.Inventory
 		[SerializeField]
 		public InventoryLoadout InitialLoadout = new InventoryLoadout();
 
-		public enum InventoryOptions
-		{
-		}
+        public enum InventoryFlags
+        {
+            //None = 0x00,
+            IsPlayer = 0x01,
+            IsMineable = 0x02,
+            //All = 0x0F,
+        }
+        [BitMask(typeof(InventoryFlags))]
+	    public InventoryFlags Flags;
 
 		public int InventoryMaxSize; //MAX number of slots this inventory can hold
 		//[HideInInspector]
@@ -267,7 +273,7 @@ namespace LowPolySurvival.Inventory
 		/// <param name="destinationSlotID">The destination slotID.</param>
 		public void TransferItem(ItemSlot itemSlot, Inventory sourceInventory, int destinationSlotID)
 		{
-			//Debug.Log("Inventory: Transfering item: '" + itemSlot + "' from '" + sourceInventory + "' in slot '" + destinationSlotID + "'");
+			Debug.Log("Inventory: Transfering item: '" + itemSlot + "' from '" + sourceInventory + "' in slot '" + destinationSlotID + "'");
 
 			ItemSlot thisItemSlot = GetSlot(destinationSlotID);
 			if (thisItemSlot == null) // No item in the spot we want to move to.
