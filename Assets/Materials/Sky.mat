@@ -73,11 +73,19 @@ Material:
       data:
         first:
           name: _GradOffset
-        second: .0700000003
+        second: 0
       data:
         first:
           name: _GradFalloff
-        second: 0
+        second: 2
+      data:
+        first:
+          name: _DitherAMount
+        second: .857142866
+      data:
+        first:
+          name: _DitherAmount
+        second: .0607142821
     m_Colors:
       data:
         first:
@@ -90,11 +98,11 @@ Material:
       data:
         first:
           name: _TopColor
-        second: {r: .276539773, g: .845545948, b: .952941179, a: 1}
+        second: {r: .239334464, g: .372346818, b: .533798575, a: 1}
       data:
         first:
           name: _BottomColor
-        second: {r: 1, g: 1, b: 1, a: 1}
+        second: {r: .716751635, g: .446094096, b: .152540684, a: 1}
       data:
         first:
           name: _Color1

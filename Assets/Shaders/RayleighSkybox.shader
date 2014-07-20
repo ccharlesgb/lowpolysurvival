@@ -12,7 +12,8 @@ Properties {
 	_BottomColor ("BottomColor", Color) = (.1, .1, .1, .1)
 
 	_GradOffset("Offset", float) = 0.0
-	_GradFalloff("Fallof Speed", float) = 0.0
+	_GradFalloff("Fallof Speed", Range(2, 4.0)) = 2.0
+	_DitherAmount("Dither", Range(0.0, 0.1)) = 0.0
 }
 
 SubShader {
@@ -24,9 +25,18 @@ SubShader {
 
 	fixed4 _Tint;
 
+	float _DitherAmount;
 	float _GradOffset;
+	float _GradFalloff;
 	fixed4 _TopColor;
 	fixed4 _BottomColor;
+
+	//For gradient dithering
+	float rand(float i)
+	{
+		return fract(sin(i * 12.9898) * 43758.5453);
+	};
+
 
 	struct appdata_t {
 		float4 vertex : POSITION;
@@ -51,11 +61,16 @@ SubShader {
 		//col.rgb = tex.rgb + _Tint.rgb - unity_ColorSpaceGrey;
 		//col.a = tex.a * _Tint.a;
 
-		float height = clamp(1.0-i.texcoord.y - _GradOffset, 0.0, 1.0) * gradOn; 
-		col.rgb = (_BottomColor.rgb * height) + (_TopColor.rgb * (1.0-height));
+		//float height = clamp(1.0-i.texcoord.y - _GradOffset, _GradOffset, 1.0 - _GradOffset) * gradOn; 
+		float gradOff = (1.0 - gradOn);
+		float height = clamp((i.texcoord.y * _GradFalloff) - (_GradFalloff / 2.0) + gradOff * 100.0, 0.0, 1.0);
+		float dither = (rand(i.texcoord.x) - 0.5) * _DitherAmount;
+		height = height + dither;
+		col.rgb = (_TopColor.rgb * height) + (_BottomColor.rgb * (1.0-height));
 		col.a = tex.a * _Tint.a;
 		return col;
 	}
+
 	ENDCG
 	
 	Pass {
