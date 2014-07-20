@@ -49,7 +49,12 @@ public class MapEditor : Editor
             {
                 string relPath = absPath.Substring(Application.dataPath.Length - "Assets".Length);
                 Texture2D loadHeights = AssetDatabase.LoadAssetAtPath(relPath, typeof (Texture2D)) as Texture2D;
-                map.heightTexture = TextureTools.DeepCopy(loadHeights);
+
+
+                Texture2D heightCopy = TextureTools.DeepCopy(loadHeights);
+                map.heightTexture = heightCopy;
+                AssetDatabase.CreateAsset(map.heightTexture, "Assets/Terrain/terrainHeights.asset");
+                AssetDatabase.SaveAssets();
                 BuildTerrainMesh();
             }
         }
@@ -151,9 +156,6 @@ public class MapEditor : Editor
 
     public void BuildTerrainMesh()
     {
-        AssetDatabase.CreateAsset(TextureTools.DeepCopy(map.heightTexture),"Assets/Terrain/terrainHeights.asset");
-        AssetDatabase.SaveAssets();
-
         ClearTerrainMesh();
         TerrainSettings terrSettings = map.terrainSettings;
         SplatSettings splatSettings = map.splatSettings;
@@ -207,6 +209,7 @@ public class MapEditor : Editor
     {
         Texture2D gradMags = TextureTools.GetDerivativeMap(map.heightTexture, map.splatSettings.splatSubSamples);
         map.gradTexture = gradMags;
+        AssetDatabase.AddObjectToAsset(gradMags, "Assets/Terrain/terrainHeights.asset");
         for (int x = 0; x < map.heightTexture.width; x++)
         {
             for (int y = 0; y < map.heightTexture.width; y++)
