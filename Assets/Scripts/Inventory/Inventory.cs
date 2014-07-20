@@ -360,7 +360,6 @@ namespace LowPolySurvival.Inventory
 			}
 		}
 
-		//USE LINQ? (Its meant to be slower but is this important?)
 		public ItemSlot GetSlot(int slot)
 		{
 			return Items[slot];
@@ -407,12 +406,11 @@ namespace LowPolySurvival.Inventory
 			return Items;
 		}
 
-		//Returns -1 if nothing found
-		private int FindFirstEmptySlot() //You can get the 'int' from the slotID
-		{
-			return Array.IndexOf(Items, null);
-		}
-
+		/// <summary>
+		/// Drop all of a single item.
+		/// </summary>
+		/// <param name="slotID">The ID of the slot to drop.</param>
+		/// <returns>GameObject</returns>
 		public GameObject DropItem(int slotID)
 		{
 			if (Items[slotID] == null) return null;
@@ -421,6 +419,12 @@ namespace LowPolySurvival.Inventory
 		}
 
 		//Spawns ItemDetails in the world
+		/// <summary>
+		/// Drop an amount of a single item as a new GameObject in the world.
+		/// </summary>
+		/// <param name="slotID">The ID of the slot to drop.</param>
+		/// <param name="amount">The amount to drop.</param>
+		/// <returns>The GameObject of the item droped.</returns>
 		public GameObject DropItem(int slotID, int amount)
 		{
 			ItemSlot slot = Items[slotID];
@@ -448,6 +452,9 @@ namespace LowPolySurvival.Inventory
 			return itemFab;
 		}
 
+		/// <summary>
+		/// Drop all items in the inventory, useful for object death.
+		/// </summary>
 		public void DropAllItems()
 		{
 			foreach (ItemSlot slot in Items)
@@ -455,7 +462,11 @@ namespace LowPolySurvival.Inventory
 				DropItem(slot.SlotID, slot.Amount);
 			}
 		}
-
+		
+		/// <summary>
+		///		Start inventory looting.
+		/// </summary>
+		/// <param name="other">Inventory to loot.</param>
 		public void BeginLooting(Inventory other)
 		{
 			_lootInventory = other;
