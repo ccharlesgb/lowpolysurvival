@@ -62,7 +62,7 @@ public class DayCycle : MonoBehaviour
         sunRot.SetLookRotation(new Vector3(xAng, yAng, 1.0f-sunHeight));
         transform.rotation = sunRot;
 
-        Debug.Log(xAng);
+        //Debug.Log(xAng);
 
         TransitionSkyColor();
 

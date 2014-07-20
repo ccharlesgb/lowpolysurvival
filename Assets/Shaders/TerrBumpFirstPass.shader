@@ -8,6 +8,8 @@ Properties {
 	_Splat2 ("Layer 2 (B)", 2D) = "white" {}
 	_Splat1 ("Layer 1 (G)", 2D) = "white" {}
 	_Splat0 ("Layer 0 (R)", 2D) = "white" {}
+
+	_RandomLighting("Randomise Light", Range(0.0,1.0)) = 0.3
 	
 	// used in fallback on old cards & base map
 	_MainTex ("BaseMap (RGB)", 2D) = "white" {}
@@ -22,18 +24,10 @@ SubShader {
 		"RenderType" = "Opaque"
 	}
 CGPROGRAM
-#pragma surface surf Lambert
-//#pragma surface surf BlinnPhong vertex:vert
-//#pragma surface surf SimpleLambert
+#pragma surface surf Lambert vertex:vert
+
 #pragma target 3.0
 
-//half4 LightingSimpleLambert (SurfaceOutput s, half3 lightDir, half atten) {
-       //   half NdotL = dot (s.Normal, lightDir);
-      //    half4 c;
-      //    c.rgb = s.Albedo * _LightColor0.rgb * (NdotL * atten * 2);
-      //    c.a = s.Alpha;
-      //    return c;
-     // }
 
 struct Input {
 	float2 uv_Control : TEXCOORD0;
@@ -41,7 +35,23 @@ struct Input {
 	float2 uv_Splat1 : TEXCOORD2;
 	float2 uv_Splat2 : TEXCOORD3;
 	float2 uv_Splat3 : TEXCOORD4;
+
+	float lightFactor;
 };
+
+//For gradient dithering
+float rand(float i)
+{
+	return fract(sin(i * 12.9898) * 43758.5453);
+}
+
+float _RandomLighting;
+
+void vert (inout appdata_full v, out Input o)
+{  
+	float light = rand(v.normal.x);
+	o.lightFactor = 1.0 + _RandomLighting - (light * _RandomLighting * 2.0);
+} 
 
 float2 controlUV;
 fixed4 _Position;
@@ -59,7 +69,7 @@ void surf (Input IN, inout SurfaceOutput o) {
 	col += splat_control.g * tex2D (_Splat1, IN.uv_Splat1);
 	col += splat_control.b * tex2D (_Splat2, IN.uv_Splat2);
 	//col += splat_control.a * tex2D (_Splat3, IN.uv_Splat3);
-	o.Albedo = col.rgb;
+	o.Albedo = col.rgb * IN.lightFactor;
 
 	// Sum of our four splat weights might not sum up to 1, in
 	// case of more than 4 total splat maps. Need to lerp towards

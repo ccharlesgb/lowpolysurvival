@@ -187,10 +187,7 @@ public class MapEditor : Editor
     public GameObject CreateTile(Vector3 tilePos)
     {
         //Spawn a new tile object
-        GameObject tile = Instantiate(AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Empty.prefab", typeof(object))) as GameObject;
-        tile.AddComponent<MeshFilter>();
-        tile.AddComponent<MeshRenderer>();
-        tile.AddComponent<MeshCollider>();
+        GameObject tile = Instantiate(AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Tile.prefab", typeof(object))) as GameObject;
         tile.layer = LayerMask.NameToLayer("Terrain");
 
         tile.transform.position = tilePos;

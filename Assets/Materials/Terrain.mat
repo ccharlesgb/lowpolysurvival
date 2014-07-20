@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Terrain
-  m_Shader: {fileID: 10620, guid: 0000000000000000f000000000000000, type: 0}
+  m_Shader: {fileID: 4800000, guid: 60750db89f18baf4186cbc3d4ba80708, type: 3}
   m_ShaderKeywords: []
   m_CustomRenderQueue: -1
   m_SavedProperties:
@@ -87,7 +87,11 @@ Material:
       data:
         first:
           name: _Shininess
-        second: .078125
+        second: .564663768
+      data:
+        first:
+          name: _RandomLighting
+        second: .175000012
     m_Colors:
       data:
         first:

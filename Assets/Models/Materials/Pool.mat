@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Pool
-  m_Shader: {fileID: 4800000, guid: ab014152d837887488850c253af2915c, type: 3}
+  m_Shader: {fileID: 4800000, guid: 69ae33323aea94c4bb07859007b5f472, type: 3}
   m_ShaderKeywords: []
   m_CustomRenderQueue: -1
   m_SavedProperties:
@@ -28,23 +28,31 @@ Material:
       data:
         first:
           name: _WaveAmp
-        second: .100000001
+        second: .0500000007
       data:
         first:
           name: _Wavelength
-        second: .0700000003
+        second: .600000024
       data:
         first:
           name: _WaveSpeed
-        second: 20
+        second: 50
       data:
         first:
           name: _WaveAmpTan
-        second: .100000001
+        second: .0500000007
       data:
         first:
           name: _FacetScale
         second: 0
+      data:
+        first:
+          name: _RandomLighting
+        second: .232142866
+      data:
+        first:
+          name: _WaveCount
+        second: 1
     m_Colors:
       data:
         first:
