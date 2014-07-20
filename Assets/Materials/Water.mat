@@ -29,14 +29,14 @@ Material:
           m_Offset: {x: 0, y: 0}
       data:
         first:
-          name: _Cube
+          name: _ParallaxMap
         second:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
         first:
-          name: _ParallaxMap
+          name: _Cube
         second:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
@@ -45,7 +45,7 @@ Material:
       data:
         first:
           name: _Shininess
-        second: .238947332
+        second: .166936904
       data:
         first:
           name: _Parallax
@@ -78,6 +78,10 @@ Material:
         first:
           name: _WaveAmpTan
         second: 1
+      data:
+        first:
+          name: _FacetScale
+        second: 1.32142866
     m_Colors:
       data:
         first:

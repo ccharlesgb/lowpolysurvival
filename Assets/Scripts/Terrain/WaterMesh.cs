@@ -77,6 +77,8 @@ public class WaterMesh : MonoBehaviour
 	private List<Vector3> l_normals = new List<Vector3>();
 	private List<int> l_triangles = new List<int>();
 	private List<Vector2> l_uvs = new List<Vector2>();
+
+    public float normalScale = 1.0f;
 	
 	protected Vector3[] vertices 
 	{
@@ -243,13 +245,13 @@ public class WaterMesh : MonoBehaviour
 		Vector3 norm = Vector3.Cross(p1 - p0, p2 - p0).normalized;
 		for (int i=0; i < 3; i++)
 		{
-			l_normals.Add(norm * 1.0f);
+			l_normals.Add(norm * normalScale);
 		}
 		
 		Vector3 norm2 = Vector3.Cross(p2 - p0, p3 - p0).normalized;
 		for (int i=0; i < 3; i++)
 		{
-			l_normals.Add(norm2 * 1.0f);
+			l_normals.Add(norm2 * normalScale);
 		}
 		
 		for (int i = 0; i < 6; i++)
