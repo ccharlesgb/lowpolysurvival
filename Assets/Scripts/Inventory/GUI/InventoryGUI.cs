@@ -22,8 +22,16 @@ namespace LowPolySurvival.Inventory
 
 			_inventoryGrid = new GUIGrid(this, new GUIPosition(5, 30), _inventory);
 			_elements.Add(_inventoryGrid);
+		}
 
+		private void OnEnable()
+		{
 			_inventory.OnLootBegin += OnLootBegin;
+		}
+
+		private void OnDisable()
+		{
+			_inventory.OnLootBegin -= OnLootBegin;			
 		}
 
 		public void OnLootBegin(Inventory other)

@@ -7,6 +7,8 @@ public class DayCycle : MonoBehaviour
 {
     public bool isDay = false;
 
+	public GUIText DayTimeText;
+
     [Range(0.0f,1.0f)]
     public float dayProgress = 0.0f; //Current progression 0-1
     public float dayLength = 1.0f; //Length of the day in minutes
@@ -68,7 +70,19 @@ public class DayCycle : MonoBehaviour
 
         //Just a helper
         hourTime = dayProgress*24.0f;
+
+	    UpdateDayTimeText();
     }
+
+	void UpdateDayTimeText()
+	{
+		float minutes = hourTime - (float)Math.Truncate(hourTime);
+		minutes = minutes * 60; // Convert from percentage of hour to minutes.
+
+		int hours = (int) hourTime;
+
+		DayTimeText.text = hours.ToString("00") + ":" + minutes.ToString("00");
+	}
 
     void TransitionSkyColor()
     {
