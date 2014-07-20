@@ -329,7 +329,11 @@ namespace LowPolySurvival.Inventory
 			RemoveItem(itemDetails, amount);
 		}
 
-		// Remove amount of a specific ItemDetails type.
+		/// <summary>
+		/// Remove item amount from multiple stacks if nessesary.
+		/// </summary>
+		/// <param name="item">Item to remove.</param>
+		/// <param name="amount">Amount to remove.</param>
 		public void RemoveItem(ItemDetails item, int amount)
 		{
 			if (GetTotalAmount(item) < amount) return; //NOT ENOUGH
@@ -350,7 +354,10 @@ namespace LowPolySurvival.Inventory
 			}
 		}
 
-		//Searches through each slot and removes ALL of this type (might be useful?)
+		/// <summary>
+		/// Remove all items of a specific ItemDetails.
+		/// </summary>
+		/// <param name="item">Item to remove.</param>
 		public void RemoveAll(ItemDetails item)
 		{
 			List<ItemSlot> itemSlots = GetSlots(item);
@@ -375,9 +382,10 @@ namespace LowPolySurvival.Inventory
 		{
 			for (int i = 0; i < Items.Count(); i++)
 			{
-				if (Items[i] != null)
-					if (Items[i].ItemDetails.Equals(item))
-						return Items[i];
+				if (Items[i] != null && Items[i].ItemDetails.Equals(item))
+				{
+					return Items[i];
+				}
 			}
 			return null;
 		}
@@ -390,7 +398,7 @@ namespace LowPolySurvival.Inventory
 
 		public List<ItemSlot> GetSlots(ItemDetails item)
 		{
-			List<ItemSlot> list = new List<ItemSlot>();
+			var list = new List<ItemSlot>();
 			for (int i = 0; i < Items.Count(); i++)
 			{
 				if (Items[i] != null && Items[i].ItemDetails == item)
@@ -441,13 +449,7 @@ namespace LowPolySurvival.Inventory
 
 			itemFab.GetComponent<ItemBehaviour>().Init(slot, amount);
 
-			slot.Amount -= amount;
-
-			//We've run out of this ItemDetails
-			if (slot.Amount <= 0)
-			{
-				RemoveItem(slotID);
-			}
+			RemoveItem(slotID, amount);
 
 			return itemFab;
 		}
