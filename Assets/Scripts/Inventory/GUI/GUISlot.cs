@@ -21,6 +21,14 @@ namespace LowPolySurvival.Inventory
 		public override void Update()
 		{
 			base.Update();
+
+			var v = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
+			if (GUIDragHandler.IsActive && !Input.GetMouseButton(0) && WindowRect.Contains(v))
+			{
+				_inventory.TransferItem(GUIDragHandler.Item, GUIDragHandler.Inventory, _slotID);
+				GUIDragHandler.ResetItem();
+			}
+
 			_itemSlot = _inventory.GetSlot(_slotID);
 		}
 
@@ -29,13 +37,6 @@ namespace LowPolySurvival.Inventory
 			base.Draw();
 
 			Event e = Event.current;
-
-			if (GUIDragHandler.IsActive && !Input.GetMouseButton(0) && WindowRect.Contains(e.mousePosition))
-			{
-				//_inventory.TransferItem(GUIDragHandler.Item.ItemDetails, GUIDragHandler.Item.Amount, GUIDragHandler.Inventory);
-				_inventory.TransferItem(GUIDragHandler.Item, GUIDragHandler.Inventory, _slotID);
-				GUIDragHandler.ResetItem();
-			}
 
 			// Don't draw if the item is being dragged. TODO: Draw a shadowed icon?
 			if (GUIDragHandler.IsActive && GUIDragHandler.Item.Equals(_itemSlot))
