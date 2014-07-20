@@ -177,8 +177,6 @@ MonoBehaviour:
     initalSlots: []
   InventoryMaxSize: 1
   Items: []
-  IsPickup: 0
-  PickupDelay: .5
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -220,12 +218,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87e0a98970976234f8d824bdc246e18d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  xMin: .699999988
-  xMax: .899999976
-  yMin: .699999988
-  yMax: .899999976
-  zMin: .699999988
-  zMax: .899999976
+  xMin: .600000024
+  xMax: .800000012
+  yMin: .600000024
+  yMax: .800000012
+  zMin: .600000024
+  zMax: .800000012
 --- !u!114 &11400008
 MonoBehaviour:
   m_ObjectHideFlags: 1

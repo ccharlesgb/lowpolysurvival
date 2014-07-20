@@ -267,7 +267,7 @@ namespace LowPolySurvival.Inventory
 		/// <param name="destinationSlotID">The destination slotID.</param>
 		public void TransferItem(ItemSlot itemSlot, Inventory sourceInventory, int destinationSlotID)
 		{
-			Debug.Log("Inventory: Transfering item: '" + itemSlot + "' from '" + sourceInventory + "' in slot '" + destinationSlotID + "'");
+			//Debug.Log("Inventory: Transfering item: '" + itemSlot + "' from '" + sourceInventory + "' in slot '" + destinationSlotID + "'");
 
 			ItemSlot thisItemSlot = GetSlot(destinationSlotID);
 			if (thisItemSlot == null) // No item in the spot we want to move to.
