@@ -175,8 +175,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   xMin: .699999988
   xMax: .899999976
-  yMin: .699999988
-  yMax: .899999976
+  yMin: .800000012
+  yMax: 1.10000002
   zMin: .699999988
   zMax: .899999976
 --- !u!114 &11400002

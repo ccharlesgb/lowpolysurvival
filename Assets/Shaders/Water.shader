@@ -7,7 +7,7 @@ Properties {
 	_Wavelength ("Wavelength", Float) = 1.0 //Length of the waves
 	_WaveSpeed ("Wave Speed", Float) = 1.0 //How fast they oscillate
 	_Shininess ("Shininess", Range (0.01, 1)) = 0.078125
-	_FacetScale("Facet", Range(1.0, 4.0)) = 2.0 //How much the faces of the water 'pop'
+	_FacetScale("Facet", Range(0, 4.0)) = 2.0 //How much the faces of the water 'pop'
 	_MainTex ("Base (RGB) TransGloss (A)", 2D) = "white" {}
 	
 }
@@ -38,9 +38,9 @@ void vert (inout appdata_full v, out Input o)
     //float3 castToWorld = round(mul(_Object2World, v.vertex) );
     float3 pos = v.vertex;
     float heightChange = sin(((pos.x - pos.z)/_Wavelength) - _Time * _WaveSpeed);
-    v.vertex.y+= heightChange * _WaveAmp;
+    v.vertex.z+= heightChange * _WaveAmp;
   	v.vertex.x+= heightChange * _WaveAmpTan* fmod(v.vertex.x, 1.0);
-  	v.vertex.z+= -heightChange * _WaveAmpTan * fmod(v.vertex.z, 1.0);
+  	v.vertex.y+= -heightChange * _WaveAmpTan * fmod(v.vertex.z, 1.0);
 	//Adjust the vertex colour by how the slope
 	//Makes faces 'pop out'
 	float3 scaledNormal = v.normal;
