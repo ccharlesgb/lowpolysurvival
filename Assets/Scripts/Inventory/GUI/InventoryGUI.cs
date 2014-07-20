@@ -75,7 +75,7 @@ namespace LowPolySurvival.Inventory
 				element.Draw();
 			}
 
-			if (GUIDragHandler.IsActive)
+			if (GUIDragHandler.IsActive && Event.current.type == EventType.Repaint)
 			{
 				Graphics.DrawTexture(new Rect(Event.current.mousePosition.x, Event.current.mousePosition.y, 50, 50),
 					GUIDragHandler.Item.ItemDetails.itemIcon);
