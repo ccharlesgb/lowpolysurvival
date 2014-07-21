@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.IO;
+using UnityEngine;
 using System.Collections;
 using UnityEditor;
 
@@ -12,7 +13,8 @@ public class CreateFields
     {
         FloatField asset = ScriptableObject.CreateInstance<FloatField>();
 
-        AssetDatabase.CreateAsset(asset, "Assets/Terrain/FloatField.asset");
+		string sceneName = Path.GetFileNameWithoutExtension(EditorApplication.currentScene);
+        AssetDatabase.CreateAsset(asset, "Assets/Scenes/" + sceneName + "/FloatField.asset");
         AssetDatabase.SaveAssets();
         return asset;
     }
@@ -22,7 +24,8 @@ public class CreateFields
     {
         VectorField asset = ScriptableObject.CreateInstance<VectorField>();
 
-        AssetDatabase.CreateAsset(asset, "Assets/Terrain/VectorField.asset");
+		string sceneName = Path.GetFileNameWithoutExtension(EditorApplication.currentScene);
+		AssetDatabase.CreateAsset(asset, "Assets/Scenes/" + sceneName + "VectorField.asset");
         AssetDatabase.SaveAssets();
         return asset;
     }

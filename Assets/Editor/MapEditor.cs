@@ -4,6 +4,7 @@ using NUnit.Framework;
 using UnityEngine;
 using System.Collections;
 using UnityEditor;
+using System.IO;
 
 [CustomEditor(typeof(Map))]
 public class MapEditor : Editor
@@ -53,7 +54,7 @@ public class MapEditor : Editor
 
                 Texture2D heightCopy = TextureTools.DeepCopy(loadHeights);
                 map.heightTexture = heightCopy;
-                AssetDatabase.CreateAsset(map.heightTexture, "Assets/Terrain/terrainHeights.asset");
+				AssetDatabase.CreateAsset(map.heightTexture, GetTerrainHeightSavePath());
                 AssetDatabase.SaveAssets();
                 BuildTerrainMesh();
             }
@@ -163,7 +164,7 @@ public class MapEditor : Editor
         splatSettings.control = new Texture2D(map.heightTexture.width, map.heightTexture.width);
 
         GenerateSplatTexture(splatSettings.control);
-        AssetDatabase.AddObjectToAsset(splatSettings.control, "Assets/Terrain/terrainHeights.asset");
+		AssetDatabase.AddObjectToAsset(splatSettings.control, GetTerrainHeightSavePath());
         AssetDatabase.SaveAssets();
 
         //Spawn the tiles
@@ -200,7 +201,7 @@ public class MapEditor : Editor
         tile.GetComponent<MeshRenderer>().sharedMaterial = TileMeshBuilder.CreateMaterial(tilePos, map.splatSettings);
         tile.GetComponent<MeshCollider>().sharedMesh = tile.GetComponent<MeshFilter>().sharedMesh;
         //tile.hideFlags = HideFlags.HideAndDontSave;
-        AssetDatabase.AddObjectToAsset(tileMesh, "Assets/Terrain/terrainHeights.asset");
+		AssetDatabase.AddObjectToAsset(tileMesh, GetTerrainHeightSavePath());
 
         return tile;
     }
@@ -209,7 +210,7 @@ public class MapEditor : Editor
     {
         Texture2D gradMags = TextureTools.GetDerivativeMap(map.heightTexture, map.splatSettings.splatSubSamples);
         map.gradTexture = gradMags;
-        AssetDatabase.AddObjectToAsset(gradMags, "Assets/Terrain/terrainHeights.asset");
+		AssetDatabase.AddObjectToAsset(gradMags, GetTerrainHeightSavePath());
         for (int x = 0; x < map.heightTexture.width; x++)
         {
             for (int y = 0; y < map.heightTexture.width; y++)
@@ -221,4 +222,10 @@ public class MapEditor : Editor
         }
         splat.Apply();
     }
+
+	public string GetTerrainHeightSavePath()
+	{
+		string sceneName = Path.GetFileNameWithoutExtension(EditorApplication.currentScene);
+		return "Assets/Scenes/" + sceneName + "/terrainHeights.asset";
+	}
 }
