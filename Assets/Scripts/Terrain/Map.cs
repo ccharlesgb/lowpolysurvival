@@ -40,8 +40,14 @@ public class Map : MonoBehaviour
 
     public void ClearTerrain()
     {
-        foreach (GameObject tile in tileList)
-            DestroyImmediate(tile);
+	    foreach (GameObject tile in tileList)
+		{
+			if (tile != null)
+			{
+				DestroyImmediate(tile.GetComponent<MeshFilter>().sharedMesh, true);
+			}
+			DestroyImmediate(tile);
+	    }
     }
 
     public Point WorldToTextureCoords(Vector3 pos, float textureSize)

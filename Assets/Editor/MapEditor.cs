@@ -161,6 +161,9 @@ public class MapEditor : Editor
         TerrainSettings terrSettings = map.terrainSettings;
         SplatSettings splatSettings = map.splatSettings;
 
+		// Destroy the old oject first, prevents duplicating the asset due to differnt ID.
+		DestroyImmediate(splatSettings.control, true);
+
         splatSettings.control = new Texture2D(map.heightTexture.width, map.heightTexture.width);
 
         GenerateSplatTexture(splatSettings.control);
@@ -209,7 +212,12 @@ public class MapEditor : Editor
     public void GenerateSplatTexture(Texture2D splat)
     {
         Texture2D gradMags = TextureTools.GetDerivativeMap(map.heightTexture, map.splatSettings.splatSubSamples);
-        map.gradTexture = gradMags;
+
+		// Delete the old gradient texture first.
+		DestroyImmediate(map.gradTexture, true);
+
+		map.gradTexture = gradMags;
+
 		AssetDatabase.AddObjectToAsset(gradMags, GetTerrainHeightSavePath());
         for (int x = 0; x < map.heightTexture.width; x++)
         {
