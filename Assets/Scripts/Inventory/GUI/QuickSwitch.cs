@@ -17,7 +17,7 @@ namespace LowPolySurvival.Inventory
 		// GUI skin to use for inventory.
 		public GUISkin GUISkin;
 
-		private Rect _boxSize = new Rect(Screen.width / 2 - 125, Screen.height - 70, 250, 65);
+		private Rect _boxSize = new Rect(Screen.width / 2 - 125, Screen.height - 60, 250, 50);
 
 		public float BoxAreaPadding = 5;
 		public float BoxPadding = 5;
@@ -87,18 +87,18 @@ namespace LowPolySurvival.Inventory
 
 				if (x == _activeSlot-1)
 				{
-					GUI.Box(rect, "" + (x + 1));
+					GUI.Box(rect, "");
 				}
 				else
 				{
-					GUI.Box(rect, "" + (x + 1), "NotActiveBox");
+					GUI.Box(rect, "", "NotActiveBox");
 				}
 
 				ItemSlot it = _items[x];
 
 				if (it != null)
 				{
-					GUI.DrawTexture(new Rect(rect.x + 5, rect.y + 20, BoxSize - 10, BoxSize - 10), it.ItemDetails.itemIcon);
+					GUI.DrawTexture(new Rect(rect.x + 5, rect.y + 5, BoxSize - 10, BoxSize - 10), it.ItemDetails.itemIcon);
 					// Draw the stack count.
 					if (it.ItemDetails.isStackable)
 					{
