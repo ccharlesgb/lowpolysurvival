@@ -2,6 +2,9 @@
 
 namespace LowPolySurvival.Inventory
 {
+	/// <summary>
+	/// Handles picking up items the player sphere with.
+	/// </summary>
 	class ItemPickup : MonoBehaviour
 	{
 
@@ -17,10 +20,10 @@ namespace LowPolySurvival.Inventory
 			}
 		}
 
-		//MIGHT HAVE TO MOVE THIS
 		//Handles ItemDetails picking up from the collider trigger
 		private void OnTriggerStay(Collider other)
 		{
+			// Ensure the item has the component ItemBehaviour.
 			var behav = other.gameObject.GetComponent<ItemBehaviour>();
 			if (behav != null)
 			{
@@ -40,6 +43,7 @@ namespace LowPolySurvival.Inventory
 		public void PickupItem(ItemBehaviour itemBehave)
 		{
 			if (!CanPickup(itemBehave)) return;
+
 			Inventory.AddItem(itemBehave.slot.ItemDetails, itemBehave.slot.Amount);
 			Destroy(itemBehave.gameObject);
 		}
