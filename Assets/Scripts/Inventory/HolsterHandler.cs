@@ -42,23 +42,15 @@ namespace LowPolySurvival.Inventory
 
 		public void SetActiveItem(ItemSlot it)
 		{
-			if (it == null && ActiveItem != null) //Unholster
-			{
-				Destroy(ActiveItem);
-				return;
-			}
-			if (it == null)
-			{
-				return;
-			}
-
-
 			if (ActiveItem != null) //Do we already have a gameobject that is present?
 			{
 				ActiveItem.GetComponent<ItemBehaviour>().UnHolster(_inventory);
 				Destroy(ActiveItem);
 				ActiveItem = null;
 			}
+
+            if (it == null)
+                return;
 
 			if (!it.ItemDetails.isEquipable) return;
 
