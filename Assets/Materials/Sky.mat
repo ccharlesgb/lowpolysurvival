@@ -98,11 +98,11 @@ Material:
       data:
         first:
           name: _TopColor
-        second: {r: .276856929, g: .846562862, b: .95403409, a: 1}
+        second: {r: .27704525, g: .847166598, b: .954682946, a: .99999994}
       data:
         first:
           name: _BottomColor
-        second: {r: .80819124, g: .930861354, b: .95395124, a: 1}
+        second: {r: .808781385, g: .931491017, b: .954550862, a: .99999994}
       data:
         first:
           name: _Color1

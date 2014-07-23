@@ -9,7 +9,7 @@ Properties {
 	_Splat1 ("Layer 1 (G)", 2D) = "white" {}
 	_Splat0 ("Layer 0 (R)", 2D) = "white" {}
 
-	_RandomLighting("Randomise Light", Range(0.0,1.0)) = 0.3
+	_RandomLighting("Randomise Light", Range(0.0,0.5)) = 0.1
 	
 	// used in fallback on old cards & base map
 	_MainTex ("BaseMap (RGB)", 2D) = "white" {}

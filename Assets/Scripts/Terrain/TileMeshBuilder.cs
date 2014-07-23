@@ -78,7 +78,7 @@ public class TileMeshBuilder
         mat.SetTexture("_Splat0", splatSettings.mat1);
         mat.SetTexture("_Splat1", splatSettings.mat2);
         mat.SetTexture("_Splat2", splatSettings.mat3);
-        mat.SetFloat("_RandomLighting", 0.2f);
+        mat.SetFloat("_RandomLighting", 0.1f);
 
         return mat;
     }

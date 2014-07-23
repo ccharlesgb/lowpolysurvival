@@ -25,6 +25,9 @@ public class FencePlacer : MonoBehaviour, IHolster
 
     public Color ghostColor = new Color(1.0f, 1.0f, 1.0f, 0.5f);
 
+    public float BuildingRange = 20.0f;
+    public Building CurrentBuilding = null;
+
 	// Use this for initialization
 	void Start ()
 	{
@@ -65,11 +68,24 @@ public class FencePlacer : MonoBehaviour, IHolster
     {
         Ray ray = new Ray(transform.position + transform.forward * 5.0f, Vector3.down);
 
+        Vector3 spawnPos = Vector3.zero;
+
         RaycastHit hit;
         Physics.Raycast(ray, out hit, 10.0f, 1 << 8);
         if (hit.collider != null)
         {
-            return hit.point;
+            spawnPos = hit.point;
+            if (CurrentBuilding == null)
+            {
+                CurrentBuilding = Building.FindNearestBuilding(hit.point, BuildingRange);
+            }
+            if (CurrentBuilding != null)
+            {
+                AttachmentPoint best = CurrentBuilding.FindBestAttachment(hit.point);;
+                if (best != null) spawnPos = best.point;
+            }
+
+            return spawnPos;
         }
         return Vector3.zero;
     }
