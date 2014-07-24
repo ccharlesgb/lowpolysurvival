@@ -106,7 +106,7 @@ public class FencePlacer : MonoBehaviour, IHolster
         GameObject fence = Instantiate(fencePrefab, ghostProp.transform.position, ghostProp.transform.rotation) as GameObject;
 
         //TODO Having to do this twice is bad
-        AttachmentSnap bestAttachment = CurrentBuilding.PreviewSnapPosition(transform.position, ghostProp.GetComponent<Structure>());
+        AttachmentSnap bestAttachment = CurrentBuilding.PreviewSnapPosition(transform.position, fence.GetComponent<Structure>());
         CurrentBuilding.AddStructure(fence.GetComponent<Structure>(), bestAttachment);
 
         //Use up a fence in the inventory
