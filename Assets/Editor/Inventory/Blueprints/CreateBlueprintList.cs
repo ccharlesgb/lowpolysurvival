@@ -1,4 +1,4 @@
-﻿using LowPolySurvival.Inventory;
+﻿using LowPolySurvival.Inventory.Blueprints;
 using UnityEngine;
 using System.Collections;
 using UnityEditor;

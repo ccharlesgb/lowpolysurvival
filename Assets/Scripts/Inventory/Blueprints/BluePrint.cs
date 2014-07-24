@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 
-namespace LowPolySurvival.Inventory
+namespace LowPolySurvival.Inventory.Blueprints
 {
 	[System.Serializable]
 	public class Blueprint
 	{
-		public string printName;
-		public List<ItemSlot> requiredItems;
-		public List<ItemSlot> outputItems;
+		public string PrintName;
+		public List<ItemSlot> RequiredItems;
+		public List<ItemSlot> OutputItems;
 	}
 }
