@@ -51,14 +51,18 @@ namespace LowPolySurvival.Inventory
 			if (!slot.ItemDetails.isEquipable) return false;
 
 			isHolstering = true;
-			gameObject.GetInterface<IHolster>().OnHolster(inv);
+		    IHolster[] holsterables = gameObject.GetInterfaces<IHolster>();
+            foreach (IHolster holster in holsterables)
+			    holster.OnHolster(inv);
 
 			return true;
 		}
 
 		public void UnHolster(Inventory inv)
 		{
-			gameObject.GetInterface<IHolster>().OnDeHolster(inv);
+            IHolster[] holsterables = gameObject.GetInterfaces<IHolster>();
+            foreach (IHolster holster in holsterables)
+                holster.OnDeHolster(inv);
 			isHolstering = false;
 			transform.parent = null;
 		}

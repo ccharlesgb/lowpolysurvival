@@ -6,9 +6,6 @@ public class Pistol : MonoBehaviour, IHolster
 {
     public WeaponSettings WeaponInfo;
 
-    public float primaryFireDelay = 1.0f;
-    private float nextPrimaryFire = 0.0f;
-
     private Transform _barrelTransform;
 
     private LineRenderer _lineRenderer;
@@ -24,10 +21,6 @@ public class Pistol : MonoBehaviour, IHolster
             _barrelTransform = transform;
     }
 
-    private void Start()
-    {
-        nextPrimaryFire = 0.0f;
-    }
 
     public void ShowBulletTracer(Ray ray)
     {
@@ -45,16 +38,9 @@ public class Pistol : MonoBehaviour, IHolster
 
     public void PrimaryFire(Inventory ownerInv)
     {
-        if (nextPrimaryFire > Time.time)
-        {
-            return; //Cant fire yet
-        }
-        nextPrimaryFire = Time.time + primaryFireDelay;
+        if (!WeaponInfo.CanPrimaryFire()) return;
 
-        int ammo = ownerInv.GetTotalAmount("PistolAmmo");
-        Debug.Log("AMMO: " + ammo);
-        if (ammo < 1)
-            return;
+        WeaponInfo.OnPrimaryFire();
 
         RaycastHit hit;
 
@@ -65,7 +51,7 @@ public class Pistol : MonoBehaviour, IHolster
 
         ShowBulletTracer(ray);
 
-        ownerInv.RemoveItem("PistolAmmo", 1);
+        ownerInv.RemoveItem(WeaponInfo.PrimaryAmmoName, 1);
 
         if (Physics.Raycast(ray, out hit))
         {

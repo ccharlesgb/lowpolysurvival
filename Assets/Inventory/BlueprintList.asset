@@ -10,9 +10,5 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
   m_Name: BlueprintList
-  m_EditorClassIdentifier: Assembly-CSharp::BlueprintList
-  blueprintList:
-  - printName: New Blueprint
-    requiredItems:
-    - {fileID: 0}
-    outputItems: []
+  m_EditorClassIdentifier: Assembly-CSharp:LowPolySurvival.Inventory:BlueprintList
+  blueprintList: []
