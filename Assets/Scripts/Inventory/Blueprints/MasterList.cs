@@ -5,7 +5,6 @@
 	/// </summary>
 	public class MasterList : Singleton<MasterList>
 	{
-		public BlueprintList BlueprintList;
-
+		public BlueprintList List;
 	}
 }

@@ -6,78 +6,78 @@ using UnityEditor;
 
 public class BluePrintEditor : EditorWindow
 {
-    public BlueprintList BlueprintList;
-    private int _viewIndex = 1;
+	public BlueprintList BlueprintList;
+	private int _viewIndex = 1;
 
-    [MenuItem("Window/Blueprint Editor")]
-    static void Init()
-    {
-        GetWindow(typeof(BluePrintEditor));
-    }
+	[MenuItem("Window/Blueprint Editor")]
+	private static void Init()
+	{
+		GetWindow(typeof (BluePrintEditor));
+	}
 
-    void OnEnable()
-    {
+	private void OnEnable()
+	{
 		// Attempt to load the previously loaded list.
-        if (EditorPrefs.HasKey("ObjectPathBlueprint"))
-        {
-            string objectPath = EditorPrefs.GetString("ObjectPathBlueprint");
-            BlueprintList = AssetDatabase.LoadAssetAtPath(objectPath, typeof(BlueprintList)) as BlueprintList;
-        }
-    }
+		if (EditorPrefs.HasKey("ObjectPathBlueprint"))
+		{
+			string objectPath = EditorPrefs.GetString("ObjectPathBlueprint");
+			BlueprintList = AssetDatabase.LoadAssetAtPath(objectPath, typeof (BlueprintList)) as BlueprintList;
+		}
+	}
 
-    void OnGUI()
-    {
-        GUILayout.Label("Blueprint Editor", EditorStyles.boldLabel);
+	private void OnGUI()
+	{
+		GUILayout.Label("Blueprint Editor", EditorStyles.boldLabel);
 
-        GUILayout.BeginHorizontal();
+		GUILayout.BeginHorizontal();
 
 		// Show the active blueprint list in Inspector.
-        if (BlueprintList != null)
-        {
-            if (GUILayout.Button("Show List"))
-            {
-                EditorUtility.FocusProjectWindow();
-                Selection.activeObject = BlueprintList;
-            }
-        }
+		if (BlueprintList != null)
+		{
+			if (GUILayout.Button("Show List"))
+			{
+				EditorUtility.FocusProjectWindow();
+				Selection.activeObject = BlueprintList;
+			}
+		}
 
 		// Show the FileBrowser.
-        if (GUILayout.Button("Open List"))
-        {
-            OpenItemList();
-        }
+		if (GUILayout.Button("Open List"))
+		{
+			OpenItemList();
+		}
 
 		// Create a new Blueprint list.
-        if (GUILayout.Button("New List"))
-        {
-            EditorUtility.FocusProjectWindow();
-            Selection.activeObject = BlueprintList;
-        }
+		if (GUILayout.Button("New List"))
+		{
+			EditorUtility.FocusProjectWindow();
+			Selection.activeObject = BlueprintList;
+		}
 
-        GUILayout.EndHorizontal();
+		GUILayout.EndHorizontal();
 
-        if (BlueprintList == null)
-        {
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(10);
-            if (GUILayout.Button("Create New List", GUILayout.ExpandWidth(false)))
-                CreateNewBlueprintList();
-            if (GUILayout.Button("Open Existing List", GUILayout.ExpandWidth(false)))
-                OpenItemList();
-            GUILayout.EndHorizontal();
-        }
-        GUILayout.Space(20);
+		if (BlueprintList == null)
+		{
+			GUILayout.BeginHorizontal();
+			GUILayout.Space(10);
+			if (GUILayout.Button("Create New List", GUILayout.ExpandWidth(false)))
+				CreateNewBlueprintList();
+			if (GUILayout.Button("Open Existing List", GUILayout.ExpandWidth(false)))
+				OpenItemList();
+			GUILayout.EndHorizontal();
+		}
+		GUILayout.Space(20);
 
-        if (BlueprintList != null && BlueprintList.List != null)
-        {
-            ShowBlueprintList();
-        }
+		if (BlueprintList != null && BlueprintList.List != null)
+		{
+			ShowBlueprintList();
+		}
 
-        if (GUI.changed)
-        {
-            EditorUtility.SetDirty(BlueprintList);
-        }
-    }
+		if (GUI.changed)
+		{
+			EditorUtility.SetDirty(BlueprintList);
+		}
+	}
 
 	private void ShowBlueprintList()
 	{
@@ -176,42 +176,42 @@ public class BluePrintEditor : EditorWindow
 		}
 	}
 
-	void AddItem()
-    {
-        Blueprint newBlueprint = new Blueprint();
-        newBlueprint.PrintName = "New Blueprint";
-        BlueprintList.List.Add(newBlueprint);
-        _viewIndex = BlueprintList.List.Count;
-    }
+	private void AddItem()
+	{
+		Blueprint newBlueprint = new Blueprint();
+		newBlueprint.PrintName = "New Blueprint";
+		BlueprintList.List.Add(newBlueprint);
+		_viewIndex = BlueprintList.List.Count;
+	}
 
-    void DeleteItem(int index)
-    {
-        BlueprintList.List.RemoveAt(index);
-    }
+	private void DeleteItem(int index)
+	{
+		BlueprintList.List.RemoveAt(index);
+	}
 
-    void CreateNewBlueprintList()
-    {
-        _viewIndex = 1;
-        BlueprintList = CreateBlueprintList.Create();
-        if (BlueprintList)
-        {
-            string path = AssetDatabase.GetAssetPath(BlueprintList);
-            EditorPrefs.SetString("ObjectPathBlueprint", path);
-        }
-    }
+	private void CreateNewBlueprintList()
+	{
+		_viewIndex = 1;
+		BlueprintList = CreateBlueprintList.Create();
+		if (BlueprintList)
+		{
+			string path = AssetDatabase.GetAssetPath(BlueprintList);
+			EditorPrefs.SetString("ObjectPathBlueprint", path);
+		}
+	}
 
-    void OpenItemList()
-    {
-        string absPath = EditorUtility.OpenFilePanel("Selecting Blueprint List", "", "");
-        if (absPath.StartsWith(Application.dataPath))
-        {
-            string relPath = absPath.Substring(Application.dataPath.Length - "Assets".Length);
-            BlueprintList = AssetDatabase.LoadAssetAtPath(relPath, typeof(BlueprintList)) as BlueprintList;
+	private void OpenItemList()
+	{
+		string absPath = EditorUtility.OpenFilePanel("Selecting Blueprint List", "", "");
+		if (absPath.StartsWith(Application.dataPath))
+		{
+			string relPath = absPath.Substring(Application.dataPath.Length - "Assets".Length);
+			BlueprintList = AssetDatabase.LoadAssetAtPath(relPath, typeof (BlueprintList)) as BlueprintList;
 
-            if (BlueprintList)
-            {
-                EditorPrefs.SetString("ObjectPathBlueprint", relPath);
-            }
-        }
-    }
+			if (BlueprintList)
+			{
+				EditorPrefs.SetString("ObjectPathBlueprint", relPath);
+			}
+		}
+	}
 }
