@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Runtime.InteropServices;
 using LowPolySurvival.Inventory;
+using UnityEditor.ProjectWindowCallback;
 using UnityEngine;
 using System.Collections;
 
@@ -41,10 +42,11 @@ public class FencePlacer : MonoBehaviour, IHolster
 
     public void CreateGhost()
     {
-        Vector3 spawnPos = GetSpawnPos();
+        Vector3 spawnPos = Vector3.zero;
         ghostProp = Instantiate(fencePrefab, spawnPos, Quaternion.identity) as GameObject;
-        UpdateSpawnTransform(ghostProp.transform);
-        ghostProp.renderer.material.SetColor("_Color", ghostColor);
+        GetSpawnTransform(ghostProp.transform);
+        if (ghostProp.renderer != null)
+            ghostProp.renderer.material.SetColor("_Color", ghostColor);
     }
 
     public void OnDeHolster(Inventory ownerInv)
@@ -64,39 +66,32 @@ public class FencePlacer : MonoBehaviour, IHolster
         currentSpawnRotation = spawnRotations[currentSpawnRotationIndex];
     }
 
-    public Vector3 GetSpawnPos()
+    public void GetSpawnTransform(Transform tran)
     {
-        Ray ray = new Ray(transform.position + transform.forward * 5.0f, Vector3.down);
-
-        Vector3 spawnPos = Vector3.zero;
-
-        RaycastHit hit;
-        Physics.Raycast(ray, out hit, 10.0f, 1 << 8);
-        if (hit.collider != null)
+        tran.position = Vector3.zero;
+        //We need a building
+        //SHOULDNT BE DOING THIS ALL THE TIME
+        if (CurrentBuilding == null)
         {
-            spawnPos = hit.point;
-            if (CurrentBuilding == null)
-            {
-                CurrentBuilding = Building.FindNearestBuilding(hit.point, BuildingRange);
-            }
-            if (CurrentBuilding != null)
-            {
-                AttachmentPoint best = CurrentBuilding.FindBestAttachment(hit.point);;
-                if (best != null) spawnPos = best.point;
-            }
-
-            return spawnPos;
+            CurrentBuilding = Building.FindNearestBuilding(transform.position, BuildingRange);
         }
-        return Vector3.zero;
-    }
-
-    public void UpdateSpawnTransform(Transform placeTransform)
-    {
-        placeTransform.position = GetSpawnPos();
+        if (CurrentBuilding == null) return; //Couldnt find a building so we cant spawn (TODO making new buildings)
+        //Debug.Log("oh god");
         Quaternion newRot = new Quaternion();
         newRot.SetLookRotation(currentSpawnRotation);
-        placeTransform.rotation = newRot;
-        //placeTransform.localEulerAngles = currentSpawnRotation;
+        tran.rotation = newRot;
+        AttachmentSnap bestAttachment = CurrentBuilding.PreviewSnapPosition(transform.position, ghostProp.GetComponent<Structure>());
+        if (bestAttachment != null && bestAttachment.IsValid)
+        {
+            //Debug.Log(bestAttachment.first.point + "   " + bestAttachment.second.point);
+            tran.position = bestAttachment.first.GetGlobalPoint() -
+                            bestAttachment.second.structure.transform.TransformPoint(bestAttachment.second.point);
+        }
+        else
+        {
+            Debug.Log("no transform");
+            tran.position = Vector3.zero;
+        }
     }
 
     public void PrimaryFire(Inventory inv)
@@ -107,9 +102,12 @@ public class FencePlacer : MonoBehaviour, IHolster
         }
 
         //Spaw the fence prefab
-        Vector3 spawnPos = GetSpawnPos();
-        GameObject fence = Instantiate(fencePrefab, spawnPos, Quaternion.identity) as GameObject;
-        UpdateSpawnTransform(fence.transform);
+        GetSpawnTransform(ghostProp.transform);
+        GameObject fence = Instantiate(fencePrefab, ghostProp.transform.position, ghostProp.transform.rotation) as GameObject;
+
+        //TODO Having to do this twice is bad
+        AttachmentSnap bestAttachment = CurrentBuilding.PreviewSnapPosition(transform.position, ghostProp.GetComponent<Structure>());
+        CurrentBuilding.AddStructure(fence.GetComponent<Structure>(), bestAttachment);
 
         //Use up a fence in the inventory
         inv.RemoveItem(GetComponent<ItemBehaviour>().slot.ItemDetails, 1);
@@ -127,7 +125,7 @@ public class FencePlacer : MonoBehaviour, IHolster
     {
         if (ghostProp != null)
         {
-            UpdateSpawnTransform(ghostProp.transform);
+            GetSpawnTransform(ghostProp.transform);
             if (Input.GetKeyDown(KeyCode.R))
             {
                 RotateGhost();

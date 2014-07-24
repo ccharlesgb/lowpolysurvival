@@ -8,8 +8,9 @@ public class Structure : MonoBehaviour
 
     public Building mBuilding = null;
 
-	// Use this for initialization
-	void Start () 
+    public float YawOffset = 0.0f;
+
+	void Awake() 
     {
         //Cache all the attachment points in this object
 	    foreach (Transform attach in GetComponentsInChildren<Transform>())
@@ -17,13 +18,15 @@ public class Structure : MonoBehaviour
 	        if (attach.gameObject.name == "Attach")
 	        {
 	            AttachmentPoint point = new AttachmentPoint();
-	            point.point = attach.position;
+	            point.point = attach.localPosition;
 	            point.structure = this;
+	            point.normal = transform.InverseTransformDirection(attach.forward);
 	            Attachments.Add(point);
 	            Destroy(attach.gameObject);
 	        }
 	    }
-        mBuilding.AddStructure(this);
+        if (mBuilding != null)
+            mBuilding.AddStructure(this);
 	}
 
     public Vector3 GetClosestAttachmentPoint(Vector3 pos)
@@ -40,4 +43,14 @@ public class Structure : MonoBehaviour
     {
 	
 	}
+
+    void OnDrawGizmos()
+    {
+        foreach (AttachmentPoint p in Attachments)
+        {
+            Vector3 start = transform.TransformPoint(p.point);
+            Vector3 end = transform.TransformPoint(p.point + p.normal * 0.5f);
+            Gizmos.DrawLine(start, end);
+        }
+    }
 }
