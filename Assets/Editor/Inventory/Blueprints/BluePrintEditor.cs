@@ -6,104 +6,125 @@ using UnityEditor;
 
 public class BluePrintEditor : EditorWindow
 {
-    public BlueprintList blueprintList;
-    private int viewIndex = 1;
+    public BlueprintList BlueprintList;
+    private int _viewIndex = 1;
 
     [MenuItem("Window/Blueprint Editor")]
     static void Init()
     {
-        EditorWindow.GetWindow(typeof(BluePrintEditor));
+        GetWindow(typeof(BluePrintEditor));
     }
 
     void OnEnable()
     {
+		// Attempt to load the previously loaded list.
         if (EditorPrefs.HasKey("ObjectPathBlueprint"))
         {
             string objectPath = EditorPrefs.GetString("ObjectPathBlueprint");
-            blueprintList = AssetDatabase.LoadAssetAtPath(objectPath, typeof(BlueprintList)) as BlueprintList;
+            BlueprintList = AssetDatabase.LoadAssetAtPath(objectPath, typeof(BlueprintList)) as BlueprintList;
         }
     }
 
     void OnGUI()
     {
         GUILayout.Label("Blueprint Editor", EditorStyles.boldLabel);
+
         GUILayout.BeginHorizontal();
-        if (blueprintList != null)
+
+		// Show the active blueprint list in Inspector.
+        if (BlueprintList != null)
         {
             if (GUILayout.Button("Show List"))
             {
                 EditorUtility.FocusProjectWindow();
-                Selection.activeObject = blueprintList;
+                Selection.activeObject = BlueprintList;
             }
         }
+
+		// Show the FileBrowser.
         if (GUILayout.Button("Open List"))
         {
             OpenItemList();
         }
+
+		// Create a new Blueprint list.
         if (GUILayout.Button("New List"))
         {
             EditorUtility.FocusProjectWindow();
-            Selection.activeObject = blueprintList;
+            Selection.activeObject = BlueprintList;
         }
+
         GUILayout.EndHorizontal();
 
-        if (blueprintList == null)
+        if (BlueprintList == null)
         {
             GUILayout.BeginHorizontal();
             GUILayout.Space(10);
             if (GUILayout.Button("Create New List", GUILayout.ExpandWidth(false)))
-                CreateNewItemList();
+                CreateNewBlueprintList();
             if (GUILayout.Button("Open Existing List", GUILayout.ExpandWidth(false)))
                 OpenItemList();
             GUILayout.EndHorizontal();
         }
         GUILayout.Space(20);
 
-        if (blueprintList != null && blueprintList.List != null)
+        if (BlueprintList != null && BlueprintList.List != null)
         {
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(10);
+            ShowBlueprintList();
+        }
 
-            if (GUILayout.Button("Prev", GUILayout.ExpandWidth(false)))
-            {
-                if (viewIndex > 1)
-                    viewIndex--;
-            }
-            if (GUILayout.Button("Next", GUILayout.ExpandWidth(false)))
-            {
-                if (viewIndex < blueprintList.List.Count)
-                    viewIndex++;
-            }
-            GUILayout.Space(60);
+        if (GUI.changed)
+        {
+            EditorUtility.SetDirty(BlueprintList);
+        }
+    }
 
-            if (GUILayout.Button("Add ItemDetails", GUILayout.ExpandWidth(false)))
-            {
-                AddItem();
-            }
-            if (GUILayout.Button("Delete ItemDetails", GUILayout.ExpandWidth(false)))
-            {
-                DeleteItem(viewIndex - 1);
-            }
+	private void ShowBlueprintList()
+	{
+		GUILayout.BeginHorizontal();
+		GUILayout.Space(10);
 
-            GUILayout.EndHorizontal();
+		if (GUILayout.Button("Prev", GUILayout.ExpandWidth(false)))
+		{
+			if (_viewIndex > 1)
+				_viewIndex--;
+		}
+		if (GUILayout.Button("Next", GUILayout.ExpandWidth(false)))
+		{
+			if (_viewIndex < BlueprintList.List.Count)
+				_viewIndex++;
+		}
+		GUILayout.Space(60);
 
-            //Grab all the ItemDetails names so we can create a drop down
-            List<string> itemNames = LowPolySurvival.Inventory.MasterList.Instance.itemList.GetItemNames();
+		if (GUILayout.Button("Add ItemDetails", GUILayout.ExpandWidth(false)))
+		{
+			AddItem();
+		}
+		if (GUILayout.Button("Delete ItemDetails", GUILayout.ExpandWidth(false)))
+		{
+			DeleteItem(_viewIndex - 1);
+		}
 
-            if (blueprintList.List.Count > 0)
-            {
-                Blueprint curPrint = blueprintList.List[viewIndex - 1];
+		GUILayout.EndHorizontal();
 
-                GUILayout.BeginHorizontal();
+		//Grab all the ItemDetails names so we can create a drop down
+		List<string> itemNames = LowPolySurvival.Inventory.MasterList.Instance.itemList.GetItemNames();
 
-                viewIndex = Mathf.Clamp(EditorGUILayout.IntField("Current Blueprint", viewIndex, GUILayout.ExpandWidth(false)), 1, blueprintList.List.Count);
-                EditorGUILayout.LabelField("of    " + blueprintList.List.Count);
-                GUILayout.EndHorizontal();
+		if (BlueprintList.List.Count > 0)
+		{
+			Blueprint curPrint = BlueprintList.List[_viewIndex - 1];
 
-                GUILayout.BeginHorizontal();
-                //Adds a new required part to the current blueprint
+			GUILayout.BeginHorizontal();
 
-				/*
+			_viewIndex = Mathf.Clamp(EditorGUILayout.IntField("Current Blueprint", _viewIndex, GUILayout.ExpandWidth(false)), 1,
+				BlueprintList.List.Count);
+			EditorGUILayout.LabelField("of    " + BlueprintList.List.Count);
+			GUILayout.EndHorizontal();
+
+			GUILayout.BeginHorizontal();
+			//Adds a new required part to the current blueprint
+
+			/*
 
                 if (GUILayout.Button("Add Input Part", GUILayout.ExpandWidth(false)))
                 {
@@ -121,12 +142,12 @@ public class BluePrintEditor : EditorWindow
                 }
 				*/
 
-                GUILayout.EndHorizontal();
-                curPrint.PrintName = EditorGUILayout.TextField("Name", curPrint.PrintName as string);
+			GUILayout.EndHorizontal();
+			curPrint.PrintName = EditorGUILayout.TextField("Name", curPrint.PrintName as string);
 
-                GUILayout.Label("Required Items");
+			GUILayout.Label("Required Items");
 
-                /*for (int i2 = 0; i2 < curPrint.requiredItems.Count; i2++)
+			/*for (int i2 = 0; i2 < curPrint.requiredItems.Count; i2++)
                 {
                     string itemName = EditorGUILayout.TextField("Part ItemDetails", curPrint.requiredItems[i2].ItemDetails.itemName as string);
                     ItemDetails testItem = MasterList.Instance.itemList.FindByName(itemName);
@@ -136,7 +157,7 @@ public class BluePrintEditor : EditorWindow
                     }
                 }*/
 
-                /*
+			/*
                 itemList.itemList[viewIndex - 1].itemName = EditorGUILayout.TextField("ItemDetails Name", itemList.itemList[viewIndex - 1].itemName as string);
                 itemList.itemList[viewIndex - 1].itemIcon = EditorGUILayout.ObjectField("ItemDetails Icon", itemList.itemList[viewIndex - 1].itemIcon, typeof(Texture2D), false) as Texture2D;
                 itemList.itemList[viewIndex - 1].itemObject = EditorGUILayout.ObjectField("ItemDetails Prefab", itemList.itemList[viewIndex - 1].itemObject, typeof(GameObject), false) as GameObject;
@@ -148,39 +169,33 @@ public class BluePrintEditor : EditorWindow
 
                 itemList.itemList[viewIndex - 1].isEquipable = (bool)EditorGUILayout.Toggle("Equipable", itemList.itemList[viewIndex - 1].isEquipable, GUILayout.ExpandWidth(false));
                 */
-            }
-            else
-            {
-                GUILayout.Label("This list is empty");
-            }
-        }
+		}
+		else
+		{
+			GUILayout.Label("This list is empty");
+		}
+	}
 
-        if (GUI.changed)
-        {
-            EditorUtility.SetDirty(blueprintList);
-        }
-    }
-
-    void AddItem()
+	void AddItem()
     {
         Blueprint newBlueprint = new Blueprint();
         newBlueprint.PrintName = "New Blueprint";
-        blueprintList.List.Add(newBlueprint);
-        viewIndex = blueprintList.List.Count;
+        BlueprintList.List.Add(newBlueprint);
+        _viewIndex = BlueprintList.List.Count;
     }
 
     void DeleteItem(int index)
     {
-        blueprintList.List.RemoveAt(index);
+        BlueprintList.List.RemoveAt(index);
     }
 
-    void CreateNewItemList()
+    void CreateNewBlueprintList()
     {
-        viewIndex = 1;
-        blueprintList = CreateBlueprintList.Create();
-        if (blueprintList)
+        _viewIndex = 1;
+        BlueprintList = CreateBlueprintList.Create();
+        if (BlueprintList)
         {
-            string path = AssetDatabase.GetAssetPath(blueprintList);
+            string path = AssetDatabase.GetAssetPath(BlueprintList);
             EditorPrefs.SetString("ObjectPathBlueprint", path);
         }
     }
@@ -191,9 +206,9 @@ public class BluePrintEditor : EditorWindow
         if (absPath.StartsWith(Application.dataPath))
         {
             string relPath = absPath.Substring(Application.dataPath.Length - "Assets".Length);
-            blueprintList = AssetDatabase.LoadAssetAtPath(relPath, typeof(BlueprintList)) as BlueprintList;
+            BlueprintList = AssetDatabase.LoadAssetAtPath(relPath, typeof(BlueprintList)) as BlueprintList;
 
-            if (blueprintList)
+            if (BlueprintList)
             {
                 EditorPrefs.SetString("ObjectPathBlueprint", relPath);
             }
