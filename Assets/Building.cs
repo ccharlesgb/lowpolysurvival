@@ -113,7 +113,7 @@ public class Building : MonoBehaviour
     
     public AttachmentSnap PreviewSnapPosition(Transform builder, Structure toAdd)
     {
-        float dotThreshold = 0.0f;
+        float dotThreshold = 0.2f;
 
         var candidates = new List<AttachmentPoint>();
 
@@ -146,7 +146,8 @@ public class Building : MonoBehaviour
             foreach (AttachmentPoint curAttach in toAdd.Attachments)
             {
                 float dot = Vector3.Dot(curCandidate.GetGlobalNormal(), curAttach.GetGlobalNormal()); //If +VE then pointing towards
-                if (dot < -0.1f && Vector3.Distance(curCandidate.GetGlobalPoint(),builder.position) < minDist) //More antinormal than before
+                float distanceToBuilder = Vector3.Distance(curCandidate.GetGlobalPoint(), builder.position);
+                if (dot < -0.1f && distanceToBuilder < minDist) //More antinormal than before
                 {
                     bestCandidate = curCandidate;
                     bestStructurePoint = curAttach;
@@ -154,7 +155,9 @@ public class Building : MonoBehaviour
                 }
             }  
         }
-        return new AttachmentSnap(bestCandidate, bestStructurePoint);
+        AttachmentSnap snap = new AttachmentSnap(bestCandidate, bestStructurePoint);
+        lastSnap = snap;
+        return snap;
     }
 
     void OnDrawGizmos()
@@ -167,7 +170,7 @@ public class Building : MonoBehaviour
             Gizmos.DrawLine(start, end);
         }
 
-        if (lastSnap != null)
+        if (lastSnap != null && lastSnap.IsValid)
         {
             Vector3 start = lastSnap.first.structure.transform.TransformPoint(lastSnap.first.point);
             Vector3 end = lastSnap.first.structure.transform.TransformPoint(lastSnap.first.point + lastSnap.first.normal * 1.0f);
@@ -178,6 +181,7 @@ public class Building : MonoBehaviour
             end = lastSnap.second.structure.transform.TransformPoint(lastSnap.second.point + lastSnap.second.normal * 2.0f);
             Gizmos.color = Color.red;
             Gizmos.DrawLine(start, end);
+            Gizmos.DrawSphere(start, 0.25f);
         }
     }
 }

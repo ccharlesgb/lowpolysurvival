@@ -13,68 +13,68 @@ public class WeaponSettings : MonoBehaviour, IHolster
 
     public Inventory _owner;
 
-    public string PrimaryAmmoName = "";
-    public int PrimaryAmmoMax = -1; //-1 means disabled (No Max)
-    public int PrimaryAmmoClipSize = -1; //-1 means disabled (No clips/infinite clips)
-    public float PrimaryFireDelay = 0.8f;
-    public float PrimaryFireReloadTime = 2.0f;
-    public WeaponFireType PrimaryFireType = WeaponFireType.Automatic;
+    public string AmmoName = "";
+    public int AmmoMax = -1; //-1 means disabled (No Max)
+    public int AmmoClipSize = -1; //-1 means disabled (No clips/infinite clips)
+    public float FireDelay = 0.8f;
+    public float FireReloadTime = 2.0f;
+    public WeaponFireType FireType = WeaponFireType.Automatic;
 
-    public float _nextPrimaryFire = 0.0f;
+    public float _nextFire = 0.0f;
     private float _reloadEndTime = 0.0f;
     private int _currentClip = 0;
 
-    private bool _canPrimaryFire = false;
+    private bool _canFire = false;
 
-    private bool _hasReleasedPrimary = true; //Used by manual firemode
+    private bool _hasReleased = true; //Used by manual firemode
 
-    public bool CanPrimaryFire()
+    public bool CanFire()
     {
-        return _canPrimaryFire;
+        return _canFire;
     }
 
     public void PrimaryFire(Inventory ownerInv)
     {
-        _hasReleasedPrimary = false;
+        _hasReleased = false;
     }
 
     public void SecondaryFire(Inventory ownerInv)
     {
-        _hasReleasedPrimary = false;
+        _hasReleased = false;
     }
 
     public void Reload()
     {
-        _nextPrimaryFire = Time.time + PrimaryFireReloadTime;
+        _nextFire = Time.time + FireReloadTime;
     }
 
-    public void OnPrimaryFire()
+    public void OnFire()
     {
-        _nextPrimaryFire = Time.time + PrimaryFireDelay;
+        _nextFire = Time.time + FireDelay;
 
         _currentClip--;
         if (_currentClip <= 0)
         {
             Reload();
-            _currentClip = PrimaryAmmoClipSize;
+            _currentClip = AmmoClipSize;
         }
     }
 
-    public int PrimaryAmmoCount()
+    public int AmmoCount()
     {
         if (_owner == null) return -1;
 
-        return _owner.GetTotalAmount(PrimaryAmmoName);
+        return _owner.GetTotalAmount(AmmoName);
     }
 
-    public bool UpdateCanPrimaryFire()
+    public bool UpdateCanFire()
     {
         //Done in order of time to execute (roughly)
-        if (Time.time < _nextPrimaryFire)
+        if (Time.time < _nextFire)
             return false;
-        if (PrimaryFireType == WeaponFireType.Manual && !_hasReleasedPrimary)
+        if (FireType == WeaponFireType.Manual && !_hasReleased)
             return false;
-        if (PrimaryAmmoName != "" && PrimaryAmmoCount() <= 0)
+        if (AmmoName != "" && AmmoCount() <= 0)
             return false;
 
         return true;
@@ -83,9 +83,9 @@ public class WeaponSettings : MonoBehaviour, IHolster
     void Update()
     {
         if (Input.GetAxis("Fire1") < 0.5f) //We arent holding fire
-            _hasReleasedPrimary = true;
+            _hasReleased = true;
 
-       _canPrimaryFire = UpdateCanPrimaryFire();
+       _canFire = UpdateCanFire();
     }
     
     //Just as we get the game object out

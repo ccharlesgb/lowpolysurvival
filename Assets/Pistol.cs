@@ -4,7 +4,7 @@ using System.Collections;
 
 public class Pistol : MonoBehaviour, IHolster
 {
-    public WeaponSettings WeaponInfo;
+    public WeaponSettings PrimaryInfo;
 
     private Transform _barrelTransform;
 
@@ -38,9 +38,9 @@ public class Pistol : MonoBehaviour, IHolster
 
     public void PrimaryFire(Inventory ownerInv)
     {
-        if (!WeaponInfo.CanPrimaryFire()) return;
+        if (!PrimaryInfo.CanFire()) return;
 
-        WeaponInfo.OnPrimaryFire();
+        PrimaryInfo.OnFire();
 
         RaycastHit hit;
 
@@ -51,7 +51,7 @@ public class Pistol : MonoBehaviour, IHolster
 
         ShowBulletTracer(ray);
 
-        ownerInv.RemoveItem(WeaponInfo.PrimaryAmmoName, 1);
+        ownerInv.RemoveItem(PrimaryInfo.AmmoName, 1);
 
         if (Physics.Raycast(ray, out hit))
         {
