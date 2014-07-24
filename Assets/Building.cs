@@ -111,7 +111,7 @@ public class Building : MonoBehaviour
         return closest;
     }
     
-    public AttachmentSnap PreviewSnapPosition(Vector3 builderPos, Structure toAdd)
+    public AttachmentSnap PreviewSnapPosition(Transform builder, Structure toAdd)
     {
         float dotThreshold = 0.0f;
 
@@ -122,7 +122,7 @@ public class Building : MonoBehaviour
         foreach (AttachmentPoint curPoint in AvailableAttachments)
         {
             //We want to get the attachment points that are pointing towards the player.
-            fromAttachToBuilder = (builderPos - curPoint.GetGlobalPoint()).normalized;
+            fromAttachToBuilder = -builder.forward;
             currentNormal = curPoint.GetGlobalNormal();
             float dot = Vector3.Dot(fromAttachToBuilder, currentNormal); //If +VE then pointing towards
             if (dot > dotThreshold) //Its pointing towards us enough add to the candidate list
@@ -146,11 +146,11 @@ public class Building : MonoBehaviour
             foreach (AttachmentPoint curAttach in toAdd.Attachments)
             {
                 float dot = Vector3.Dot(curCandidate.GetGlobalNormal(), curAttach.GetGlobalNormal()); //If +VE then pointing towards
-                if (dot < -0.1f && Vector3.Distance(curCandidate.GetGlobalPoint(), builderPos) < minDist) //More antinormal than before
+                if (dot < -0.1f && Vector3.Distance(curCandidate.GetGlobalPoint(),builder.position) < minDist) //More antinormal than before
                 {
                     bestCandidate = curCandidate;
                     bestStructurePoint = curAttach;
-                    minDist = Vector3.Distance(curCandidate.GetGlobalPoint(), builderPos);
+                    minDist = Vector3.Distance(curCandidate.GetGlobalPoint(), builder.position);
                 }
             }  
         }

@@ -51,6 +51,8 @@ public class Structure : MonoBehaviour
             Vector3 start = transform.TransformPoint(p.point);
             Vector3 end = transform.TransformPoint(p.point + p.normal * 0.5f);
             Gizmos.DrawLine(start, end);
+
+            Gizmos.DrawSphere(start, 0.25f);
         }
     }
 }

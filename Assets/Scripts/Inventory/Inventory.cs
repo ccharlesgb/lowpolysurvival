@@ -298,13 +298,24 @@ namespace LowPolySurvival.Inventory
 			int total = 0;
 			for (int i = 0; i < InventoryMaxSize; i++)
 			{
-				if (Items[i] != null && Items[i].ItemDetails == item)
+				if (Items[i] != null && Items[i].ItemDetails.Equals(item))
 				{
 					total += Items[i].Amount;
 				}
 			}
 			return total;
 		}
+
+	    public int GetTotalAmount(string name)
+	    {
+            ItemDetails itemDetails = _masterList.FindByName(name);
+            if (itemDetails == null)
+            {
+                Debug.Log("ERROR: Tried to access null item " + name);
+                return -1;
+            }
+            return GetTotalAmount(itemDetails);
+	    }
 
 		public void RemoveItem(int slot)
 		{
@@ -401,7 +412,7 @@ namespace LowPolySurvival.Inventory
 			var list = new List<ItemSlot>();
 			for (int i = 0; i < Items.Count(); i++)
 			{
-				if (Items[i] != null && Items[i].ItemDetails == item)
+				if (Items[i] != null && Items[i].ItemDetails.Equals(item))
 				{
 					list.Add(Items[i]);
 				}

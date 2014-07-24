@@ -29,6 +29,13 @@ namespace LowPolySurvival.Inventory
 			}
 		}
 
+	    private void FixedUpdate()
+	    {
+	        Quaternion newRot = new Quaternion();
+	        newRot.SetLookRotation(Camera.main.transform.forward);
+	        transform.rotation = newRot;
+	    }
+
 		private void OnEnable()
 		{
 			_inventory = GetComponent<Inventory>();

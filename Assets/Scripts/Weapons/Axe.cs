@@ -40,8 +40,11 @@ public class Axe : MonoBehaviour, IHolster
         
     }
 
+    //Called when left click is held down
 	public void PrimaryFire(Inventory ownerInv)
 	{
+
+
 		if (nextPrimaryFire > Time.time)
 		{
 			return; //Cant fire yet
@@ -83,6 +86,7 @@ public class Axe : MonoBehaviour, IHolster
 		}
 	}
 
+    //Called when right click is held down
 	public void SecondaryFire(Inventory ownerInv)
 	{
 

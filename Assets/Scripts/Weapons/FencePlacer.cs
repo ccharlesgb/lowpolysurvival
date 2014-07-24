@@ -73,14 +73,14 @@ public class FencePlacer : MonoBehaviour, IHolster
         //SHOULDNT BE DOING THIS ALL THE TIME
         if (CurrentBuilding == null)
         {
-            CurrentBuilding = Building.FindNearestBuilding(transform.position, BuildingRange);
+            CurrentBuilding = Building.FindNearestBuilding(transform.position + transform.forward * 2.0f, BuildingRange);
         }
         if (CurrentBuilding == null) return; //Couldnt find a building so we cant spawn (TODO making new buildings)
         //Debug.Log("oh god");
         Quaternion newRot = new Quaternion();
         newRot.SetLookRotation(currentSpawnRotation);
         tran.rotation = newRot;
-        AttachmentSnap bestAttachment = CurrentBuilding.PreviewSnapPosition(transform.position, ghostProp.GetComponent<Structure>());
+        AttachmentSnap bestAttachment = CurrentBuilding.PreviewSnapPosition(transform, ghostProp.GetComponent<Structure>());
         if (bestAttachment != null && bestAttachment.IsValid)
         {
             //Debug.Log(bestAttachment.first.point + "   " + bestAttachment.second.point);
@@ -106,7 +106,7 @@ public class FencePlacer : MonoBehaviour, IHolster
         GameObject fence = Instantiate(fencePrefab, ghostProp.transform.position, ghostProp.transform.rotation) as GameObject;
 
         //TODO Having to do this twice is bad
-        AttachmentSnap bestAttachment = CurrentBuilding.PreviewSnapPosition(transform.position, fence.GetComponent<Structure>());
+        AttachmentSnap bestAttachment = CurrentBuilding.PreviewSnapPosition(transform, fence.GetComponent<Structure>());
         CurrentBuilding.AddStructure(fence.GetComponent<Structure>(), bestAttachment);
 
         //Use up a fence in the inventory
