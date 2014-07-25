@@ -4,6 +4,14 @@ using System.Collections;
 
 public class Structure : MonoBehaviour
 {
+    public enum StructureType
+    {
+        Foundation,
+        Wall
+    }
+
+    public StructureType type;
+
     public List<AttachmentPoint> Attachments = new List<AttachmentPoint>();
 
     public Building mBuilding = null;

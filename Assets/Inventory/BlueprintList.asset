@@ -11,4 +11,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc246c240a3ae2147b77208fb8cc6a1f, type: 3}
   m_Name: BlueprintList
   m_EditorClassIdentifier: 
-  List: []
+  List:
+  - PrintName: 
+    RequiredItems: []
+    OutputItems: []
+  - PrintName: New Blueprint
+    RequiredItems: []
+    OutputItems: []

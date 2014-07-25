@@ -12,6 +12,8 @@ public class AttachmentPoint
     public Vector3 normal;
     public Structure structure;
 
+    public Structure.StructureType type;
+
     public Vector3 GetGlobalPoint()
     {
         return structure.transform.TransformPoint(point);
@@ -111,21 +113,24 @@ public class Building : MonoBehaviour
         return closest;
     }
     
-    public AttachmentSnap PreviewSnapPosition(Transform builder, Structure toAdd)
+    public AttachmentSnap PreviewSnapPosition(Vector3 builder, Structure toAdd)
     {
-        float dotThreshold = 0.2f;
+        float dotThreshold = -1.0f;
 
         var candidates = new List<AttachmentPoint>();
 
         Vector3 fromAttachToBuilder;
         Vector3 currentNormal;
+        float buildRange = 8.0f;
         foreach (AttachmentPoint curPoint in AvailableAttachments)
         {
             //We want to get the attachment points that are pointing towards the player.
-            fromAttachToBuilder = -builder.forward;
+            fromAttachToBuilder = (builder - curPoint.GetGlobalPoint());
+            float dist = fromAttachToBuilder.magnitude;
+            fromAttachToBuilder.Normalize();
             currentNormal = curPoint.GetGlobalNormal();
             float dot = Vector3.Dot(fromAttachToBuilder, currentNormal); //If +VE then pointing towards
-            if (dot > dotThreshold) //Its pointing towards us enough add to the candidate list
+            if (dot > dotThreshold && dist < buildRange) //Its pointing towards us enough add to the candidate list
             {
                 candidates.Add(curPoint);
             }
@@ -146,12 +151,12 @@ public class Building : MonoBehaviour
             foreach (AttachmentPoint curAttach in toAdd.Attachments)
             {
                 float dot = Vector3.Dot(curCandidate.GetGlobalNormal(), curAttach.GetGlobalNormal()); //If +VE then pointing towards
-                float distanceToBuilder = Vector3.Distance(curCandidate.GetGlobalPoint(), builder.position);
+                float distanceToBuilder = Vector3.Distance(curCandidate.GetGlobalPoint(), builder);
                 if (dot < -0.1f && distanceToBuilder < minDist) //More antinormal than before
                 {
                     bestCandidate = curCandidate;
                     bestStructurePoint = curAttach;
-                    minDist = Vector3.Distance(curCandidate.GetGlobalPoint(), builder.position);
+                    minDist = Vector3.Distance(curCandidate.GetGlobalPoint(), builder);
                 }
             }  
         }

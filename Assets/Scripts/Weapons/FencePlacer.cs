@@ -23,6 +23,7 @@ public class FencePlacer : MonoBehaviour, IHolster
     public GameObject fencePrefab;
 
     private GameObject ghostProp;
+    private bool validSpawn = false;
 
     public Color ghostColor = new Color(1.0f, 1.0f, 1.0f, 0.5f);
 
@@ -76,21 +77,25 @@ public class FencePlacer : MonoBehaviour, IHolster
             CurrentBuilding = Building.FindNearestBuilding(transform.position + transform.forward * 2.0f, BuildingRange);
         }
         if (CurrentBuilding == null) return; //Couldnt find a building so we cant spawn (TODO making new buildings)
-        //Debug.Log("oh god");
-        Quaternion newRot = new Quaternion();
-        newRot.SetLookRotation(currentSpawnRotation);
-        tran.rotation = newRot;
-        AttachmentSnap bestAttachment = CurrentBuilding.PreviewSnapPosition(transform, ghostProp.GetComponent<Structure>());
-        if (bestAttachment != null && bestAttachment.IsValid)
+        
+        Ray lookRay = new Ray(transform.position, transform.forward);
+        RaycastHit hit;
+        if (Physics.Raycast(lookRay, out hit))
         {
-            //Debug.Log(bestAttachment.first.point + "   " + bestAttachment.second.point);
-            tran.position = bestAttachment.first.GetGlobalPoint() -
-                            bestAttachment.second.structure.transform.TransformPoint(bestAttachment.second.point);
-        }
-        else
-        {
-            Debug.Log("no transform");
-            tran.position = Vector3.zero;
+            Quaternion newRot = new Quaternion();
+            newRot.SetLookRotation(currentSpawnRotation);
+            tran.rotation = newRot;
+            AttachmentSnap bestAttachment = CurrentBuilding.PreviewSnapPosition(hit.point, ghostProp.GetComponent<Structure>());
+            if (bestAttachment != null && bestAttachment.IsValid)
+            {
+                //Debug.Log(bestAttachment.first.point + "   " + bestAttachment.second.point);
+                tran.position = bestAttachment.first.GetGlobalPoint() -
+                                bestAttachment.second.structure.transform.TransformPoint(bestAttachment.second.point);
+            }
+            else
+            {
+                tran.position = hit.point;
+            }
         }
     }
 
@@ -106,7 +111,7 @@ public class FencePlacer : MonoBehaviour, IHolster
         GameObject fence = Instantiate(fencePrefab, ghostProp.transform.position, ghostProp.transform.rotation) as GameObject;
 
         //TODO Having to do this twice is bad
-        AttachmentSnap bestAttachment = CurrentBuilding.PreviewSnapPosition(transform, fence.GetComponent<Structure>());
+        AttachmentSnap bestAttachment = CurrentBuilding.PreviewSnapPosition(transform.position, fence.GetComponent<Structure>());
         CurrentBuilding.AddStructure(fence.GetComponent<Structure>(), bestAttachment);
 
         //Use up a fence in the inventory

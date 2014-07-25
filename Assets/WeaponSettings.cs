@@ -28,6 +28,16 @@ public class WeaponSettings : MonoBehaviour, IHolster
 
     private bool _hasReleased = true; //Used by manual firemode
 
+    public AudioClip FireSound;
+    public AudioClip ReloadSound;
+    public AudioClip OutOfAmmoSound;
+    private AudioSource _AudioSource;
+
+    void Awake()
+    {
+        _AudioSource = GetComponent<AudioSource>();
+    }
+
     public bool CanFire()
     {
         return _canFire;
@@ -45,18 +55,31 @@ public class WeaponSettings : MonoBehaviour, IHolster
 
     public void Reload()
     {
+        //Play audio
+        if (FireSound != null)
+        {
+            _AudioSource.clip = ReloadSound;
+            _AudioSource.Play();
+        }
+        _currentClip = AmmoClipSize;
         _nextFire = Time.time + FireReloadTime;
     }
 
     public void OnFire()
     {
+        //Play audio
+        if (FireSound != null)
+        {
+            _AudioSource.clip = FireSound;
+            _AudioSource.Play();
+        }
+
         _nextFire = Time.time + FireDelay;
 
         _currentClip--;
         if (_currentClip <= 0)
         {
             Reload();
-            _currentClip = AmmoClipSize;
         }
     }
 
@@ -76,6 +99,11 @@ public class WeaponSettings : MonoBehaviour, IHolster
             return false;
         if (AmmoName != "" && AmmoCount() <= 0)
             return false;
+        if (_currentClip <= 0)
+        {
+            Reload();
+            return false;
+        }
 
         return true;
     }
