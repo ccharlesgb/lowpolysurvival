@@ -66,7 +66,7 @@ public class BluePrintEditor : EditorWindow
 				OpenItemList();
 			GUILayout.EndHorizontal();
 		}
-		GUILayout.Space(20);
+		GUILayout.Space(5);
 
 		if (BlueprintList != null && BlueprintList.List != null)
 		{
@@ -83,7 +83,6 @@ public class BluePrintEditor : EditorWindow
 	private void ShowBlueprintList()
 	{
 		GUILayout.BeginHorizontal();
-		GUILayout.Space(10);
 
 		// Switch between active blueprint.
 		if (GUILayout.Button("Prev", GUILayout.ExpandWidth(false)))
@@ -110,6 +109,7 @@ public class BluePrintEditor : EditorWindow
 		}
 
 		GUILayout.EndHorizontal();
+		GUILayout.Space(5);
 
 		//Grab all the ItemDetails names so we can create a drop down
 		List<string> itemNames = MasterList.Instance.itemList.GetItemNames();

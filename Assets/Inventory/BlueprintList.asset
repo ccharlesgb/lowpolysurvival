@@ -11,4 +11,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc246c240a3ae2147b77208fb8cc6a1f, type: 3}
   m_Name: BlueprintList
   m_EditorClassIdentifier: 
-  List: []
+  List:
+  - PrintName: Test
+    RequiredItems:
+    - ItemDetails:
+        itemName: Stone
+        itemObject: {fileID: 100000, guid: c71c774e8b80d7b4aa02c176f5e8e310, type: 2}
+        itemIcon: {fileID: 2800000, guid: 038d0e1d049461346b67ce626ac272ac, type: 3}
+        isStackable: 1
+        stackSize: 8
+        isEquipable: 0
+      Amount: 5
+    OutputItems:
+    - ItemDetails:
+        itemName: Wood
+        itemObject: {fileID: 100000, guid: 7c7289cf94a8ac34499897da8f5d9950, type: 2}
+        itemIcon: {fileID: 2800000, guid: a86b9575488481f42ab3225170c350ca, type: 3}
+        isStackable: 1
+        stackSize: 8
+        isEquipable: 0
+      Amount: 1
