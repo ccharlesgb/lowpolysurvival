@@ -1,10 +1,8 @@
-﻿using System;
-using LowPolySurvival.Inventory;
+﻿using System.Collections.Generic;
 using LowPolySurvival.Inventory.Blueprints;
-using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
+using UnityEngine;
+using MasterList = LowPolySurvival.Inventory.MasterList;
 
 public class BluePrintEditor : EditorWindow
 {
@@ -79,6 +77,7 @@ public class BluePrintEditor : EditorWindow
 		{
 			EditorUtility.SetDirty(BlueprintList);
 		}
+		
 	}
 
 	private void ShowBlueprintList()
@@ -86,6 +85,7 @@ public class BluePrintEditor : EditorWindow
 		GUILayout.BeginHorizontal();
 		GUILayout.Space(10);
 
+		// Switch between active blueprint.
 		if (GUILayout.Button("Prev", GUILayout.ExpandWidth(false)))
 		{
 			if (_viewIndex > 1)
@@ -99,6 +99,7 @@ public class BluePrintEditor : EditorWindow
 
 		GUILayout.FlexibleSpace();
 
+		// Add/Remove blueprints.
 		if (GUILayout.Button("Add", GUILayout.ExpandWidth(false)))
 		{
 			AddItem();
@@ -111,7 +112,7 @@ public class BluePrintEditor : EditorWindow
 		GUILayout.EndHorizontal();
 
 		//Grab all the ItemDetails names so we can create a drop down
-		List<string> itemNames = LowPolySurvival.Inventory.MasterList.Instance.itemList.GetItemNames();
+		List<string> itemNames = MasterList.Instance.itemList.GetItemNames();
 		string[] itemNamesArray = itemNames.ToArray();
 
 		if (BlueprintList.List.Count > 0)
@@ -125,45 +126,13 @@ public class BluePrintEditor : EditorWindow
 			EditorGUILayout.LabelField("of    " + BlueprintList.List.Count);
 			GUILayout.EndHorizontal();
 
-			blueprint.PrintName = EditorGUILayout.TextField("Name", blueprint.PrintName as string);
+			blueprint.PrintName = EditorGUILayout.TextField("Name", blueprint.PrintName);
 
 			GUILayout.Label("Required Items:");
-
-			for (int i = 0; i < blueprint.RequiredItems.Count; i++)
-			{
-				Blueprint.BlueprintIngredient item = blueprint.RequiredItems[i];
-
-				GUILayout.BeginHorizontal();
-
-				int oldID = Mathf.Clamp(itemNames.IndexOf(item.ItemDetails.itemName), 0,
-					LowPolySurvival.Inventory.MasterList.Instance.itemList.itemList.Count);
-
-				int itemID = EditorGUILayout.Popup(oldID, itemNamesArray);
-				string itemName = itemNames[itemID];
-				//string itemName = itemNamesArray[itemID];
-
-				// ItemDetails was changed.
-				if (item.ItemDetails.itemName != itemName)
-				{
-					item.ItemDetails = LowPolySurvival.Inventory.MasterList.Instance.itemList.FindByName(itemName);
-				}
-				
-				item.Amount = EditorGUILayout.IntField(item.Amount, GUILayout.MaxWidth(40));
-
-				GUILayout.Button("X", GUILayout.ExpandWidth(false));
-				GUILayout.EndHorizontal();
-			}
-
-			if (GUILayout.Button("Add", GUILayout.ExpandWidth(false)))
-			{
-				var newIngredient = new Blueprint.BlueprintIngredient();
-				newIngredient.ItemDetails = null;
-				newIngredient.Amount = 1;
-
-				blueprint.RequiredItems.Add(newIngredient);
-			}
+			ShowItemList(blueprint.RequiredItems, itemNames, itemNamesArray);
 
 			GUILayout.Label("Output Items:");
+			ShowItemList(blueprint.OutputItems, itemNames, itemNamesArray);
 		}
 		else
 		{
@@ -171,9 +140,48 @@ public class BluePrintEditor : EditorWindow
 		}
 	}
 
+	private static void ShowItemList(List<Blueprint.BlueprintIngredient> list, List<string> itemNames, string[] itemNamesArray)
+	{
+		for (int i = 0; i < list.Count; i++)
+		{
+			Blueprint.BlueprintIngredient item = list[i];
+
+			GUILayout.BeginHorizontal();
+
+			int oldID = Mathf.Clamp(itemNames.IndexOf(item.ItemDetails.itemName), 0,
+				MasterList.Instance.itemList.itemList.Count);
+
+			int itemID = EditorGUILayout.Popup(oldID, itemNamesArray);
+			string itemName = itemNames[itemID];
+
+			// ItemDetails was changed.
+			if (item.ItemDetails.itemName != itemName)
+			{
+				item.ItemDetails = MasterList.Instance.itemList.FindByName(itemName);
+			}
+
+			item.Amount = EditorGUILayout.IntField(item.Amount, GUILayout.MaxWidth(40));
+
+			if (GUILayout.Button("X", GUILayout.ExpandWidth(false)))
+			{
+				list.RemoveAt(i);
+			}
+			GUILayout.EndHorizontal();
+		}
+
+		if (GUILayout.Button("Add", GUILayout.ExpandWidth(false)))
+		{
+			var newIngredient = new Blueprint.BlueprintIngredient();
+			newIngredient.ItemDetails = MasterList.Instance.itemList.itemList[0];
+			newIngredient.Amount = 1;
+
+			list.Add(newIngredient);
+		}
+	}
+
 	private void AddItem()
 	{
-		Blueprint newBlueprint = new Blueprint();
+		var newBlueprint = new Blueprint();
 		newBlueprint.PrintName = "New Blueprint";
 		BlueprintList.List.Add(newBlueprint);
 		_viewIndex = BlueprintList.List.Count;
