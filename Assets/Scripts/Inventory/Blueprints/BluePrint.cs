@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace LowPolySurvival.Inventory.Blueprints
 {
@@ -6,7 +7,9 @@ namespace LowPolySurvival.Inventory.Blueprints
 	public class Blueprint
 	{
 		public string PrintName;
+        [SerializeField]
 		public List<BlueprintIngredient> RequiredItems;
+        [SerializeField]
 		public List<BlueprintIngredient> OutputItems;
 
 		/// <summary>
