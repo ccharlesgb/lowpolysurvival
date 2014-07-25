@@ -1,4 +1,6 @@
-﻿using LowPolySurvival.Inventory.Blueprints;
+﻿using System;
+using LowPolySurvival.Inventory;
+using LowPolySurvival.Inventory.Blueprints;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -94,13 +96,14 @@ public class BluePrintEditor : EditorWindow
 			if (_viewIndex < BlueprintList.List.Count)
 				_viewIndex++;
 		}
-		GUILayout.Space(60);
 
-		if (GUILayout.Button("Add ItemDetails", GUILayout.ExpandWidth(false)))
+		GUILayout.FlexibleSpace();
+
+		if (GUILayout.Button("Add", GUILayout.ExpandWidth(false)))
 		{
 			AddItem();
 		}
-		if (GUILayout.Button("Delete ItemDetails", GUILayout.ExpandWidth(false)))
+		if (GUILayout.Button("Remove", GUILayout.ExpandWidth(false)))
 		{
 			DeleteItem(_viewIndex - 1);
 		}
@@ -109,10 +112,11 @@ public class BluePrintEditor : EditorWindow
 
 		//Grab all the ItemDetails names so we can create a drop down
 		List<string> itemNames = LowPolySurvival.Inventory.MasterList.Instance.itemList.GetItemNames();
+		string[] itemNamesArray = itemNames.ToArray();
 
 		if (BlueprintList.List.Count > 0)
 		{
-			Blueprint curPrint = BlueprintList.List[_viewIndex - 1];
+			Blueprint blueprint = BlueprintList.List[_viewIndex - 1];
 
 			GUILayout.BeginHorizontal();
 
@@ -121,54 +125,45 @@ public class BluePrintEditor : EditorWindow
 			EditorGUILayout.LabelField("of    " + BlueprintList.List.Count);
 			GUILayout.EndHorizontal();
 
-			GUILayout.BeginHorizontal();
-			//Adds a new required part to the current blueprint
+			blueprint.PrintName = EditorGUILayout.TextField("Name", blueprint.PrintName as string);
 
-			/*
+			GUILayout.Label("Required Items:");
 
-                if (GUILayout.Button("Add Input Part", GUILayout.ExpandWidth(false)))
-                {
-                    ItemSlot newPart = ScriptableObject.CreateInstance<ItemSlot>();
-                    newPart.ItemDetails = null;
-                    newPart.Amount = 1;
-                    curPrint.RequiredItems.Add(newPart);
-                }
-                if (GUILayout.Button("Add Output Part", GUILayout.ExpandWidth(false)))
-                {
-                    ItemSlot newPart = ScriptableObject.CreateInstance<ItemSlot>();
-                    newPart.ItemDetails = null;
-                    newPart.Amount = 1;
-                    curPrint.OutputItems.Add(newPart);
-                }
-				*/
+			for (int i = 0; i < blueprint.RequiredItems.Count; i++)
+			{
+				Blueprint.BlueprintIngredient item = blueprint.RequiredItems[i];
 
-			GUILayout.EndHorizontal();
-			curPrint.PrintName = EditorGUILayout.TextField("Name", curPrint.PrintName as string);
+				GUILayout.BeginHorizontal();
 
-			GUILayout.Label("Required Items");
+				int oldID = Mathf.Clamp(itemNames.IndexOf(item.ItemDetails.itemName), 0,
+					LowPolySurvival.Inventory.MasterList.Instance.itemList.itemList.Count);
 
-			/*for (int i2 = 0; i2 < curPrint.requiredItems.Count; i2++)
-                {
-                    string itemName = EditorGUILayout.TextField("Part ItemDetails", curPrint.requiredItems[i2].ItemDetails.itemName as string);
-                    ItemDetails testItem = MasterList.Instance.itemList.FindByName(itemName);
-                    if (testItem != null)
-                    {
-                        curPrint.requiredItems[i2].ItemDetails = testItem;
-                    }
-                }*/
+				int itemID = EditorGUILayout.Popup(oldID, itemNamesArray);
+				string itemName = itemNames[itemID];
+				//string itemName = itemNamesArray[itemID];
 
-			/*
-                itemList.itemList[viewIndex - 1].itemName = EditorGUILayout.TextField("ItemDetails Name", itemList.itemList[viewIndex - 1].itemName as string);
-                itemList.itemList[viewIndex - 1].itemIcon = EditorGUILayout.ObjectField("ItemDetails Icon", itemList.itemList[viewIndex - 1].itemIcon, typeof(Texture2D), false) as Texture2D;
-                itemList.itemList[viewIndex - 1].itemObject = EditorGUILayout.ObjectField("ItemDetails Prefab", itemList.itemList[viewIndex - 1].itemObject, typeof(GameObject), false) as GameObject;
+				// ItemDetails was changed.
+				if (item.ItemDetails.itemName != itemName)
+				{
+					item.ItemDetails = LowPolySurvival.Inventory.MasterList.Instance.itemList.FindByName(itemName);
+				}
+				
+				item.Amount = EditorGUILayout.IntField(item.Amount, GUILayout.MaxWidth(40));
 
-                itemList.itemList[viewIndex - 1].isStackable = (bool)EditorGUILayout.Toggle("Stackable", itemList.itemList[viewIndex - 1].isStackable, GUILayout.ExpandWidth(false));
-                GUI.enabled = itemList.itemList[viewIndex - 1].isStackable;
-                itemList.itemList[viewIndex - 1].stackSize = (int)EditorGUILayout.IntField("Stack Size", itemList.itemList[viewIndex - 1].stackSize);
-                GUI.enabled = true;
+				GUILayout.Button("X", GUILayout.ExpandWidth(false));
+				GUILayout.EndHorizontal();
+			}
 
-                itemList.itemList[viewIndex - 1].isEquipable = (bool)EditorGUILayout.Toggle("Equipable", itemList.itemList[viewIndex - 1].isEquipable, GUILayout.ExpandWidth(false));
-                */
+			if (GUILayout.Button("Add", GUILayout.ExpandWidth(false)))
+			{
+				var newIngredient = new Blueprint.BlueprintIngredient();
+				newIngredient.ItemDetails = null;
+				newIngredient.Amount = 1;
+
+				blueprint.RequiredItems.Add(newIngredient);
+			}
+
+			GUILayout.Label("Output Items:");
 		}
 		else
 		{

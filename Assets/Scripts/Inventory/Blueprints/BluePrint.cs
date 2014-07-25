@@ -6,7 +6,17 @@ namespace LowPolySurvival.Inventory.Blueprints
 	public class Blueprint
 	{
 		public string PrintName;
-		public List<ItemSlot> RequiredItems;
-		public List<ItemSlot> OutputItems;
+		public List<BlueprintIngredient> RequiredItems;
+		public List<BlueprintIngredient> OutputItems;
+
+		/// <summary>
+		/// Component required to craft blueprint or provide as reward.
+		/// </summary>
+		[System.Serializable]
+		public class BlueprintIngredient
+		{
+			public ItemDetails ItemDetails;
+			public int Amount;
+		}
 	}
 }
