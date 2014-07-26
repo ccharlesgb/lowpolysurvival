@@ -24,8 +24,11 @@ namespace LowPolySurvival.Inventory
 			{
 				Blueprint blueprint = _blueprintList.List[i];
 
-				var rect = new Rect(WindowRect.x + 20*i, WindowRect.y, 100, 20);
-				GUI.Label(rect, blueprint.PrintName);
+				var rect = new Rect(WindowRect.x, WindowRect.y + 20 * i, 100, 20);
+				if (GUI.Button(rect, blueprint.PrintName))
+				{
+					// TODO: Handle blueprint usage.
+				}
 			}
 		}
 	}
