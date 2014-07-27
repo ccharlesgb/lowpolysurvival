@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Policy;
 using LowPolySurvival.Inventory;
 using UnityEditor.ProjectWindowCallback;
 using UnityEngine;
@@ -7,6 +8,8 @@ using System.Collections;
 
 public class FencePlacer : MonoBehaviour, IHolster
 {
+    private Vector3 fireStart;
+    private Vector3 fireEnd;
 
     public int currentSpawnRotationIndex = 0;
     public static Vector3[] spawnRotations =
@@ -28,7 +31,8 @@ public class FencePlacer : MonoBehaviour, IHolster
     public Color ghostColor = new Color(1.0f, 1.0f, 1.0f, 0.5f);
 
     public float BuildingRange = 20.0f;
-    public Building CurrentBuilding = null;
+
+    public AttachmentSnap currentSnap;
 
 	// Use this for initialization
 	void Start ()
@@ -70,32 +74,38 @@ public class FencePlacer : MonoBehaviour, IHolster
     public void GetSpawnTransform(Transform tran)
     {
         tran.position = Vector3.zero;
-        //We need a building
-        //SHOULDNT BE DOING THIS ALL THE TIME
-        if (CurrentBuilding == null)
-        {
-            CurrentBuilding = Building.FindNearestBuilding(transform.position + transform.forward * 2.0f, BuildingRange);
-        }
-        if (CurrentBuilding == null) return; //Couldnt find a building so we cant spawn (TODO making new buildings)
         
         Ray lookRay = new Ray(transform.position, transform.forward);
+
         RaycastHit hit;
         if (Physics.Raycast(lookRay, out hit))
         {
+            fireStart = lookRay.origin;
+            fireEnd = hit.point;
+
             Quaternion newRot = new Quaternion();
             newRot.SetLookRotation(currentSpawnRotation);
             tran.rotation = newRot;
-            AttachmentSnap bestAttachment = CurrentBuilding.PreviewSnapPosition(hit.point, ghostProp.GetComponent<Structure>());
-            if (bestAttachment != null && bestAttachment.IsValid)
+
+            if (hit.distance > BuildingRange)
             {
-                //Debug.Log(bestAttachment.first.point + "   " + bestAttachment.second.point);
-                tran.position = bestAttachment.first.GetGlobalPoint() -
-                                bestAttachment.second.structure.transform.TransformPoint(bestAttachment.second.point);
+                tran.position = lookRay.origin + lookRay.direction*BuildingRange;
+                return;
             }
-            else
+
+            AttachmentPoint attachmentAim = hit.collider.gameObject.GetComponent<AttachmentPoint>();
+            if (attachmentAim != null)
             {
-                tran.position = hit.point;
+                Debug.Log(attachmentAim);
+                AttachmentSnap snap = attachmentAim.structure.GetSnapPosition(attachmentAim, ghostProp.GetComponent<Structure>().Attachments);
+
+                if (snap == null || !snap.IsValid())
+                    return;
+                tran.position = snap.first.transform.position -
+                                snap.second.structure.transform.TransformPoint(snap.second.point);
+                currentSnap = snap;
             }
+            //hitStruct.DeActivateAttachments();
         }
     }
 
@@ -109,10 +119,6 @@ public class FencePlacer : MonoBehaviour, IHolster
         //Spaw the fence prefab
         GetSpawnTransform(ghostProp.transform);
         GameObject fence = Instantiate(fencePrefab, ghostProp.transform.position, ghostProp.transform.rotation) as GameObject;
-
-        //TODO Having to do this twice is bad
-        AttachmentSnap bestAttachment = CurrentBuilding.PreviewSnapPosition(transform.position, fence.GetComponent<Structure>());
-        CurrentBuilding.AddStructure(fence.GetComponent<Structure>(), bestAttachment);
 
         //Use up a fence in the inventory
         inv.RemoveItem(GetComponent<ItemBehaviour>().slot.ItemDetails, 1);
@@ -136,5 +142,10 @@ public class FencePlacer : MonoBehaviour, IHolster
                 RotateGhost();
             }
         }
+    }
+
+    void OnDrawGizmos()
+    {
+        Debug.DrawLine(fireStart, fireEnd);
     }
 }
