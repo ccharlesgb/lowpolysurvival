@@ -15,6 +15,9 @@ namespace LowPolySurvival.Inventory
 		private GUIGrid _inventoryGrid;
 		private GUIGrid _inventoryGridLoot;
 
+		private bool _renderBlueprintGUI;
+		private GUIBlueprintList _blueprintList;
+
 		private void Awake()
 		{
 			_elements = new List<IGUIElement>();
@@ -22,6 +25,10 @@ namespace LowPolySurvival.Inventory
 
 			_inventoryGrid = new GUIGrid(this, new GUIPosition(5, 30), _inventory);
 			_elements.Add(_inventoryGrid);
+
+			_renderBlueprintGUI = true;
+			_blueprintList = new GUIBlueprintList(this, new GUIPosition((int)_inventoryGrid.GetWindowSize().width + 5, 30));
+			_elements.Add(_blueprintList);
 		}
 
 		private void OnEnable()
@@ -119,6 +126,10 @@ namespace LowPolySurvival.Inventory
 
 			Rect windRect = new Rect(5, 5, size.width + 15, size.height + 45);
 			if (_lootInv != null)
+			{
+				windRect.width *= 2;
+			}
+			if (_renderBlueprintGUI)
 			{
 				windRect.width *= 2;
 			}
