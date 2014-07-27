@@ -32,6 +32,7 @@ public class AttachmentPoint : MonoBehaviour
             _collider = gameObject.AddComponent<SphereCollider>();
         }
         _collider.enabled = true;
+        _collider.isTrigger = true;
         _collider.radius = attachmentRadius;
         _collider.center = normal * attachmentRadius;
     }
